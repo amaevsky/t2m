@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -12,9 +13,9 @@ namespace Lingua.ZoomIntegration
         private readonly ZoomClientOptions _options;
         private readonly HttpClient _httpClient;
 
-        public AuthService(ZoomClientOptions options)
+        public AuthService(IOptions<ZoomClientOptions> options)
         {
-            _options = options;
+            _options = options.Value;
 
             _httpClient = new HttpClient();
             var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_options.ClientId}:{_options.ClientSecret}"));
