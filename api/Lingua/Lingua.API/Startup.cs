@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,6 @@ namespace Lingua.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie();
@@ -42,8 +42,8 @@ namespace Lingua.API
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IMeetingService, MeetingService>();
 
-            services.AddSingleton(new MeetingOptions());
-            services.AddSingleton(new ZoomClientOptions("YIgVDoPDRH2o_cixTMXEaQ", "VonaMFLd6leQJ4ZfdTUjtqtAT6CKx97k", "https://localhost:4000/redirect"));
+            services.AddOptions();
+            services.Configure<ZoomClientOptions>(Configuration.GetSection("ZoomClientOptions"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
