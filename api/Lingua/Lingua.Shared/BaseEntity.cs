@@ -9,7 +9,7 @@ namespace Lingua.Shared
             Id = Guid.NewGuid();
         }
 
-        public Guid Id { get; set; }
+        public Guid Id { get; private set; }
     }
 
 }
