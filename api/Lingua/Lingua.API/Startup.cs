@@ -1,3 +1,5 @@
+using Lingua.Data.Mongo;
+using Lingua.Shared;
 using Lingua.ZoomIntegration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -38,12 +40,26 @@ namespace Lingua.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Lingua.API", Version = "v1" });
             });
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin();
+                        builder.AllowAnyMethod();
+
+                    });
+            });
+
+
             services.AddSingleton<IAuthService, AuthService>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IMeetingService, MeetingService>();
+            services.AddSingleton<IRoomService, RoomService>();
 
             services.AddOptions();
             services.Configure<ZoomClientOptions>(Configuration.GetSection("ZoomClientOptions"));
+            services.Configure<MongoOptions>(Configuration.GetSection("MongoOptions"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,6 +75,7 @@ namespace Lingua.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();

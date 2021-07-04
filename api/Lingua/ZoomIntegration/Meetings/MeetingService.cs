@@ -16,12 +16,12 @@ namespace Lingua.ZoomIntegration
             _httpClient.BaseAddress = new Uri("https://api.zoom.us/v2/users/{userId}/meetings");
         }
 
-        public async Task<Meeting> CreateMeeting(string accessToken, string userId, CreateMeetingRequest request)
+        public async Task<Meeting> CreateMeeting(string accessToken, CreateMeetingRequest request)
         {
             var message = new HttpRequestMessage();
             message.Method = HttpMethod.Post;
             message.Headers.Add("Authorization", $"Bearer {accessToken}");
-            message.RequestUri = new Uri($"https://api.zoom.us/v2/users/{userId}/meetings");
+            message.RequestUri = new Uri("https://api.zoom.us/v2/users/me/meetings");
 
             var serializerSettings = new JsonSerializerSettings
             {
