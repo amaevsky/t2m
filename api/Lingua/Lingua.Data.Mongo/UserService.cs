@@ -3,6 +3,7 @@ using Lingua.Shared.Users;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -30,6 +31,11 @@ namespace Lingua.Data.Mongo
         {
             Expression<Func<User, bool>> filter = r => r.Id == userId;
             return Task.FromResult(_users.Find(filter).FirstOrDefault());
+        }
+
+        public Task<IEnumerable<User>> Get(Expression<Func<User, bool>> filter)
+        {
+            return Task.FromResult(_users.Find(filter).ToEnumerable());
         }
 
         public async Task Remove(Guid userId)

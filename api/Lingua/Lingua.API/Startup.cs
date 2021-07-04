@@ -4,18 +4,10 @@ using Lingua.ZoomIntegration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lingua.API
 {
@@ -53,7 +45,8 @@ namespace Lingua.API
 
 
             services.AddSingleton<IAuthService, AuthService>();
-            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IUserService, ZoomIntegration.UserService>();
+            services.AddSingleton<Shared.Users.IUserService, Data.Mongo.UserService>();
             services.AddSingleton<IMeetingService, MeetingService>();
             services.AddSingleton<IRoomService, RoomService>();
 

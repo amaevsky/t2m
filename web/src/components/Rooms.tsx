@@ -1,11 +1,12 @@
-import { Card, Col, Divider, Drawer, Row } from "antd";
+import { Card, Col, Divider, Modal, Row } from "antd";
 import { Button } from "antd";
 import React from "react";
-import { Room, roomsService } from "../services/roomsService";
+import { Room, RoomCreateOptions, roomsService } from "../services/roomsService";
+import { RoomEdit } from "./RoomEdit";
 
 interface State {
   rooms: Room[];
-  searchOpen: boolean;
+  isAddRoomModalVisible: boolean
 }
 
 interface Props {
@@ -18,7 +19,7 @@ export class RoomList extends React.Component<Props, State> {
 
     this.state = {
       rooms: [],
-      searchOpen: false
+      isAddRoomModalVisible: false
     };
   }
 
@@ -27,27 +28,24 @@ export class RoomList extends React.Component<Props, State> {
     this.setState({ rooms });
   }
 
-  showDrawer() {
-    this.setState({ searchOpen: true });
-  };
-  onClose() {
-    this.setState({ searchOpen: false });
-  };
-
   join(roomId: string) {
     roomsService.join(roomId);
   }
 
-  create() {
-    roomsService.create(null as any);
+  createRoom(room: Room): void {
+    const options: RoomCreateOptions = { ...room }
+    roomsService.create(options);
+  }
+  setAddRoomModalVisibility(visibility: boolean): void {
+    this.setState({ isAddRoomModalVisible: visibility });
   }
 
   render() {
-    const { rooms, searchOpen } = this.state;
+    const { rooms, isAddRoomModalVisible } = this.state;
     const cards = rooms.map(r =>
       <Col span={6}>
         <Card actions={[<Button onClick={() => this.join(r.id)}>Join</Button>]}>
-          {/* <p>Date: {r.date}</p> */}
+          <p>Date: {r.startDate.toDateString()}</p>
           <p>Topic: {r.topic}</p>
           <p>Language: {r.language}</p>
         </Card></Col>
@@ -56,29 +54,25 @@ export class RoomList extends React.Component<Props, State> {
     return (
       <>
         <Row justify='space-between' style={{ padding: 16 }}>
-          <Col>
-            <Button type='primary' onClick={() => this.create()}>Create room</Button>
-          </Col>
-          <Col>
-            <Button type='dashed' onClick={() => this.showDrawer()}>Search</Button>
-          </Col>
+          <Button style={{ textTransform: 'uppercase' }} type="primary" onClick={() => this.setAddRoomModalVisibility(true)}>
+            Create room
+          </Button>
         </Row>
         <Divider></Divider>
         <Row style={{ padding: 16 }} gutter={[16, 16]}>
           {cards}
         </Row>
-        <Drawer
-          title="Basic Drawer"
-          placement="right"
-          closable={false}
-          onClose={() => this.onClose()}
-          visible={searchOpen}
-        >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </Drawer>
+
+        <Modal title="Create new room"
+          visible={isAddRoomModalVisible}
+          footer={null}
+          onCancel={() => this.setAddRoomModalVisibility(false)}>
+          <RoomEdit
+            room={{}}
+            onEdit={(room) => this.createRoom(room)}
+            submitBtnText="Create" />
+        </Modal>
       </>
     )
-  };
+  }
 }

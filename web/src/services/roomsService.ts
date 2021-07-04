@@ -1,35 +1,30 @@
+import axios from 'axios';
+
+const baseUrl = 'https://localhost:44361/api/rooms';
 class RoomsService {
 
   async create(options: RoomCreateOptions) {
-
+    await axios.post(baseUrl, options);
   }
 
   async getAll(): Promise<Room[]> {
-    return new Promise((resolve) => resolve(
-      new Array(12).fill({
-        id: '123',
-        date: new Date(),
-        language: 'English',
-        topic: 'string',
-        participants: [],
-        host: 'string'
-      })));
+    return await axios.get(baseUrl);
   }
 
   async join(roomId: string) {
-
+    await axios.post(baseUrl, roomId);
   }
 }
 
 export interface RoomCreateOptions {
-  date: Date,
+  startDate: Date,
   language: string,
   topic: string
 }
 
 export interface Room {
   id: string,
-  date: Date,
+  startDate: Date,
   language: string,
   topic: string,
   participants: string[],

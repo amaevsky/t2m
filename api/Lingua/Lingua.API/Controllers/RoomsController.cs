@@ -27,19 +27,19 @@ namespace Lingua.API.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> All(SearchRoomOptions searchRoomOptions)
+        public async Task<IActionResult> All()
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userService.Get(userId);
 
-            searchRoomOptions.Language = user.TargetLanguage;
+            var searchRoomOptions = new SearchRoomOptions { Language = user.TargetLanguage };
             var rooms = await _roomService.Get(searchRoomOptions);
             return Ok(rooms);
         }
 
 
         [HttpPost]
-        [Route("create")]
+        [Route("")]
         public async Task<IActionResult> Create(CreateRoomOptions createRoomOptions)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
@@ -88,7 +88,7 @@ namespace Lingua.API.Controllers
                 Topic = room.Topic,
                 Duration = (int)room.Duration.Value.TotalMilliseconds,
                 StartTime = room.StartDate.Value,
-                Type = MeetingType.Scheduled                 
+                Type = MeetingType.Scheduled
             };
 
             var meeting = await _zoomMeetingService.CreateMeeting(user.ZoomProperties.AccessToken, request);
