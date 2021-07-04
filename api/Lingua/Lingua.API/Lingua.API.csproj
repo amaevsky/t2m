@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Lingua.Data.Mongo\Lingua.Data.Mongo.csproj" />
     <ProjectReference Include="..\ZoomIntegration\Lingua.ZoomIntegration.csproj" />
   </ItemGroup>
 

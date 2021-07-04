@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 namespace Lingua.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class AuthControler : ControllerBase
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
     {
         private readonly IAuthService _zoomAuthService;
         private readonly IUserService _zoomUserService;
 
-        public AuthControler(IAuthService zoomAuthService, IUserService zoomUserService)
+        public AuthController(IAuthService zoomAuthService, IUserService zoomUserService)
         {
             _zoomAuthService = zoomAuthService;
             _zoomUserService = zoomUserService;

@@ -6,11 +6,11 @@ namespace Lingua.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ConfigControler : ControllerBase
+    public class ConfigController : ControllerBase
     {
         private readonly ZoomClientOptions _zoomClientOptions;
 
-        public ConfigControler(IOptions<ZoomClientOptions> zoomClientOptions)
+        public ConfigController(IOptions<ZoomClientOptions> zoomClientOptions)
         {
             _zoomClientOptions = zoomClientOptions.Value;
         }
