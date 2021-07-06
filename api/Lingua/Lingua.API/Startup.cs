@@ -1,6 +1,7 @@
 using Lingua.Data.Mongo;
 using Lingua.Shared;
 using Lingua.ZoomIntegration;
+using Lingua.ZoomIntegration.Auth;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,7 +26,10 @@ namespace Lingua.API
         {
             services.AddControllers();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie();
+                    .AddCookie(opts =>
+                    {
+                        opts.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
+                    });
 
             services.AddSwaggerGen(c =>
             {
@@ -37,18 +41,20 @@ namespace Lingua.API
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.AllowAnyOrigin();
+                        builder.WithOrigins("http://localhost:3000");
                         builder.AllowAnyMethod();
-
+                        builder.AllowAnyHeader();
+                        builder.AllowCredentials();
                     });
             });
 
 
-            services.AddSingleton<IAuthService, AuthService>();
+            services.AddSingleton<IAuthClient, AuthClient>();
             services.AddSingleton<IUserService, ZoomIntegration.UserService>();
             services.AddSingleton<Shared.Users.IUserService, Data.Mongo.UserService>();
             services.AddSingleton<IMeetingService, MeetingService>();
             services.AddSingleton<IRoomService, RoomService>();
+            services.AddSingleton<ITokenProvider, RefreshableTokenProvider>();
 
             services.AddOptions();
             services.Configure<ZoomClientOptions>(Configuration.GetSection("ZoomClientOptions"));

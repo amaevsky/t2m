@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Lingua.ZoomIntegration
 {
-    public class AuthService : IAuthService
+    public class AuthClient : IAuthClient
     {
         private readonly ZoomClientOptions _options;
         private readonly HttpClient _httpClient;
 
-        public AuthService(IOptions<ZoomClientOptions> options)
+        public AuthClient(IOptions<ZoomClientOptions> options)
         {
             _options = options.Value;
 
@@ -24,7 +24,7 @@ namespace Lingua.ZoomIntegration
 
         }
 
-        public async Task<AccessTokenResponse> RefreshAccessToken(string refreshToken)
+        public async Task<AccessTokens> RefreshAccessToken(string refreshToken)
         {
             var request = new HttpRequestMessage();
             request.Method = HttpMethod.Post;
@@ -41,17 +41,18 @@ namespace Lingua.ZoomIntegration
             {
                 dynamic resp = JsonConvert.DeserializeObject<object>(await response.Content.ReadAsStringAsync());
 
-                return new AccessTokenResponse
+                return new AccessTokens
                 {
                     AccessToken = resp.access_token,
-                    RefreshToken = resp.refresh_token
+                    RefreshToken = resp.refresh_token,
+                    ExpiresAt = DateTime.UtcNow.AddSeconds((double)resp.expires_in)
                 };
             }
 
             throw new Exception("Cannot refresh access token");
         }
 
-        public async Task<AccessTokenResponse> RequestAccessToken(string authCode)
+        public async Task<AccessTokens> RequestAccessToken(string authCode)
         {
             var request = new HttpRequestMessage();
             request.Method = HttpMethod.Post;
@@ -69,10 +70,11 @@ namespace Lingua.ZoomIntegration
             {
                 dynamic resp = JsonConvert.DeserializeObject<object>(await response.Content.ReadAsStringAsync());
 
-                return new AccessTokenResponse
+                return new AccessTokens
                 {
                     AccessToken = resp.access_token,
-                    RefreshToken = resp.refresh_token
+                    RefreshToken = resp.refresh_token,
+                    ExpiresAt = DateTime.UtcNow.AddSeconds((double)resp.expires_in)
                 };
             }
 
