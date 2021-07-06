@@ -1,11 +1,13 @@
 import { Card, Col, Divider, Modal, Row } from "antd";
 import { Button } from "antd";
+import Title from "antd/lib/typography/Title";
 import React from "react";
 import { Room, RoomCreateOptions, roomsService } from "../services/roomsService";
 import { RoomEdit } from "./RoomEdit";
 
 interface State {
   rooms: Room[];
+  upcoming: Room[];
   isAddRoomModalVisible: boolean
 }
 
@@ -19,60 +21,103 @@ export class RoomList extends React.Component<Props, State> {
 
     this.state = {
       rooms: [],
+      upcoming: [],
       isAddRoomModalVisible: false
     };
   }
 
   async componentDidMount() {
-    const rooms = await roomsService.getAll();
-    this.setState({ rooms });
+    const [rooms, upcoming] = await Promise.all([roomsService.getAll(), roomsService.getUpcoming()]);
+    this.setState({ rooms, upcoming });
   }
 
   join(roomId: string) {
     roomsService.join(roomId);
   }
 
-  createRoom(room: Room): void {
+  async createRoom(room: Room): Promise<void> {
     const options: RoomCreateOptions = { ...room }
-    roomsService.create(options);
+    const created = await roomsService.create(options);
+    this.setState((prev: State) => ({ rooms: [...prev.rooms, created], isAddRoomModalVisible: false }));
   }
+
   setAddRoomModalVisibility(visibility: boolean): void {
     this.setState({ isAddRoomModalVisible: visibility });
   }
 
   render() {
-    const { rooms, isAddRoomModalVisible } = this.state;
-    const cards = rooms.map(r =>
+    const { rooms, upcoming, isAddRoomModalVisible } = this.state;
+    const map = (rooms: Room[]) => rooms.map(r =>
       <Col span={6}>
-        <Card actions={[<Button onClick={() => this.join(r.id)}>Join</Button>]}>
-          <p>Date: {r.startDate.toDateString()}</p>
+        <Card
+          size='small'
+          actions={[
+            <Button type='link' size='small' onClick={() => this.join(r.id)}>Join</Button>,
+            <Button type='link' size='small' onClick={() => this.start(r.id)}>Start</Button>,
+            <Button type='link' size='small' onClick={() => this.remove(r.id)}>Remove</Button>
+          ]}>
+          <p>Date: {r.startDate}</p>
           <p>Topic: {r.topic}</p>
           <p>Language: {r.language}</p>
-        </Card></Col>
+          <p>Join: {r.joinUrl}</p>
+        </Card>
+      </Col>
     );
+
+
+    const roomsCards = map(rooms);
+    const upcomingCards = map(upcoming);
 
     return (
       <>
-        <Row justify='space-between' style={{ padding: 16 }}>
-          <Button style={{ textTransform: 'uppercase' }} type="primary" onClick={() => this.setAddRoomModalVisibility(true)}>
-            Create room
-          </Button>
-        </Row>
-        <Divider></Divider>
-        <Row style={{ padding: 16 }} gutter={[16, 16]}>
-          {cards}
-        </Row>
+        <div style={{ padding: 16 }}>
+          <Row justify='space-between'>
+            <Button style={{ textTransform: 'uppercase' }} type="primary" onClick={() => this.setAddRoomModalVisibility(true)}>
+              Create room
+            </Button>
+          </Row>
 
-        <Modal title="Create new room"
-          visible={isAddRoomModalVisible}
-          footer={null}
-          onCancel={() => this.setAddRoomModalVisibility(false)}>
-          <RoomEdit
-            room={{}}
-            onEdit={(room) => this.createRoom(room)}
-            submitBtnText="Create" />
-        </Modal>
+          {!!upcoming.length &&
+            <>
+              <Divider></Divider>
+              <Title level={4}>My rooms</Title>
+              <Row gutter={[16, 16]}>
+                {upcomingCards}
+              </Row>
+            </>
+          }
+          <Divider></Divider>
+          <Title level={4}>Find your room</Title>
+          <Row gutter={[16, 16]}>
+            {roomsCards}
+          </Row>
+
+          <Modal title="Create new room"
+            visible={isAddRoomModalVisible}
+            footer={null}
+            onCancel={() => this.setAddRoomModalVisibility(false)}>
+            <RoomEdit
+              room={{}}
+              onEdit={(room) => this.createRoom(room)}
+              submitBtnText="Create" />
+          </Modal>
+        </div>
       </>
     )
+  }
+
+  async remove(roomId: string): Promise<void> {
+    await roomsService.remove(roomId);
+    this.setState((prev: State) => ({ rooms: [...prev.rooms.filter(r => r.id !== roomId)] }));
+  }
+
+  async start(roomId: string): Promise<void> {
+    const room = await roomsService.start(roomId);
+
+    this.setState((prev: State) => {
+      const i = prev.rooms.findIndex(r => r.id === roomId);
+      prev.rooms.splice(i, 1, room)
+      return { rooms: [...prev.rooms] };
+    });
   }
 }

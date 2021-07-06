@@ -20,18 +20,8 @@ namespace Lingua.Data.Mongo
             _rooms = database.GetCollection<Room>("rooms");
         }
 
-        public async Task AddParticipant(Guid roomId, User participant)
+        public async Task<Room> Create(Room room)
         {
-            var filter = Builders<Room>.Update.AddToSet(r => r.Participants, participant);
-            await _rooms.UpdateOneAsync(r => r.Id == roomId, filter);
-        }
-
-        public async Task<Room> Create(CreateRoomOptions options)
-        {
-            var room = new Room
-            {
-
-            };
             await _rooms.InsertOneAsync(room);
             return room;
         }
@@ -46,9 +36,10 @@ namespace Lingua.Data.Mongo
             return Task.FromResult(_rooms.Find(final).FirstOrDefault());
         }
 
-        public Task<IEnumerable<Room>> Get(SearchRoomOptions options)
+        public Task<IEnumerable<Room>> Get(Expression<Func<Room, bool>> filter = null)
         {
-            return Task.FromResult(_rooms.Find(r => true).ToEnumerable());
+            if (filter == null) filter = room => true; 
+            return Task.FromResult(_rooms.Find(filter).ToEnumerable());
         }
 
         public async Task Remove(Guid roomId)
@@ -56,10 +47,9 @@ namespace Lingua.Data.Mongo
             await _rooms.DeleteOneAsync(r => r.Id == roomId);
         }
 
-        public async Task Update(UpdateRoomOptions options)
+        public async Task Update(Room updated)
         {
-            var update = Builders<Room>.Update.Set(r => r.StartDate, options.Date);
-            await _rooms.UpdateOneAsync(r => r.Id == options.RoomId, update);
+            await _rooms.ReplaceOneAsync(r => r.Id == updated.Id, updated);
         }
     }
 }
