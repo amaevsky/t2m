@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../constants';
 import { User } from './userService';
 
-const baseUrl = 'https://localhost:44361/api/rooms';
+const baseUrl = `${API_BASE_URL}/rooms`;
 class RoomsService {
   async start(roomId: string): Promise<Room> {
     return await (await axios.get<Room>(`${baseUrl}/start/${roomId}`, { withCredentials: true })).data;

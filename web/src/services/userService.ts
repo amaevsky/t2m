@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../constants';
 
-const baseUrl = 'https://localhost:44361/api/user';
+const baseUrl = `${API_BASE_URL}/user`;
 
 class UserService {
   public user?:  User | null;

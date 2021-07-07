@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../constants';
 import { userService } from './userService';
 
-const baseUrl = 'https://localhost:44361/api/auth';
+const baseUrl = `${API_BASE_URL}/auth`;
 
 class AuthService {
 
