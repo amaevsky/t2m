@@ -9,7 +9,7 @@ export default class App extends React.Component<any> {
   render() {
     return (
       <>
-        <Menu theme='dark' mode='horizontal'>
+        <Menu mode='horizontal'>
           <Menu.Item key='rooms'><Link to="/">Rooms</Link></Menu.Item>
           <Menu.Item key='signout'><Button onClick={() => this.logout()} type='link'>Sign out</Button></Menu.Item>
         </Menu>
