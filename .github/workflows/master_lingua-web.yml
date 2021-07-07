@@ -4,9 +4,9 @@
 name: lingua-web
 
 on:
-  push:
-    branches:
-      - master
+  # push:
+    # branches:
+      # - master
       
   workflow_dispatch:
 
