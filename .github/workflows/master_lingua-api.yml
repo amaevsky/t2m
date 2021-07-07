@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://go.microsoft.com/fwlink/?linkid=2134798
 # More GitHub Actions for Azure: https://go.microsoft.com/fwlink/?linkid=2135048
 
-name: Azure App Service - lingua-api(Production), Build and deploy DotnetCore app
+name: lingua-api
 
 on:
   push:
@@ -38,6 +38,6 @@ jobs:
       with:
         app-name: lingua-api
         slot-name: Production
-        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0F1A638C81BA41C6AAB61A974D79089D }}
+        publish-profile: ${{ secrets.API_PUBLISHPROFILE }}
         package: ${{env.DOTNET_ROOT}}/myapp
 

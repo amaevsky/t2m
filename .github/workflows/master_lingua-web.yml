@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://go.microsoft.com/fwlink/?linkid=2134798
 # More GitHub Actions for Azure: https://go.microsoft.com/fwlink/?linkid=2135048
 
-name: Azure App Service - lingua-web(Production), Build and deploy NodeJS app
+name: lingua-web
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     # checkout the repo
@@ -36,6 +36,6 @@ jobs:
       with:
         app-name: lingua-web
         slot-name: Production
-        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8D09E3ACCFF24904A03D0E710923E85C }}
+        publish-profile: ${{ secrets.WEB_PUBLISHPROFILE }}
         package: './web/build/'
 
