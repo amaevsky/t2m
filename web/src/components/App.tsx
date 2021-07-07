@@ -1,6 +1,6 @@
 import { Button, Menu } from 'antd';
 import React from 'react';
-import { Route, BrowserRouter as Router, Switch, Link } from 'react-router-dom';
+import { Route, Switch, Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { RoomList } from './Rooms';
 

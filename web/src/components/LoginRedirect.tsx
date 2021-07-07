@@ -1,7 +1,6 @@
 import { Col, Row } from 'antd';
 import React from 'react';
 import { authService } from '../services/authService';
-import { userService } from '../services/userService';
 
 export class LoginRedirect extends React.Component<any> {
 
