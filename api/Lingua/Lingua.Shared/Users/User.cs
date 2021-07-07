@@ -8,6 +8,7 @@ namespace Lingua.Shared
         public string Firstname { get; set; }
         public string Email { get; set; }
         public string TargetLanguage { get; set; }
+        public string LanguageLevel { get; set; }
         public ZoomProperties ZoomProperties { get; set; }
     }
 

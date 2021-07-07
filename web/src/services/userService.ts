@@ -9,10 +9,9 @@ class UserService {
     this.user = (await axios.get<User>(`${baseUrl}/me`, { withCredentials: true })).data || null;
   }
 
-  async selectTargetLanguage(language: string) {
-    const toUpdate: User = { ...this.user as User, targetLanguage: language };
-    await axios.put<User>(`${baseUrl}`, toUpdate, { withCredentials: true });
-    this.user = toUpdate;
+  async update(user: User) {
+    await axios.put<User>(`${baseUrl}`, user, { withCredentials: true });
+    this.user = user;
   }
 }
 
@@ -22,6 +21,8 @@ export interface User {
   lastname: string;
   email: string;
   targetLanguage: string;
+  languageLevel: string;
+  timezone: string;
 }
 
 export const userService = new UserService();

@@ -3,7 +3,10 @@ import { Button } from "antd";
 import Title from "antd/lib/typography/Title";
 import React from "react";
 import { Room, RoomCreateOptions, roomsService } from "../services/roomsService";
+import { userService } from "../services/userService";
 import { RoomEdit } from "./RoomEdit";
+
+import moment from 'moment';
 
 interface State {
   rooms: Room[];
@@ -27,46 +30,89 @@ export class RoomList extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    await this.getData();
+  }
+
+  private async getData() {
     const [rooms, upcoming] = await Promise.all([roomsService.getAll(), roomsService.getUpcoming()]);
     this.setState({ rooms, upcoming });
   }
 
-  join(roomId: string) {
-    roomsService.join(roomId);
+  private async enter(roomId: string) {
+    await roomsService.enter(roomId);
+    await this.getData();
   }
 
-  async createRoom(room: Room): Promise<void> {
+  private async createRoom(room: Room) {
     const options: RoomCreateOptions = { ...room }
     const created = await roomsService.create(options);
-    this.setState((prev: State) => ({ rooms: [...prev.rooms, created], isAddRoomModalVisible: false }));
+    this.setState({ isAddRoomModalVisible: false });
+    await this.getData();
   }
 
-  setAddRoomModalVisibility(visibility: boolean): void {
+  private async quit(roomId: string) {
+    await roomsService.quit(roomId);
+    await this.getData();
+  }
+
+  private async remove(roomId: string) {
+    await roomsService.remove(roomId);
+    await this.getData();
+  }
+
+  private async start(roomId: string) {
+    await roomsService.start(roomId);
+    await this.getData();
+  }
+
+  private setAddRoomModalVisibility(visibility: boolean) {
     this.setState({ isAddRoomModalVisible: visibility });
   }
 
   render() {
     const { rooms, upcoming, isAddRoomModalVisible } = this.state;
-    const map = (rooms: Room[]) => rooms.map(r =>
-      <Col span={6}>
-        <Card
-          size='small'
-          actions={[
-            <Button type='link' size='small' onClick={() => this.join(r.id)}>Join</Button>,
-            <Button type='link' size='small' onClick={() => this.start(r.id)}>Start</Button>,
-            <Button type='link' size='small' onClick={() => this.remove(r.id)}>Remove</Button>
-          ]}>
-          <p>Date: {r.startDate}</p>
-          <p>Topic: {r.topic}</p>
-          <p>Language: {r.language}</p>
-          <p>Join: {r.joinUrl}</p>
-        </Card>
-      </Col>
-    );
+    const map = (rooms: Room[], upcoming: boolean) => rooms.map(r => {
 
+      const actions = [];
+      if (upcoming) {
+        const startable = new Date(r.startDate).getTime() - Date.now() < 1000 * 60 * 5
+        actions.push(<Button disabled={!startable} type='link' size='small' onClick={() => this.start(r.id)}>Start</Button>);
+        if (r.hostUserId === userService.user?.id) {
+          actions.push(<Button type='link' size='small' onClick={() => this.remove(r.id)}>Remove</Button>);
+        } else {
+          actions.push(<Button type='link' size='small' onClick={() => this.quit(r.id)}>Quit</Button>);
+        }
+      } else {
+        actions.push(<Button type='link' size='small' onClick={() => this.enter(r.id)}>Enter</Button>);
+      }
+      return (
+        <Col>
+          <Card
+            size='small'
+            actions={actions}
+            hoverable={true}
+            style={{ width: 180 }}
+            cover={
+              <div style={{ background: '#1890ff', color: '#fff', padding: 18 }}>
+                <Row justify='center'>
+                  <Title style={{ color: '#fff' }} level={4}>{moment(r.startDate).format('DD MMM YY')}</Title>
+                </Row>
+                <Row justify='center'>
+                  <span><b>{moment(r.startDate).format('HH:mm')}</b></span>
+                </Row>
+              </div>
+            }
+          >
+            <p>Duration: {r.durationInMinutes} minutes</p>
+            <p>Language: {r.language} ({r.participants.find(p => p.id === r.hostUserId)?.languageLevel})</p>
+            <p style={{ visibility: r.topic ? 'visible' : 'hidden' }}>Topic: {r.topic}</p>
+          </Card>
+        </Col>
+      )
+    });
 
-    const roomsCards = map(rooms);
-    const upcomingCards = map(upcoming);
+    const roomsCards = map(rooms, false);
+    const upcomingCards = map(upcoming, true);
 
     return (
       <>
@@ -104,20 +150,5 @@ export class RoomList extends React.Component<Props, State> {
         </div>
       </>
     )
-  }
-
-  async remove(roomId: string): Promise<void> {
-    await roomsService.remove(roomId);
-    this.setState((prev: State) => ({ rooms: [...prev.rooms.filter(r => r.id !== roomId)] }));
-  }
-
-  async start(roomId: string): Promise<void> {
-    const room = await roomsService.start(roomId);
-
-    this.setState((prev: State) => {
-      const i = prev.rooms.findIndex(r => r.id === roomId);
-      prev.rooms.splice(i, 1, room)
-      return { rooms: [...prev.rooms] };
-    });
   }
 }

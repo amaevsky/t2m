@@ -5,6 +5,7 @@ import { Room } from '../services/roomsService';
 
 import 'moment-timezone';
 import moment from 'moment';
+import { configService } from '../services/configService';
 interface Props {
   room: Partial<Room>,
   onEdit: (room: Room) => void
@@ -26,8 +27,8 @@ export class RoomEdit extends React.Component<Props, State> {
     return (
       <Form
         name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
+        labelCol={{ span: 5 }}
+        wrapperCol={{ span: 19 }}
         initialValues={{ language: 'English', timezone: moment.tz.guess() }}
         onFinish={(values) => this.edit(values)}
       >
@@ -37,8 +38,7 @@ export class RoomEdit extends React.Component<Props, State> {
           rules={[{ required: true, message: 'Please select a language.' }]}
         >
           <Select disabled>
-            <Select.Option value="English">English</Select.Option>
-            <Select.Option value="Russian">Russian</Select.Option>
+            {configService.config.languages.map(l => <Select.Option value={l}>{l}</Select.Option>)}
           </Select>
         </Form.Item>
 

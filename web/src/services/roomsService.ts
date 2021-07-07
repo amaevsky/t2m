@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { User } from './userService';
 
 const baseUrl = 'https://localhost:44361/api/rooms';
 class RoomsService {
@@ -18,8 +19,12 @@ class RoomsService {
     return (await axios.get<Room[]>(`${baseUrl}/me/upcoming`, { withCredentials: true })).data;
   }
 
-  async join(roomId: string) {
-    await axios.get(`${baseUrl}/join/${roomId}`, { withCredentials: true });
+  async enter(roomId: string) {
+    await axios.get(`${baseUrl}/enter/${roomId}`, { withCredentials: true });
+  }
+
+  async quit(roomId: string) {
+    await axios.get(`${baseUrl}/quit/${roomId}`, { withCredentials: true });
   }
 
   async remove(roomId: string) {
@@ -41,7 +46,7 @@ export interface Room {
   durationInMinutes: number;
   language: string,
   topic?: string,
-  participants: string[],
+  participants: User[],
   hostUserId?: string;
   joinUrl: string;
 }

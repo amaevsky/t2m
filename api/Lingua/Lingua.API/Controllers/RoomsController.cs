@@ -47,7 +47,9 @@ namespace Lingua.API.Controllers
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userService.Get(userId);
 
-            var rooms = await _roomService.Get(r => r.StartDate > DateTime.UtcNow && r.Participants.Any(p =>p.Id == userId));
+            var start = DateTime.UtcNow.AddMinutes(-60);
+            var rooms = (await _roomService.Get(r => r.StartDate > start && r.Participants.Any(p =>p.Id == userId)))
+                .Where(r => r.StartDate > DateTime.UtcNow.AddMinutes(-1 * r.DurationInMinutes.Value));
             return Ok(rooms);
         }
 
@@ -95,8 +97,8 @@ namespace Lingua.API.Controllers
         }
 
         [HttpGet]
-        [Route("join/{roomId}")]
-        public async Task<IActionResult> Join(Guid roomId)
+        [Route("enter/{roomId}")]
+        public async Task<IActionResult> Enter(Guid roomId)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userService.Get(userId);
