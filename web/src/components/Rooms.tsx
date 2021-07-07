@@ -45,7 +45,7 @@ export class RoomList extends React.Component<Props, State> {
 
   private async createRoom(room: Room) {
     const options: RoomCreateOptions = { ...room }
-    const created = await roomsService.create(options);
+    await roomsService.create(options);
     this.setState({ isAddRoomModalVisible: false });
     await this.getData();
   }

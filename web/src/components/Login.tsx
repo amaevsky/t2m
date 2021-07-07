@@ -1,6 +1,5 @@
 import { Button, Col, Row } from 'antd';
 import React from 'react';
-import { Redirect } from 'react-router-dom';
 import { configService } from '../services/configService';
 import { userService } from '../services/userService';
 
