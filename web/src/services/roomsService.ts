@@ -12,8 +12,23 @@ class RoomsService {
     return (await axios.post<Room>(baseUrl, options, { withCredentials: true })).data;
   }
 
-  async getAll(): Promise<Room[]> {
-    return (await axios.get<Room[]>(baseUrl, { withCredentials: true })).data;
+  async getAvailable(options?: RoomSearchOptions): Promise<Room[]> {
+    let query = null;
+    if (options) {
+      query = this.buildSearchQuery(options);
+    }
+    return (await axios.get<Room[]>(`${baseUrl}${query ? `?${query}` : ''}`, { withCredentials: true })).data;
+  }
+
+  private buildSearchQuery(options: RoomSearchOptions): string {
+    const { levels, days, timeFrom, timeTo } = options;
+    const params = [];
+    params.push(...(levels?.map(l => `levels=${l}`) || []));
+    params.push(...(days?.map(d => `days=${d}`) || []));
+    if (timeFrom) {
+      params.push(timeFrom?.toISOString(), timeTo?.toISOString());
+    }
+    return params.join('&');
   }
 
   async getUpcoming(): Promise<Room[]> {
@@ -31,7 +46,7 @@ class RoomsService {
   async remove(roomId: string) {
     await axios.delete(`${baseUrl}/${roomId}`, { withCredentials: true });
   }
-  
+
 }
 
 export interface RoomCreateOptions {
@@ -39,6 +54,13 @@ export interface RoomCreateOptions {
   durationInMinutes: number;
   language: string,
   topic?: string
+}
+
+export interface RoomSearchOptions {
+  levels?: string[],
+  days?: number[],
+  timeFrom?: Date,
+  timeTo?: Date
 }
 
 export interface Room {

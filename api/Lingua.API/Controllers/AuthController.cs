@@ -40,6 +40,7 @@ namespace Lingua.API.Controllers
                     Email = zoomUser.Email,
                     Firstname = zoomUser.Firstname,
                     Lastname = zoomUser.Lastname,
+                    AvatarUrl = zoomUser.PicUrl,
                     ZoomProperties = new Shared.ZoomProperties
                     {
                         AccessTokens = response
@@ -49,6 +50,10 @@ namespace Lingua.API.Controllers
             }
             else
             {
+                if (user.AvatarUrl == null)
+                {
+                    user.AvatarUrl = zoomUser.PicUrl;
+                }
                 user.ZoomProperties.AccessTokens = response;
                 await _userService.Update(user);
             }

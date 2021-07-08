@@ -79,6 +79,7 @@ export class RoomEdit extends React.Component<Props, State> {
         <Form.Item
           label="Topic"
           name="topic"
+          rules={[{ max: 50, type: 'string' }]}
         >
           <Input />
         </Form.Item>
