@@ -3,9 +3,11 @@ using Lingua.ZoomIntegration;
 using Lingua.ZoomIntegration.Auth;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using TimeZoneConverter;
 
 namespace Lingua.API.Controllers
 {
@@ -31,13 +33,46 @@ namespace Lingua.API.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> Available([FromQuery] SearchRoomOptions options)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userService.Get(userId);
 
-            var rooms = await _roomService.Get(r => r.StartDate > DateTime.UtcNow && !r.Participants.Any(p => p.Id == userId));
-            return Ok(rooms);
+            var rooms = await _roomService.Get(r =>
+                                    r.StartDate > DateTime.UtcNow
+                                    && r.Language == user.TargetLanguage
+                                    && r.Participants.Count < 2
+                                    && !r.Participants.Any(p => p.Id == userId));
+
+            if (options != null)
+            {
+                rooms = ApplySearchFilter(options, user, rooms);
+            }
+
+            return Ok(rooms.ToList());
+        }
+
+        private static IEnumerable<Room> ApplySearchFilter(SearchRoomOptions options, User user, IEnumerable<Room> rooms)
+        {
+            if (options?.Levels?.Any() == true)
+            {
+                rooms = rooms.Where(r => options.Levels.Contains(r.Host.LanguageLevel));
+            }
+
+            if (options?.Days?.Any() == true)
+            {
+                var tz = TimeZoneInfo.FindSystemTimeZoneById(TZConvert.IanaToWindows(user.Timezone));
+                rooms = rooms.Where(r => options.Days.Contains(TimeZoneInfo.ConvertTimeFromUtc(r.StartDate.Value, tz).DayOfWeek));
+            }
+
+            if ((bool)options?.TimeFrom.HasValue && (bool)options?.TimeTo.HasValue)
+            {
+                //store room.till date
+                rooms = rooms.Where(r => r.StartDate.Value.TimeOfDay > options.TimeFrom.Value.TimeOfDay
+                                        && r.StartDate.Value.TimeOfDay < options.TimeTo.Value.TimeOfDay);
+            }
+
+            return rooms;
         }
 
         [HttpGet]
@@ -48,9 +83,12 @@ namespace Lingua.API.Controllers
             var user = await _userService.Get(userId);
 
             var start = DateTime.UtcNow.AddMinutes(-60);
-            var rooms = (await _roomService.Get(r => r.StartDate > start && r.Participants.Any(p =>p.Id == userId)))
-                .Where(r => r.StartDate > DateTime.UtcNow.AddMinutes(-1 * r.DurationInMinutes.Value));
-            return Ok(rooms);
+            var rooms = (await _roomService.Get(r =>
+                            r.StartDate > start
+                            && r.Participants.Any(p => p.Id == userId))
+                ).Where(r => r.StartDate > DateTime.UtcNow.AddMinutes(-1 * r.DurationInMinutes.Value));
+
+            return Ok(rooms.ToList());
         }
 
 
@@ -67,7 +105,7 @@ namespace Lingua.API.Controllers
                 Language = options.Language,
                 StartDate = options.StartDate,
                 DurationInMinutes = options.DurationInMinutes,
-                Topic = options.Topic 
+                Topic = options.Topic
             };
 
             room.Participants.Add(user);
@@ -103,6 +141,12 @@ namespace Lingua.API.Controllers
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userService.Get(userId);
             var room = await _roomService.Get(roomId);
+
+            if (room.Participants.Count == 2)
+            {
+                throw new Exception("Room is already full");
+            }
+
             room.Participants.Add(user);
             await _roomService.Update(room);
             return Ok();

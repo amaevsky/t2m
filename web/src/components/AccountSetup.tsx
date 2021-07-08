@@ -33,7 +33,10 @@ export class AccountSetup extends React.Component<any, State> {
             <Form.Item
               label="Firstname"
               name="firstname"
-              rules={[{ required: true, message: 'Please specify firstname.' }]}
+              rules={[
+                { required: true, message: 'Please specify firstname.' },
+                { max: 50, type: 'string' }
+              ]}
             >
               <Input />
             </Form.Item>
@@ -41,7 +44,10 @@ export class AccountSetup extends React.Component<any, State> {
             <Form.Item
               label="Lastname"
               name="lastname"
-              rules={[{ required: true, message: 'Please specify Lastname.' }]}
+              rules={[
+                { required: true, message: 'Please specify Lastname.' },
+                { max: 50, type: 'string' }
+              ]}
             >
               <Input />
             </Form.Item>
@@ -51,7 +57,7 @@ export class AccountSetup extends React.Component<any, State> {
               name="email"
               rules={[{ required: true, message: 'Please specify email.' }]}
             >
-              <Input type='email' />
+              <Input type='email' disabled />
             </Form.Item>
 
             <Form.Item

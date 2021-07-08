@@ -8,13 +8,23 @@ class ConfigService {
     languages: string[];
     zoomAuthUrl: string;
     languageLelels: { code: string, description: string }[]
+    days: { [key: string]: number }
   }
 
   constructor() {
     this.config = {
       languages: [],
       zoomAuthUrl: '',
-      languageLelels: []
+      languageLelels: [],
+      days: {
+        Sun: 0,
+        Mon: 1,
+        Tue: 2,
+        Wed: 3,
+        Thu: 4,
+        Fri: 5,
+        Sat: 6
+      }
     }
 
   }
@@ -27,6 +37,7 @@ class ConfigService {
     ]);
 
     this.config = {
+      ...this.config,
       languages,
       zoomAuthUrl,
       languageLelels
