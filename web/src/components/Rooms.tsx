@@ -38,7 +38,7 @@ export class RoomList extends React.Component<Props, State> {
     await this.getData();
 
     const user = userService.user;
-    const isMy = (room: Room): boolean => room.participants.some(p => p.id == user?.id);
+    const isMy = (room: Room): boolean => room.participants.some(p => p.id === user?.id);
     const replace = (list: Room[], replace: Room): Room[] => {
       const i = list.findIndex(r => r.id === replace.id);
       list.splice(i, 1, replace);
