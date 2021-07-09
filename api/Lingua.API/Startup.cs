@@ -1,3 +1,4 @@
+using Lingua.API.Realtime;
 using Lingua.Data.Mongo;
 using Lingua.Shared;
 using Lingua.ZoomIntegration;
@@ -48,6 +49,8 @@ namespace Lingua.API
                     });
             });
 
+            services.AddSignalR();
+
 
             services.AddSingleton<IAuthClient, AuthClient>();
             services.AddSingleton<IUserService, ZoomIntegration.UserService>();
@@ -82,7 +85,10 @@ namespace Lingua.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<RoomsHub>("/roomsHub");
             });
         }
     }
 }
+
+

@@ -1,7 +1,9 @@
-﻿using Lingua.Shared;
+﻿using Lingua.API.Realtime;
+using Lingua.Shared;
 using Lingua.ZoomIntegration;
 using Lingua.ZoomIntegration.Auth;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,16 +21,20 @@ namespace Lingua.API.Controllers
         private readonly IRoomService _roomService;
         private readonly Shared.Users.IUserService _userService;
         private readonly ITokenProvider _tokenProvider;
+        private readonly IHubContext<RoomsHub, IRoomsRealtimeClient> _roomsHub;
 
         public RoomsController(IMeetingService zoomMeetingService,
                                IRoomService roomService,
                                Shared.Users.IUserService userService,
-                               ITokenProvider tokenProvider)
+                               ITokenProvider tokenProvider,
+                               IHubContext<RoomsHub, IRoomsRealtimeClient> roomsHub
+                               )
         {
             _zoomMeetingService = zoomMeetingService;
             _roomService = roomService;
             _userService = userService;
             _tokenProvider = tokenProvider;
+            _roomsHub = roomsHub;
         }
 
         [HttpGet]
@@ -38,11 +44,11 @@ namespace Lingua.API.Controllers
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userService.Get(userId);
 
-            var rooms = await _roomService.Get(r =>
+            var rooms = (await _roomService.Get(r =>
                                     r.StartDate > DateTime.UtcNow
                                     && r.Language == user.TargetLanguage
-                                    && r.Participants.Count < 2
-                                    && !r.Participants.Any(p => p.Id == userId));
+                                    && !r.Participants.Any(p => p.Id == userId)))
+                .Where(r => r.Participants.Count < r.MaxParticipants);
 
             if (options != null)
             {
@@ -105,12 +111,15 @@ namespace Lingua.API.Controllers
                 Language = options.Language,
                 StartDate = options.StartDate,
                 DurationInMinutes = options.DurationInMinutes,
-                Topic = options.Topic
+                Topic = options.Topic,
+                MaxParticipants = 2
             };
 
             room.Participants.Add(user);
 
             await _roomService.Create(room);
+            await _roomsHub.Clients.All.OnAdd(room, userId);
+
             return Ok(room);
         }
 
@@ -118,11 +127,15 @@ namespace Lingua.API.Controllers
         [Route("")]
         public async Task<IActionResult> Update(UpdateRoomOptions options)
         {
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
             var room = await _roomService.Get(options.RoomId);
             room.Topic = options.Topic;
             room.StartDate = options.Date;
 
             await _roomService.Update(room);
+            await _roomsHub.Clients.All.OnUpdate(room, userId);
+
             return Ok();
         }
 
@@ -130,7 +143,11 @@ namespace Lingua.API.Controllers
         [Route("{roomId}")]
         public async Task<IActionResult> Remove(Guid roomId)
         {
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var room = await _roomService.Get(roomId);
             await _roomService.Remove(roomId);
+            await _roomsHub.Clients.All.OnRemove(room, userId);
+
             return Ok();
         }
 
@@ -142,19 +159,21 @@ namespace Lingua.API.Controllers
             var user = await _userService.Get(userId);
             var room = await _roomService.Get(roomId);
 
-            if (room.Participants.Count == 2)
+            if (room.Participants.Count == room.MaxParticipants)
             {
                 throw new Exception("Room is already full");
             }
 
             room.Participants.Add(user);
             await _roomService.Update(room);
+            await _roomsHub.Clients.All.OnEnter(room, userId);
+
             return Ok();
         }
 
         [HttpGet]
-        [Route("quit/{roomId}")]
-        public async Task<IActionResult> Quit(Guid roomId)
+        [Route("leave/{roomId}")]
+        public async Task<IActionResult> Leave(Guid roomId)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userService.Get(userId);
@@ -162,14 +181,21 @@ namespace Lingua.API.Controllers
             var room = await _roomService.Get(roomId);
             room.Participants.RemoveAll(p => p.Id == user.Id);
             await _roomService.Update(room);
+            await _roomsHub.Clients.All.OnLeave(room, userId);
 
             return Ok();
         }
 
         [HttpGet]
-        [Route("start/{roomId}")]
-        public async Task<IActionResult> Start(Guid roomId)
+        [Route("join/{roomId}")]
+        public async Task<IActionResult> Join(Guid roomId)
         {
+            var room = await _roomService.Get(roomId);
+            if (room.JoinUrl != null)
+            {
+                return Ok(room.JoinUrl);
+            }
+
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userService.Get(userId);
             var accessTokens = user.ZoomProperties?.AccessTokens;
@@ -179,11 +205,8 @@ namespace Lingua.API.Controllers
                 return BadRequest();
             }
 
-
-            Room room = null;
             var updated = await _tokenProvider.UseToken(accessTokens, async (accessTokens) =>
             {
-                room = await _roomService.Get(roomId);
 
                 var request = new CreateMeetingRequest
                 {
@@ -204,7 +227,7 @@ namespace Lingua.API.Controllers
                 await _userService.Update(user);
             }
 
-            return Ok(room);
+            return Ok(room.JoinUrl);
 
         }
     }

@@ -4,8 +4,8 @@ import { User } from './userService';
 
 const baseUrl = `${API_BASE_URL}/rooms`;
 class RoomsService {
-  async start(roomId: string): Promise<Room> {
-    return await (await axios.get<Room>(`${baseUrl}/start/${roomId}`, { withCredentials: true })).data;
+  async join(roomId: string): Promise<string> {
+    return (await axios.get<string>(`${baseUrl}/join/${roomId}`, { withCredentials: true })).data;
   }
 
   async create(options: RoomCreateOptions): Promise<Room> {
@@ -39,8 +39,8 @@ class RoomsService {
     await axios.get(`${baseUrl}/enter/${roomId}`, { withCredentials: true });
   }
 
-  async quit(roomId: string) {
-    await axios.get(`${baseUrl}/quit/${roomId}`, { withCredentials: true });
+  async leave(roomId: string) {
+    await axios.get(`${baseUrl}/leave/${roomId}`, { withCredentials: true });
   }
 
   async remove(roomId: string) {
@@ -57,20 +57,21 @@ export interface RoomCreateOptions {
 }
 
 export interface RoomSearchOptions {
-  levels?: string[],
-  days?: number[],
-  timeFrom?: Date,
-  timeTo?: Date
+  levels?: string[];
+  days?: number[];
+  timeFrom?: Date;
+  timeTo?: Date;
 }
 
 export interface Room {
-  id: string,
-  startDate: Date,
+  id: string;
+  startDate: Date;
   durationInMinutes: number;
-  language: string,
-  topic?: string,
+  language: string;
+  topic?: string;
   participants: User[],
-  hostUserId?: string;
+  maxParticipants: number;
+  hostUserId: string;
   joinUrl: string;
 }
 

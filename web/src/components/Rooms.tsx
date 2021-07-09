@@ -9,6 +9,7 @@ import { RoomEdit } from "./RoomEdit";
 import moment from 'moment';
 import { configService } from "../services/configService";
 import { Option } from "antd/lib/mentions";
+import { connection } from "../realtime/roomsHub";
 
 interface State {
   availableRooms: Room[];
@@ -35,6 +36,79 @@ export class RoomList extends React.Component<Props, State> {
 
   async componentDidMount() {
     await this.getData();
+
+    const user = userService.user;
+    const isMy = (room: Room): boolean => room.participants.some(p => p.id == user?.id);
+    const replace = (list: Room[], replace: Room): Room[] => {
+      const i = list.findIndex(r => r.id === replace.id);
+      list.splice(i, 1, replace);
+      return list;
+    };
+
+    connection.on("OnAdd", (room: Room, by: string) => {
+      if (by === user?.id) {
+        this.setState(prev => ({ myRooms: [...prev.myRooms, room] }));
+      } else {
+        this.setState(prev => ({ availableRooms: [...prev.availableRooms, room] }));
+      }
+    });
+
+    connection.on("OnChange", (room: Room, by: string) => {
+      if (isMy(room)) {
+        this.setState(prev => ({ myRooms: [...replace(prev.myRooms, room)] }));
+      } else {
+        this.setState(prev => ({ availableRooms: [...replace(prev.availableRooms, room)] }));
+      }
+
+    });
+
+    connection.on("OnRemove", (room: Room, by: string) => {
+      if (isMy(room)) {
+        this.setState(prev => ({ myRooms: [...prev.myRooms.filter(r => r.id !== room.id)] }));
+      } else {
+        this.setState(prev => ({ availableRooms: [...prev.availableRooms.filter(r => r.id !== room.id)] }));
+      }
+    });
+
+    connection.on("OnEnter", (room: Room, by: string) => {
+      if (isMy(room)) {
+        if (by === user?.id) {
+          this.setState(prev => ({
+            myRooms: [...prev.myRooms, room],
+            availableRooms: [...prev.availableRooms.filter(r => r.id !== room.id)]
+          }));
+        }
+        else {
+          this.setState(prev => ({ myRooms: [...replace(prev.myRooms, room)] }));
+        }
+      } else {
+        this.setState(prev => ({ availableRooms: [...prev.availableRooms.filter(r => r.id !== room.id)] }));
+      }
+    });
+
+    connection.on("OnLeave", (room: Room, by: string) => {
+      if (isMy(room)) {
+        this.setState(prev => ({ myRooms: [...replace(prev.myRooms, room)] }));
+      } else {
+        if (by === user?.id) {
+          this.setState(prev => ({
+            availableRooms: [...prev.availableRooms, room],
+            myRooms: [...prev.myRooms.filter(r => r.id !== room.id)]
+          }));
+        }
+        else {
+          this.setState(prev => ({ availableRooms: [...prev.availableRooms, room] }));
+        }
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    connection.off("OnAdd");
+    connection.off("OnChange");
+    connection.off("OnRemove");
+    connection.off("OnLeave");
+    connection.off("OnEnter");
   }
 
   private async getData() {
@@ -44,29 +118,26 @@ export class RoomList extends React.Component<Props, State> {
 
   private async enter(roomId: string) {
     await roomsService.enter(roomId);
-    await this.getData();
+    //await this.getData();
   }
 
   private async createRoom(room: Room) {
     const options: RoomCreateOptions = { ...room }
     await roomsService.create(options);
     this.setState({ isAddRoomModalVisible: false });
-    await this.getData();
   }
 
-  private async quit(roomId: string) {
-    await roomsService.quit(roomId);
-    await this.getData();
+  private async leave(roomId: string) {
+    await roomsService.leave(roomId);
   }
 
   private async remove(roomId: string) {
     await roomsService.remove(roomId);
-    await this.getData();
   }
 
-  private async start(roomId: string) {
-    await roomsService.start(roomId);
-    await this.getData();
+  private async join(roomId: string) {
+    const link = await roomsService.join(roomId);
+    window.open(link,'_blank')
   }
 
   private setAddRoomModalVisibility(visibility: boolean) {
@@ -80,7 +151,7 @@ export class RoomList extends React.Component<Props, State> {
       const actions = [];
       if (upcoming) {
         const startable = new Date(r.startDate).getTime() - Date.now() < 1000 * 60 * 5;
-        const startBtn = <Button disabled={!startable} type='link' size='small' onClick={() => this.start(r.id)}>Join</Button>
+        const startBtn = <Button disabled={!startable} type='link' size='small' onClick={() => this.join(r.id)}>Join</Button>
         actions.push(startable
           ? startBtn
           : <Tooltip style={{ fontSize: 8 }} placement='top' title="You can join the room 5 min before start time. And only if there is enough participants.">
@@ -90,7 +161,7 @@ export class RoomList extends React.Component<Props, State> {
         if (r.hostUserId === userService.user?.id) {
           actions.push(<Button type='link' size='small' onClick={() => this.remove(r.id)}>Remove</Button>);
         } else {
-          actions.push(<Button type='link' size='small' onClick={() => this.quit(r.id)}>Leave</Button>);
+          actions.push(<Button type='link' size='small' onClick={() => this.leave(r.id)}>Leave</Button>);
         }
       } else {
         actions.push(<Button type='link' size='small' onClick={() => this.enter(r.id)}>Enter</Button>);
