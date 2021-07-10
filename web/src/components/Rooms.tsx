@@ -150,7 +150,7 @@ export class RoomList extends React.Component<Props, State> {
 
       const actions = [];
       if (upcoming) {
-        const startable = new Date(r.startDate).getTime() - Date.now() < 1000 * 60 * 5;
+        const startable = new Date(r.startDate).getTime() - Date.now() < 1000 * 60 * 5 && r.participants.length > 1;
         const startBtn = <Button disabled={!startable} type='link' size='small' onClick={() => this.join(r.id)}>Join</Button>
         actions.push(startable
           ? startBtn
