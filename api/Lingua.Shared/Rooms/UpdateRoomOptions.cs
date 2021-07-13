@@ -6,8 +6,8 @@ namespace Lingua.Shared
     {
         public Guid RoomId { get; set; }
         public string Topic { get; set; }
-        public DateTime? Date { get; set; }
-        public TimeSpan? Duration { get; set; }
+        public DateTime? StartDate { get; set; }
+        public int? DurationInMinutes { get; set; }
     }
 
 }

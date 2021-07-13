@@ -1,13 +1,17 @@
-import axios from 'axios';
-import { API_BASE_URL } from '../constants';
+import { http } from '../utilities/http';
 
-const baseUrl = `${API_BASE_URL}/config`;
+const baseUrl = `config`;
+
+interface LanguageLevel {
+    code: string,
+  description: string
+}
 class ConfigService {
 
   config: {
     languages: string[];
     zoomAuthUrl: string;
-    languageLelels: { code: string, description: string }[]
+    languageLevels: LanguageLevel[]
     days: { [key: string]: number }
   }
 
@@ -15,7 +19,7 @@ class ConfigService {
     this.config = {
       languages: [],
       zoomAuthUrl: '',
-      languageLelels: [],
+      languageLevels: [],
       days: {
         Sun: 0,
         Mon: 1,
@@ -30,7 +34,7 @@ class ConfigService {
   }
 
   async initialize() {
-    const [languages, zoomAuthUrl, languageLelels] = await Promise.all([
+    const [languages, zoomAuthUrl, languageLevels] = await Promise.all([
       this.getLanguages(),
       this.getZoomAuthUrl(),
       this.getLanguageLevels()
@@ -40,20 +44,20 @@ class ConfigService {
       ...this.config,
       languages,
       zoomAuthUrl,
-      languageLelels
+      languageLevels
     };
   }
 
   private async getLanguages(): Promise<string[]> {
-    return (await axios.get<string[]>(`${baseUrl}/languages`, { withCredentials: true })).data;
+    return (await http.get<string[]>(`${baseUrl}/languages`)).data || [];
   }
 
   private async getZoomAuthUrl(): Promise<string> {
-    return (await axios.get<string>(`${baseUrl}/zoom`)).data;
+    return (await http.get<string>(`${baseUrl}/zoom`)).data || '';
   }
 
-  private async getLanguageLevels(): Promise<any> {
-    return (await axios.get(`${baseUrl}/languagelevels`)).data;
+  private async getLanguageLevels(): Promise<LanguageLevel[]> {
+    return (await http.get<LanguageLevel[]>(`${baseUrl}/languagelevels`)).data || [];
   }
 }
 

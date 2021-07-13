@@ -22,12 +22,14 @@ namespace Lingua.API.Controllers
         private readonly Shared.Users.IUserService _userService;
         private readonly ITokenProvider _tokenProvider;
         private readonly IHubContext<RoomsHub, IRoomsRealtimeClient> _roomsHub;
+        private readonly IEmailService _emailService;
 
         public RoomsController(IMeetingService zoomMeetingService,
                                IRoomService roomService,
                                Shared.Users.IUserService userService,
                                ITokenProvider tokenProvider,
-                               IHubContext<RoomsHub, IRoomsRealtimeClient> roomsHub
+                               IHubContext<RoomsHub, IRoomsRealtimeClient> roomsHub,
+                               IEmailService emailService
                                )
         {
             _zoomMeetingService = zoomMeetingService;
@@ -35,6 +37,7 @@ namespace Lingua.API.Controllers
             _userService = userService;
             _tokenProvider = tokenProvider;
             _roomsHub = roomsHub;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -68,14 +71,14 @@ namespace Lingua.API.Controllers
             if (options?.Days?.Any() == true)
             {
                 var tz = TimeZoneInfo.FindSystemTimeZoneById(TZConvert.IanaToWindows(user.Timezone));
-                rooms = rooms.Where(r => options.Days.Contains(TimeZoneInfo.ConvertTimeFromUtc(r.StartDate.Value, tz).DayOfWeek));
+                rooms = rooms.Where(r => options.Days.Contains(TimeZoneInfo.ConvertTimeFromUtc(r.StartDate, tz).DayOfWeek));
             }
 
             if ((bool)options?.TimeFrom.HasValue && (bool)options?.TimeTo.HasValue)
             {
                 //store room.till date
-                rooms = rooms.Where(r => r.StartDate.Value.TimeOfDay > options.TimeFrom.Value.TimeOfDay
-                                        && r.StartDate.Value.TimeOfDay < options.TimeTo.Value.TimeOfDay);
+                rooms = rooms.Where(r => r.StartDate.TimeOfDay > options.TimeFrom.Value.TimeOfDay
+                                        && r.StartDate.TimeOfDay < options.TimeTo.Value.TimeOfDay);
             }
 
             return rooms;
@@ -88,11 +91,9 @@ namespace Lingua.API.Controllers
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userService.Get(userId);
 
-            var start = DateTime.UtcNow.AddMinutes(-60);
-            var rooms = (await _roomService.Get(r =>
-                            r.StartDate > start
-                            && r.Participants.Any(p => p.Id == userId))
-                ).Where(r => r.StartDate > DateTime.UtcNow.AddMinutes(-1 * r.DurationInMinutes.Value));
+            var rooms = await _roomService.Get(r =>
+                            r.EndDate > DateTime.UtcNow
+                            && r.Participants.Any(p => p.Id == userId));
 
             return Ok(rooms.ToList());
         }
@@ -105,11 +106,25 @@ namespace Lingua.API.Controllers
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userService.Get(userId);
 
+            var start = options.StartDate;
+            var end = options.StartDate.AddMinutes(options.DurationInMinutes);
+
+            var conflicts = await _roomService.Get(r =>
+                                r.StartDate < end
+                                && start < r.EndDate
+                                && r.Participants.Any(p => p.Id == userId));
+
+            if (conflicts.Any())
+            {
+                return BadRequest("You have conflicting rooms for this time frame");
+            }
+
             var room = new Room
             {
                 HostUserId = userId,
                 Language = options.Language,
-                StartDate = options.StartDate,
+                StartDate = start,
+                EndDate = end,
                 DurationInMinutes = options.DurationInMinutes,
                 Topic = options.Topic,
                 MaxParticipants = 2
@@ -131,10 +146,21 @@ namespace Lingua.API.Controllers
 
             var room = await _roomService.Get(options.RoomId);
             room.Topic = options.Topic;
-            room.StartDate = options.Date;
+            if (options.StartDate.HasValue)
+            {
+                room.StartDate = options.StartDate.Value;
+                room.EndDate = options.StartDate.Value.AddMinutes(room.DurationInMinutes);
+            }
+
+            if (options.DurationInMinutes.HasValue)
+            {
+                room.DurationInMinutes = options.DurationInMinutes.Value;
+                room.EndDate = room.StartDate.AddMinutes(options.DurationInMinutes.Value);
+            }
 
             await _roomService.Update(room);
             await _roomsHub.Clients.All.OnUpdate(room, userId);
+            await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 
             return Ok();
         }
@@ -147,6 +173,7 @@ namespace Lingua.API.Controllers
             var room = await _roomService.Get(roomId);
             await _roomService.Remove(roomId);
             await _roomsHub.Clients.All.OnRemove(room, userId);
+            await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 
             return Ok();
         }
@@ -159,6 +186,19 @@ namespace Lingua.API.Controllers
             var user = await _userService.Get(userId);
             var room = await _roomService.Get(roomId);
 
+            var start = room.StartDate;
+            var end = room.StartDate.AddMinutes(room.DurationInMinutes);
+
+            var conflicts = await _roomService.Get(r =>
+                                r.StartDate < end
+                                && start < r.EndDate
+                                && r.Participants.Any(p => p.Id == userId));
+
+            if (conflicts.Any())
+            {
+                return BadRequest("You have conflicting rooms for this time frame");
+            }
+
             if (room.Participants.Count == room.MaxParticipants)
             {
                 throw new Exception("Room is already full");
@@ -167,6 +207,7 @@ namespace Lingua.API.Controllers
             room.Participants.Add(user);
             await _roomService.Update(room);
             await _roomsHub.Clients.All.OnEnter(room, userId);
+            await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 
             return Ok();
         }
@@ -182,6 +223,7 @@ namespace Lingua.API.Controllers
             room.Participants.RemoveAll(p => p.Id == user.Id);
             await _roomService.Update(room);
             await _roomsHub.Clients.All.OnLeave(room, userId);
+            await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 
             return Ok();
         }
@@ -211,8 +253,8 @@ namespace Lingua.API.Controllers
                 var request = new CreateMeetingRequest
                 {
                     Topic = room.Topic,
-                    Duration = room.DurationInMinutes.Value,
-                    StartTime = room.StartDate.Value,
+                    Duration = room.DurationInMinutes,
+                    StartTime = room.StartDate,
                     Type = MeetingType.Scheduled,
                     Timezone = "UTC"
                 };

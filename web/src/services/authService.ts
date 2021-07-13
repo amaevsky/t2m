@@ -1,18 +1,17 @@
-import axios from 'axios';
-import { API_BASE_URL } from '../constants';
+import { http } from '../utilities/http';
 import { userService } from './userService';
 
-const baseUrl = `${API_BASE_URL}/auth`;
+const baseUrl = `auth`;
 
 class AuthService {
 
   async zoomLogin(code: string): Promise<boolean> {
-    const { isNewAccount } = (await axios.get(`${baseUrl}/login/zoom?authCode=${code}`, { withCredentials: true })).data;
+    const { isNewAccount } = (await http.get(`${baseUrl}/login/zoom?authCode=${code}`)).data;
     return isNewAccount;
   }
 
   async logout(): Promise<void> {
-    await axios.get(`${baseUrl}/logout`, { withCredentials: true });
+    await http.get(`${baseUrl}/logout`);
     userService.user = null;
   }
 }

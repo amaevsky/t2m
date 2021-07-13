@@ -48,7 +48,8 @@ export class RoomEdit extends React.Component<Props, State> {
           rules={[{ required: true, message: 'Please select a date.' }]}
         >
           <DatePicker
-            disabledDate={(date) => date ? date.startOf('day') < moment().startOf('day') : true}
+            //disabledDate={(date) => date ? date.startOf('day') < moment().startOf('day') : false}
+            //disabledTime={(date) => ({})}
             showTime={{ format: 'HH:mm' }}
             format="YYYY-MM-DD HH:mm"
           />
