@@ -1,17 +1,16 @@
-import axios from 'axios';
-import { API_BASE_URL } from '../constants';
+import { http } from '../utilities/http';
 
-const baseUrl = `${API_BASE_URL}/user`;
+const baseUrl = `user`;
 
 class UserService {
-  public user?:  User | null;
+  public user?: User | null;
 
-  async initialize(): Promise<void> {
-    this.user = (await axios.get<User>(`${baseUrl}/me`, { withCredentials: true })).data || null;
+  async initialize() {
+    this.user = (await http.get<User>(`${baseUrl}/me`)).data || null;
   }
 
   async update(user: User) {
-    await axios.put<User>(`${baseUrl}`, user, { withCredentials: true });
+    await http.put<User>(`${baseUrl}`, user);
     this.user = user;
   }
 }

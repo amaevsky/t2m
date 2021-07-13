@@ -1,15 +1,15 @@
-import { Avatar, Card, Col, Divider, Modal, Row, Select, Slider, Tooltip } from "antd";
+import { Avatar, Card, Col, Collapse, Divider, Row, Select, Slider, Tooltip } from "antd";
 import { Button } from "antd";
-import Title from "antd/lib/typography/Title";
 import React from "react";
-import { Room, RoomCreateOptions, RoomSearchOptions, roomsService } from "../services/roomsService";
+import { Room, RoomSearchOptions, roomsService } from "../services/roomsService";
 import { userService } from "../services/userService";
-import { RoomEdit } from "./RoomEdit";
 
 import moment from 'moment';
-import { configService } from "../services/configService";
 import { Option } from "antd/lib/mentions";
 import { connection } from "../realtime/roomsHub";
+import { configService } from "../services/configService";
+
+const { Panel } = Collapse;
 
 interface State {
   availableRooms: Room[];
@@ -121,12 +121,6 @@ export class RoomList extends React.Component<Props, State> {
     //await this.getData();
   }
 
-  private async createRoom(room: Room) {
-    const options: RoomCreateOptions = { ...room }
-    await roomsService.create(options);
-    this.setState({ isAddRoomModalVisible: false });
-  }
-
   private async leave(roomId: string) {
     await roomsService.leave(roomId);
   }
@@ -137,7 +131,7 @@ export class RoomList extends React.Component<Props, State> {
 
   private async join(roomId: string) {
     const link = await roomsService.join(roomId);
-    window.open(link,'_blank')
+    window.open(link, '_blank')
   }
 
   private setAddRoomModalVisibility(visibility: boolean) {
@@ -167,40 +161,49 @@ export class RoomList extends React.Component<Props, State> {
         actions.push(<Button type='link' size='small' onClick={() => this.enter(r.id)}>Enter</Button>);
       }
 
-      const avatars = r.participants.map(p => {
-
-        return (
-          <Tooltip title={`${p.firstname} ${p.lastname}`} placement='bottom'>
-            {p.avatarUrl
-              ? <Avatar size='small' src={p.avatarUrl} />
-              : <Avatar size='small' style={{ background: '#509dff' }}>{`${p.firstname[0]}${p.lastname[0]}`}</Avatar>
-            }
-          </Tooltip>
-        )
-      })
+      const avatars =
+        <Row>
+          {
+            r.participants.map(p => {
+              return (
+                <Col>
+                  <Tooltip title={`${p.firstname} ${p.lastname}`} placement='bottom'>
+                    {p.avatarUrl
+                      ? <Avatar size='small' src={p.avatarUrl} />
+                      : <Avatar size='small' style={{ background: '#509dff' }}>{`${p.firstname[0]}${p.lastname[0]}`}</Avatar>
+                    }
+                  </Tooltip>
+                </Col>
+              )
+            })}
+        </Row>
       return (
         <Col>
           <Card
             size='small'
             actions={actions}
             hoverable={true}
-            style={{ width: 180 }}
+            style={{ width: 160 }}
             cover={
-              <div style={{ background: '#1890ff', color: '#fff', padding: 18 }}>
-                <Row justify='center'>
-                  <Title style={{ color: '#fff' }} level={4}>{moment(r.startDate).format('DD MMM YY')}</Title>
+              <div style={{ background: '#1890ff', color: '#fff', padding: '5px 12px 18px 12px' }}>
+                <Row style={{ fontSize: 11 }} justify='space-between'>
+                  <p >{r.language}-{r.participants.find(p => p.id === r.hostUserId)?.languageLevel}</p>
+                  <p >{r.durationInMinutes} min</p>
+                </Row>
+                <Row style={{ paddingTop: 5 }} justify='center'>
+                  <p><b>{moment(r.startDate).format('HH:mm')}</b></p>
                 </Row>
                 <Row justify='center'>
-                  <span><b>{moment(r.startDate).format('HH:mm')}</b></span>
+                  <p style={{ fontSize: 12 }}>{moment(r.startDate).format('ddd DD MMM YY')}</p>
                 </Row>
               </div>
             }
           >
-            <div style={{ fontSize: 12 }}>
-              <p>Duration: {r.durationInMinutes} minutes</p>
-              <p>Language: {r.language} ({r.participants.find(p => p.id === r.hostUserId)?.languageLevel})</p>
+            <div style={{ height: 40, fontSize: 12 }}>
               {avatars}
-              <p style={{ visibility: r.topic ? 'visible' : 'hidden' }}>Topic: {r.topic}</p>
+              <Row style={{ paddingTop: 5 }}>
+                <p style={{ visibility: r.topic ? 'visible' : 'hidden' }}><i>{r.topic}</i></p>
+              </Row>
             </div>
           </Card>
         </Col >
@@ -215,58 +218,46 @@ export class RoomList extends React.Component<Props, State> {
     return (
       <>
         <div style={{ padding: 16 }}>
-          <Row justify='space-between'>
-            <Button style={{ textTransform: 'uppercase' }} type="primary" onClick={() => this.setAddRoomModalVisibility(true)}>
-              Create room
-            </Button>
-          </Row>
-
           {!!myRooms.length &&
-            <>
-              <Divider></Divider>
-              <Title level={4}>My rooms</Title>
-              <Row style={{ overflow: 'auto' }} gutter={[16, 16]} wrap={false}>
-                {upcomingCards}
-              </Row>
-            </>
+            <Collapse defaultActiveKey={['1']} ghost>
+              <Panel header="My rooms" key="1">
+                <Row style={{ overflow: 'auto' }} gutter={[16, 16]} wrap={false}>
+                  {upcomingCards}
+                </Row>
+              </Panel>
+            </Collapse>
           }
           <Divider></Divider>
-          <Title level={4}>Find your room</Title>
-          <Divider></Divider>
+          <Collapse defaultActiveKey={['1']} ghost>
+            <Panel header="Find your room" key="1">
 
-          <Row gutter={16}>
-            <Col span={4}>
-              <span>Level:</span>
-              <Select mode="tags" style={{ width: '100%' }} placeholder="Select levels..." onChange={(values) => this.levelsChanged(values as string[])}>
-                {configService.config.languageLelels.map(l => <Option key={l.code} value={l.code}>{l.code}</Option>)}
-              </Select>
-            </Col>
-            <Col span={4}>
-              <span>Days:</span>
-              <Select mode="tags" style={{ width: '100%' }} placeholder="Select days of week..." onChange={(values) => this.daysChanged(values as string[])}>
-                {Object.keys(configService.config.days).map(d => <Option key={d}>{d}</Option>)}
-              </Select>
-            </Col>
-            <Col span={4}>
-              <span>Start time:</span>
-              <Slider tipFormatter={value => value === undefined ? null : moment(this.convertToTime(value)).format('HH:mm')} range max={1440} step={30} defaultValue={[0, 1440]} onChange={value => this.timeRangeChanged(value)} />
-            </Col>
-          </Row>
+              <Row gutter={16}>
+                <Col span={4}>
+                  <span>Level:</span>
+                  <Select mode="tags" style={{ width: '100%' }} placeholder="Select levels..." onChange={(values) => this.levelsChanged(values as string[])}>
+                    {configService.config.languageLevels.map(l => <Option key={l.code} value={l.code}>{l.code}</Option>)}
+                  </Select>
+                </Col>
+                <Col span={4}>
+                  <span>Days:</span>
+                  <Select mode="tags" style={{ width: '100%' }} placeholder="Select days of week..." onChange={(values) => this.daysChanged(values as string[])}>
+                    {Object.keys(configService.config.days).map(d => <Option key={d}>{d}</Option>)}
+                  </Select>
+                </Col>
+                <Col span={4}>
+                  <span>Start time:</span>
+                  <Slider tipFormatter={value => value === undefined ? null : moment(this.convertToTime(value)).format('HH:mm')} range max={1440} step={30} defaultValue={[0, 1440]} onChange={value => this.timeRangeChanged(value)} />
+                </Col>
+              </Row>
 
-          <Divider></Divider>
-          <Row gutter={[16, 16]}>
-            {roomsCards}
-          </Row>
+              <Divider></Divider>
 
-          <Modal title="Create new room"
-            visible={isAddRoomModalVisible}
-            footer={null}
-            onCancel={() => this.setAddRoomModalVisibility(false)}>
-            <RoomEdit
-              room={{}}
-              onEdit={(room) => this.createRoom(room)}
-              submitBtnText="Create" />
-          </Modal>
+              <Row gutter={[16, 16]}>
+                {roomsCards}
+              </Row>
+
+            </Panel>
+          </Collapse>
         </div>
       </>
     )
