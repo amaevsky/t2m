@@ -29,7 +29,7 @@ jobs:
       working-directory: 'web'
       run: |
         npm install
-        npm run build --if-present
+        CI='' npm run build --if-present
         
     - name: add process.json
       working-directory: 'web'
