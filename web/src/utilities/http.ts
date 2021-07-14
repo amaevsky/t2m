@@ -1,9 +1,11 @@
 import { notification } from 'antd';
 import axios, { AxiosError } from 'axios';
 
-export const API_BASE_URL = process.env.NODE_ENV === 'development'
-  ? 'https://localhost:44361/api'
-  : 'https://lingua-api.azurewebsites.net/api'
+export const BASE_URL = process.env.NODE_ENV === 'development'
+  ? 'https://localhost:44361'
+  : 'https://lingua-api.azurewebsites.net';
+
+export const API_BASE_URL = `${BASE_URL}/api`;
 
 export interface HttpResponse<T = any> {
   errors?: string[],
@@ -34,7 +36,7 @@ class Http {
 
   private handleError(ex: AxiosError): HttpResponse<any> {
     const message = ex.response?.data as string;
-    notification.error({ message, placement: 'bottomRight'  });
+    notification.error({ message, placement: 'bottomRight' });
     return { errors: [message] };
   }
 
