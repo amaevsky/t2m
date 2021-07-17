@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
 
-import 'antd/dist/antd.css';
-import './index.css';
+import './styles/index.less';
+
 import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
 import { LoginRedirect } from './components/LoginRedirect';
 import { Login } from './components/Login';
