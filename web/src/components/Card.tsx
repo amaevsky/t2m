@@ -18,7 +18,7 @@ export class RoomCard extends React.Component<Props> {
     const { room, secondaryActions, primaryAction } = this.props;
     const host = room.participants[0];
     return (
-      <Tile style={{ width: 210, padding: 18 }}>
+      <Tile style={{ padding: 16 }}>
         <Row justify='space-between'>
           <Col>
             <Row gutter={8}>
@@ -26,7 +26,7 @@ export class RoomCard extends React.Component<Props> {
                 <Avatar size='large' src={host.avatarUrl}></Avatar>
               </Col>
               <Col>
-                <b>{host.firstname} {host.lastname}</b>
+                <b>{host.firstname} {host.lastname[0]}.</b>
                 <p style={{ fontSize: 11 }}>{room.language} {host.languageLevel}</p>
               </Col>
             </Row>
@@ -59,7 +59,7 @@ export class RoomCard extends React.Component<Props> {
         </Row>
         <Row style={{ margin: '10px 0' }}>
           <Col>
-            <span style={{ fontSize: 12 }}>
+            <span className="room-topic">
               {room.topic} dasjldah askdh dgas jggd ak dgagsdkags sd dkha khdk adha khdak
             </span>
           </Col>

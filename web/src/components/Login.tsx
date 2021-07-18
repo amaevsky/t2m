@@ -1,7 +1,10 @@
-import { Button, Col, Row } from 'antd';
+import { Button, Col, Row, Spin, Typography } from 'antd';
 import React from 'react';
 import { configService } from '../services/configService';
 import { userService } from '../services/userService';
+import { Tile } from './Card';
+
+const { Title } = Typography;
 
 interface State {
   initializing: boolean
@@ -39,8 +42,15 @@ export class Login extends React.Component<any, State> {
       <Row align='middle' justify='center' style={{ minHeight: '100vh' }}>
         <Col>
           {initializing
-            ? 'Login is in progress...'
-            : <Button type='primary' size='large' onClick={this.redirect}>Login</Button>
+            ? <Spin size='large'></Spin>
+            :
+            <Tile style={{ padding: 16 }}>
+              <Title level={4}><span className='primary-color'>Hi, Welcome to talk2me</span></Title>
+              <p>In order to use our app you have to login via Zoom</p>
+              <Row justify='center' style={{ paddingTop: 16 }}>
+                <Button type='default' size='large' onClick={this.redirect}>Login via Zoom</Button>
+              </Row>
+            </Tile>
           }
         </Col>
       </Row>
