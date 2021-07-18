@@ -106,7 +106,7 @@ export class FindRooms extends React.Component<Props, State> {
     const roomsCards = filtredRooms.map(r => {
       const action = { action: () => this.enter(r.id), title: 'Enter a room' };
       return (
-        <Col>
+        <Col xl={4} md={6} sm={8} xs={12}>
           <RoomCard room={r} primaryAction={action} />
         </Col >
       )

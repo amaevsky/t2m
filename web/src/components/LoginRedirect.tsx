@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd';
+import { Col, Row, Spin } from 'antd';
 import React from 'react';
 import { authService } from '../services/authService';
 
@@ -13,7 +13,7 @@ export class LoginRedirect extends React.Component<any> {
   render() {
     return (
       <Row align='middle' justify='center' style={{ minHeight: '100vh' }}>
-        <Col>Login is in progress...</Col>
+        <Col><Spin size='large' /></Col>
       </Row>
     );
   }

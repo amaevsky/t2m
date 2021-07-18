@@ -201,7 +201,7 @@ namespace Lingua.API.Controllers
 
             if (room.Participants.Count == room.MaxParticipants)
             {
-                throw new Exception("Room is already full");
+                return BadRequest("Room is already full");
             }
 
             room.Participants.Add(user);

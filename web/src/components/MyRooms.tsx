@@ -87,7 +87,7 @@ export class MyRooms extends React.Component<Props, State> {
   }
 
   private async getData() {
-    const upcoming = await roomsService.getUpcoming();
+    const upcoming = new Array(10).fill((await roomsService.getUpcoming())[0]);
     this.setState({ myRooms: upcoming });
   }
 
@@ -117,7 +117,7 @@ export class MyRooms extends React.Component<Props, State> {
       }
 
       return (
-        <Col>
+        <Col xl={4} md={6} sm={8} xs={12}>
           <RoomCard room={r} primaryAction={primary} secondaryActions={secondary} />
         </Col >
       )
