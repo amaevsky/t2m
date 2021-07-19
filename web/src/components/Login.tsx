@@ -24,8 +24,8 @@ export class Login extends React.Component<any, State> {
 
     }
 
-    if (userService.user) {
-      if (userService.user.languageLevel) {
+    if (userService.isAuthenticated) {
+      if (userService.isAccountReady) {
         this.props.history.push("/");
       } else {
         this.props.history.push("/account/setup");

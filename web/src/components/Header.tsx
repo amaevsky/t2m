@@ -85,7 +85,7 @@ class HeaderComponent extends React.Component<Props, State> {
             <Col>
               <Link to="/" className="primary-color" style={{ fontSize: 32, fontWeight: 700 }}>talk2me</Link>
             </Col>
-            {userService.user &&
+            {userService.isAccountReady &&
               <>
                 {md &&
                   <>
