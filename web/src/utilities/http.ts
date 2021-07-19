@@ -38,7 +38,11 @@ class Http {
     const message = ex.response?.status === 400
       ? ex.response?.data as string
       : 'Error occured.';
-    notification.error({ message, placement: 'bottomRight' });
+
+    if (ex.response?.status === 400) {
+      notification.error({ message, placement: 'bottomRight' });
+    }
+    
     return { errors: [message] };
   }
 

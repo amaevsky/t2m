@@ -28,11 +28,12 @@ class HeaderComponent extends React.Component<Props, State> {
   render() {
 
     const { md } = this.props.breakpoint;
+    const active = this.props.location.pathname;
 
     const tabItems =
       <>
-        <Menu.Item><Link to='/rooms/find'>Find a room</Link></Menu.Item>
-        <Menu.Item><Link to='/rooms/my'>My rooms</Link></Menu.Item>
+        <Menu.Item key='/'><Link to='/'>Find a room</Link></Menu.Item>
+        <Menu.Item key='/rooms/my'><Link to='/rooms/my'>My rooms</Link></Menu.Item>
       </>;
 
     const accountActions =
@@ -46,7 +47,7 @@ class HeaderComponent extends React.Component<Props, State> {
       </>
 
     const tabs =
-      <Menu style={{ background: 'initial', fontSize: 14, border: 'none', fontWeight: 600 }} mode='horizontal'>
+      <Menu selectedKeys={[active]} style={{ background: 'initial', fontSize: 14, border: 'none', fontWeight: 600 }} mode='horizontal'>
         {tabItems}
       </Menu>;
 

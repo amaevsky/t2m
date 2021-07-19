@@ -1,17 +1,19 @@
-import { Col, Divider, Row, Select, Slider } from "antd";
+import { Col, Divider, Row, Select } from "antd";
 import React from "react";
 import { Room, RoomSearchOptions, roomsService } from "../services/roomsService";
 import { userService } from "../services/userService";
 
-import moment from 'moment';
 import { Option } from "antd/lib/mentions";
 import { connection } from "../realtime/roomsHub";
 import { configService } from "../services/configService";
 import { RoomCard } from "./Card";
+import { TimeRange } from "./TimeRange";
 
 interface State {
   availableRooms: Room[];
   filter: RoomSearchOptions,
+  timeFrom?: Date
+  timeTo?: Date
 }
 
 interface Props {
@@ -115,22 +117,19 @@ export class FindRooms extends React.Component<Props, State> {
     return (
       <>
         <div style={{ padding: 16 }}>
-          <Row gutter={16}>
-            <Col span={4}>
-              <span>Level:</span>
-              <Select mode="tags" style={{ width: '100%' }} placeholder="Select levels..." onChange={(values) => this.levelsChanged(values as string[])}>
+          <Row style={{ padding: '8px 0', overflow: 'auto' }} gutter={16} wrap={false}>
+            <Col>
+              <Select maxTagCount={1} mode="tags" style={{ width: '150px' }} placeholder="Levels..." onChange={(values) => this.levelsChanged(values as string[])}>
                 {configService.config.languageLevels.map(l => <Option key={l.code} value={l.code}>{l.code}</Option>)}
               </Select>
             </Col>
-            <Col span={4}>
-              <span>Days:</span>
-              <Select mode="tags" style={{ width: '100%' }} placeholder="Select days of week..." onChange={(values) => this.daysChanged(values as string[])}>
+            <Col>
+              <Select maxTagCount={1} mode="tags" style={{ width: '150px' }} placeholder="Days of week..." onChange={(values) => this.daysChanged(values as string[])}>
                 {Object.keys(configService.config.days).map(d => <Option key={d}>{d}</Option>)}
               </Select>
             </Col>
-            <Col span={4}>
-              <span>Start time:</span>
-              <Slider tipFormatter={value => value === undefined ? null : moment(this.convertToTime(value)).format('HH:mm')} range max={1440} step={30} defaultValue={[0, 1440]} onChange={value => this.timeRangeChanged(value)} />
+            <Col>
+              <TimeRange onChange={(value) => this.timeRangeChanged(value)} />
             </Col>
           </Row>
 
@@ -144,19 +143,13 @@ export class FindRooms extends React.Component<Props, State> {
     )
   }
 
-  private timeRangeChanged(values: [number, number]) {
-    const [from, to] = values;
-    if (from !== 0 || to !== 24 * 60) {
-      const timeFrom = this.convertToTime(from);
-      const timeTo = this.convertToTime(to);
+  private timeRangeChanged(value?: { from: Date, to: Date }) {
+    if (value) {
+      const { from: timeFrom, to: timeTo } = value;
       this.setState((prev) => ({ filter: { ...prev.filter, timeFrom, timeTo } }));
     } else {
       this.setState((prev) => ({ filter: { ...prev.filter, timeFrom: undefined, timeTo: undefined } }));
     }
-  }
-
-  private convertToTime(minutes: number): Date {
-    return moment().set({ hours: Math.floor(minutes / 60), minutes: minutes % 60 }).toDate();
   }
 
   private levelsChanged(levels: string[]) {

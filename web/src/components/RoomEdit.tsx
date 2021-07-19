@@ -50,8 +50,8 @@ export class RoomEdit extends React.Component<Props, State> {
           <DatePicker
             //disabledDate={(date) => date ? date.startOf('day') < moment().startOf('day') : false}
             //disabledTime={(date) => ({})}
-            showTime={{ format: 'HH:mm' }}
-            format="YYYY-MM-DD HH:mm"
+            showTime={{ format: 'LT' }}
+            format="YYYY-MM-DD LT"
           />
         </Form.Item>
 

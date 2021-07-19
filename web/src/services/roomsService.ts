@@ -66,6 +66,7 @@ export interface RoomSearchOptions {
 export interface Room {
   id: string;
   startDate: Date;
+  endDate: Date;
   durationInMinutes: number;
   language: string;
   topic?: string;
