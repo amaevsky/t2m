@@ -1,9 +1,10 @@
-import { ClockCircleOutlined, MoreOutlined } from '@ant-design/icons';
+import { CalendarOutlined, ClockCircleOutlined, MoreOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Col, Dropdown, Menu, Row, Space } from 'antd';
 import React from 'react';
 import { Room } from '../services/roomsService';
 
 import moment from 'moment';
+import { userService } from '../services/userService';
 
 interface Props {
   room: Room;
@@ -17,18 +18,35 @@ export class RoomCard extends React.Component<Props> {
 
     const { room, secondaryActions, primaryAction } = this.props;
     const host = room.participants[0];
+    const partner = room.participants.find(p => userService.user?.id !== p.id);
+
     return (
       <Tile style={{ padding: 16 }}>
         <Row justify='space-between'>
           <Col>
             <Row gutter={8}>
-              <Col>
-                <Avatar size='large' src={host.avatarUrl}></Avatar>
-              </Col>
-              <Col>
-                <b>{host.firstname} {host.lastname[0]}.</b>
-                <p style={{ fontSize: 11 }}>{room.language} {host.languageLevel}</p>
-              </Col>
+              {partner &&
+                <>
+                  <Col>
+                    <Avatar size='large' src={partner.avatarUrl}></Avatar>
+                  </Col>
+                  <Col>
+                    <b>{partner.firstname} {partner.lastname[0]}.</b>
+                    <p style={{ fontSize: 11 }}>{room.language} {partner.languageLevel}</p>
+                  </Col>
+                </>
+              }
+              {!partner &&
+                <>
+                  <Col>
+                    <Avatar size='large' icon={<UserOutlined />}></Avatar>
+                  </Col>
+                  <Col>
+                    <b>{'<roommate>'}</b>
+                    <p style={{ fontSize: 11 }}>{room.language}</p>
+                  </Col>
+                </>
+              }
             </Row>
           </Col>
           {secondaryActions &&
@@ -53,14 +71,20 @@ export class RoomCard extends React.Component<Props> {
         </Row>
         <Row className='primary-color' style={{ fontSize: 12, fontWeight: 600, marginTop: 8 }}>
           <Space>
-            <ClockCircleOutlined />
-            <p>{moment(room.startDate).format('MMM DD')}, {moment(room.startDate).format('HH:mm')} - {moment(room.startDate).format('HH:mm')}</p>
+            <CalendarOutlined />
+            <p>{moment(room.startDate).format('ddd, MMM DD')}</p>
           </Space>
         </Row>
-        <Row style={{ margin: '10px 0' }}>
+        <Row className='primary-color' style={{ fontSize: 12, fontWeight: 600 }}>
+          <Space>
+            <ClockCircleOutlined />
+            <p>{moment(room.startDate).format('LT')} - {moment(room.endDate).format('LT')}</p>
+          </Space>
+        </Row>
+        <Row style={{ margin: '10px 0', height: 40 }}>
           <Col>
             <span className="room-topic">
-              {room.topic} dasjldah askdh dgas jggd ak dgagsdkags sd dkha khdk adha khdak
+              {room.topic || '<no topic>'}
             </span>
           </Col>
         </Row>

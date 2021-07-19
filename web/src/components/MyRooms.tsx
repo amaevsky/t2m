@@ -87,7 +87,7 @@ export class MyRooms extends React.Component<Props, State> {
   }
 
   private async getData() {
-    const upcoming = new Array(10).fill((await roomsService.getUpcoming())[0]);
+    const upcoming = await roomsService.getUpcoming();
     this.setState({ myRooms: upcoming });
   }
 
