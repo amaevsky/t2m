@@ -5,6 +5,14 @@ const baseUrl = `user`;
 class UserService {
   public user?: User | null;
 
+  public get isAuthenticated(): boolean {
+    return !!this.user;
+  }
+
+  public get isAccountReady(): boolean {
+    return !!this.user?.languageLevel;
+  }
+
   async initialize() {
     this.user = (await http.get<User>(`${baseUrl}/me`)).data || null;
   }

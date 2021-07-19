@@ -9,7 +9,7 @@ export class PrivateRoute extends React.Component<any>  {
       <Route
         {...rest}
         render={props =>
-          userService.user ? (
+          userService.isAccountReady ? (
             <Component {...props} />
           ) : (
             <Redirect
