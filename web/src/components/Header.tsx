@@ -131,14 +131,18 @@ class HeaderComponent extends React.Component<Props, State> {
           </Row>
         </header>
 
-        <Modal width={700} title="Edit profile"
+        <Modal
+          title="Edit profile"
+          destroyOnClose={true}
           visible={this.state.isEditProfileOpen}
           footer={null}
           onCancel={() => this.setState({ isEditProfileOpen: false })}>
           <UserProfileEdit afterSave={() => this.setState({ isEditProfileOpen: false })} />
         </Modal>
 
-        <Modal title="Create new room"
+        <Modal
+          title="Create new room"
+          destroyOnClose={true}
           visible={this.state.isAddRoomOpen}
           footer={null}
           onCancel={() => this.setState({ isAddRoomOpen: false })}>

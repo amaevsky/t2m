@@ -5,6 +5,7 @@ import { Room } from '../services/roomsService';
 
 import moment from 'moment';
 import { configService } from '../services/configService';
+import { userService } from '../services/userService';
 interface Props {
   room: Partial<Room>,
   onEdit: (room: Room) => void
@@ -23,12 +24,13 @@ export class RoomEdit extends React.Component<Props, State> {
   }
 
   render() {
+    const user = userService.user;
+
     return (
       <Form
-        name="basic"
         labelCol={{ span: 5 }}
         wrapperCol={{ span: 19 }}
-        initialValues={{ language: 'English' }}
+        initialValues={{ language: user?.targetLanguage }}
         onFinish={(values) => this.edit(values)}
       >
         <Form.Item

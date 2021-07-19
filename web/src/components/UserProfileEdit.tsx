@@ -16,8 +16,8 @@ export const UserProfileEdit = (props: { afterSave?: () => void }) => {
   return (
     <Form
       name="basic"
-      labelCol={{ span: 5 }}
-      wrapperCol={{ span: 19 }}
+      labelCol={{ span: 7 }}
+      wrapperCol={{ span: 17 }}
       initialValues={{ ...user }}
       onFinish={(values) => save(values)}
     >
