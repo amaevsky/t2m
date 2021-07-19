@@ -135,7 +135,7 @@ class HeaderComponent extends React.Component<Props, State> {
           visible={this.state.isEditProfileOpen}
           footer={null}
           onCancel={() => this.setState({ isEditProfileOpen: false })}>
-          <UserProfileEdit />
+          <UserProfileEdit afterSave={() => this.setState({ isEditProfileOpen: false })} />
         </Modal>
 
         <Modal title="Create new room"
