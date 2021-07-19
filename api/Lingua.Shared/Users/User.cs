@@ -10,7 +10,6 @@ namespace Lingua.Shared
         public string TargetLanguage { get; set; }
         public string LanguageLevel { get; set; }
         public string AvatarUrl { get; set; }
-        public string Timezone { get; set; }
         public ZoomProperties ZoomProperties { get; set; }
     }
 

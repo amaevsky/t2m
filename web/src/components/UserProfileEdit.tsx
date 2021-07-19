@@ -3,7 +3,6 @@ import { configService } from '../services/configService';
 import { userService } from '../services/userService';
 
 import moment from 'moment';
-import 'moment-timezone';
 
 export const UserProfileEdit = (props: { afterSave?: () => void }) => {
   const user = userService.user;
@@ -19,7 +18,7 @@ export const UserProfileEdit = (props: { afterSave?: () => void }) => {
       name="basic"
       labelCol={{ span: 5 }}
       wrapperCol={{ span: 19 }}
-      initialValues={{ ...user, timezone: moment.tz.guess() }}
+      initialValues={{ ...user }}
       onFinish={(values) => save(values)}
     >
       <Form.Item
@@ -69,18 +68,6 @@ export const UserProfileEdit = (props: { afterSave?: () => void }) => {
       >
         <Select>
           {configService.config.languageLevels.map(l => <Select.Option value={l.code}>{l.code}({l.description})</Select.Option>)}
-        </Select>
-      </Form.Item>
-
-      <Form.Item
-        label="Timezone"
-        name="timezone"
-        rules={[{ required: true, message: 'Please select a timezone.' }]}
-      >
-        <Select>
-          {
-            moment.tz.names().map(t => <Select.Option value={t}>{t}</Select.Option>)
-          }
         </Select>
       </Form.Item>
 

@@ -61,6 +61,7 @@ export interface RoomSearchOptions {
   days?: number[];
   timeFrom?: Date;
   timeTo?: Date;
+  timezone?: string;
 }
 
 export interface Room {

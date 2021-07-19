@@ -55,13 +55,13 @@ namespace Lingua.API.Controllers
 
             if (options != null)
             {
-                rooms = ApplySearchFilter(options, user, rooms);
+                rooms = ApplySearchFilter(options, rooms);
             }
 
             return Ok(rooms.ToList());
         }
 
-        private static IEnumerable<Room> ApplySearchFilter(SearchRoomOptions options, User user, IEnumerable<Room> rooms)
+        private static IEnumerable<Room> ApplySearchFilter(SearchRoomOptions options, IEnumerable<Room> rooms)
         {
             if (options?.Levels?.Any() == true)
             {
@@ -70,7 +70,7 @@ namespace Lingua.API.Controllers
 
             if (options?.Days?.Any() == true)
             {
-                var tz = TimeZoneInfo.FindSystemTimeZoneById(TZConvert.IanaToWindows(user.Timezone));
+                var tz = TimeZoneInfo.FindSystemTimeZoneById(TZConvert.IanaToWindows(options.Timezone));
                 rooms = rooms.Where(r => options.Days.Contains(TimeZoneInfo.ConvertTimeFromUtc(r.StartDate, tz).DayOfWeek));
             }
 

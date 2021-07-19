@@ -9,6 +9,7 @@ namespace Lingua.Shared
         public List<DayOfWeek> Days { get; set; }
         public DateTime? TimeFrom { get; set; }
         public DateTime? TimeTo { get; set; }
+        public string Timezone { get; set; }
     }
 
 }

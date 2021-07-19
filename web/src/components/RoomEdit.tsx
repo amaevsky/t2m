@@ -3,7 +3,6 @@ import Form from 'antd/lib/form';
 import React from 'react';
 import { Room } from '../services/roomsService';
 
-import 'moment-timezone';
 import moment from 'moment';
 import { configService } from '../services/configService';
 interface Props {
@@ -29,7 +28,7 @@ export class RoomEdit extends React.Component<Props, State> {
         name="basic"
         labelCol={{ span: 5 }}
         wrapperCol={{ span: 19 }}
-        initialValues={{ language: 'English', timezone: moment.tz.guess() }}
+        initialValues={{ language: 'English' }}
         onFinish={(values) => this.edit(values)}
       >
         <Form.Item
@@ -53,18 +52,6 @@ export class RoomEdit extends React.Component<Props, State> {
             showTime={{ format: 'LT' }}
             format="YYYY-MM-DD LT"
           />
-        </Form.Item>
-
-        <Form.Item
-          label="Timezone"
-          name="timezone"
-          rules={[{ required: true, message: 'Please select a timezone.' }]}
-        >
-          <Select>
-            {
-              moment.tz.names().map(t => <Select.Option value={t}>{t}</Select.Option>)
-            }
-          </Select>
         </Form.Item>
 
         <Form.Item
