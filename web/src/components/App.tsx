@@ -19,9 +19,9 @@ export default class App extends React.Component<any> {
           <Switch>
             <Route path="/redirect" component={LoginRedirect} />
             <Route path="/login" component={Login} />
+            <Route path="/account/setup" component={AccountSetup} />
 
             <PrivateRoute path="/rooms/my" component={MyRooms} />
-            <PrivateRoute path="/account/setup" component={AccountSetup} />
             <PrivateRoute path="/" component={FindRooms} />
           </Switch>
         </div>

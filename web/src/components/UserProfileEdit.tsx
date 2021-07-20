@@ -1,13 +1,14 @@
-import { Button, Form, Input, Select } from 'antd';
+import { Button, DatePicker, Form, Input, Select } from 'antd';
 import { configService } from '../services/configService';
-import { userService } from '../services/userService';
+import { User, userService } from '../services/userService';
+import country from 'country-list-js';
 
 import moment from 'moment';
 
 export const UserProfileEdit = (props: { afterSave?: () => void }) => {
   const user = userService.user;
   const save = async (values: any) => {
-    const toSave = { ...userService.user, ...values };
+    const toSave: User = { ...userService.user, ...values, dateOfBirth: moment.utc(values.dateOfBirth).format() };
     await userService.update(toSave);
 
     props.afterSave?.();
@@ -18,11 +19,11 @@ export const UserProfileEdit = (props: { afterSave?: () => void }) => {
       name="basic"
       labelCol={{ span: 7 }}
       wrapperCol={{ span: 17 }}
-      initialValues={{ ...user }}
+      initialValues={{ ...user, dateOfBirth: moment(user?.dateOfBirth as string).utc()}}
       onFinish={(values) => save(values)}
     >
       <Form.Item
-        label="Firstname"
+        label="First name"
         name="firstname"
         rules={[
           { required: true, message: 'Please specify firstname.' },
@@ -33,7 +34,7 @@ export const UserProfileEdit = (props: { afterSave?: () => void }) => {
       </Form.Item>
 
       <Form.Item
-        label="Lastname"
+        label="Last name"
         name="lastname"
         rules={[
           { required: true, message: 'Please specify Lastname.' },
@@ -56,7 +57,7 @@ export const UserProfileEdit = (props: { afterSave?: () => void }) => {
         name="targetLanguage"
         rules={[{ required: true, message: 'Please select a target language.' }]}
       >
-        <Select>
+        <Select showSearch>
           {configService.config.languages.map(l => <Select.Option value={l}>{l}</Select.Option>)}
         </Select>
       </Form.Item>
@@ -67,8 +68,26 @@ export const UserProfileEdit = (props: { afterSave?: () => void }) => {
         rules={[{ required: true, message: 'Please select a language level.' }]}
       >
         <Select>
-          {configService.config.languageLevels.map(l => <Select.Option value={l.code}>{l.code}({l.description})</Select.Option>)}
+          {configService.config.languageLevels.map(l => <Select.Option value={l.code}>{l.code} ({l.description})</Select.Option>)}
         </Select>
+      </Form.Item>
+
+      <Form.Item
+        label="Country"
+        name="country"
+        rules={[{ required: true, message: 'Please select your country.' }]}
+      >
+        <Select showSearch>
+          {country.names().sort().map(n => <Select.Option value={n}>{n}</Select.Option>)}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        label="Date of birth"
+        name="dateOfBirth"
+        rules={[{ required: true, message: 'Please select your date of birth.' }]}
+      >
+        <DatePicker style={{ width: '100%' }} />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

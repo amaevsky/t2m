@@ -45,7 +45,7 @@ export class Login extends React.Component<any, State> {
             ? <Spin size='large'></Spin>
             :
             <Tile style={{ padding: 16 }}>
-              <Title level={4}><span className='primary-color'>Hi, Welcome to talk2me</span></Title>
+              <Title level={4}>Hi! Welcome to <b className='primary-color'>Talk2Me</b></Title>
               <p>In order to use our app you have to login via Zoom</p>
               <Row justify='center' style={{ paddingTop: 16 }}>
                 <Button type='default' size='large' onClick={this.redirect}>Login via Zoom</Button>
