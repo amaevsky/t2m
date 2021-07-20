@@ -92,8 +92,12 @@ namespace Lingua.API.Controllers
             var user = await _userService.Get(userId);
 
             var rooms = await _roomService.Get(r =>
-                            r.EndDate > DateTime.UtcNow
-                            && r.Participants.Any(p => p.Id == userId));
+                            r.Participants.Any(p => p.Id == userId)
+                            && (
+                                (r.EndDate > DateTime.UtcNow && r.Participants.Count > 1)
+                                || r.StartDate > DateTime.UtcNow
+                               )
+                            );
 
             return Ok(rooms.ToList());
         }
