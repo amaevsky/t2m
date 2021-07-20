@@ -6,7 +6,7 @@ import { userService } from "../services/userService";
 import { Option } from "antd/lib/mentions";
 import { connection } from "../realtime/roomsHub";
 import { configService } from "../services/configService";
-import { RoomCard } from "./Card";
+import { RoomCard } from "./RoomCard";
 import { TimeRange } from "./TimeRange";
 
 interface State {

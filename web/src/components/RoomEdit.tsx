@@ -2,10 +2,10 @@ import { Button, DatePicker, Input, Select } from 'antd';
 import Form from 'antd/lib/form';
 import React from 'react';
 import { Room } from '../services/roomsService';
-
-import moment from 'moment';
 import { configService } from '../services/configService';
 import { userService } from '../services/userService';
+
+import moment from 'moment';
 interface Props {
   room: Partial<Room>,
   onEdit: (room: Room) => void
@@ -25,6 +25,12 @@ export class RoomEdit extends React.Component<Props, State> {
 
   render() {
     const user = userService.user;
+    const is12Hours = () => {
+      var date = new Date();
+      var dateString = date.toLocaleTimeString();
+
+      return !!(dateString.match(/am|pm/i) || date.toString().match(/am|pm/i));
+    }
 
     return (
       <Form
@@ -44,15 +50,26 @@ export class RoomEdit extends React.Component<Props, State> {
         </Form.Item>
 
         <Form.Item
-          label="Start date"
+          label="Date"
           name="startDate"
           rules={[{ required: true, message: 'Please select a date.' }]}
         >
           <DatePicker
-            //disabledDate={(date) => date ? date.startOf('day') < moment().startOf('day') : false}
-            //disabledTime={(date) => ({})}
-            showTime={{ format: 'HH:mm' }}
-            format="YYYY-MM-DD LT"
+            style={{ width: '100%' }}
+            showNow={false}
+            disabledDate={(date) => date && date < moment().startOf('day')}
+            disabledTime={(date) => {
+              if (date && date < moment().endOf('day')) {
+                return {
+                  disabledHours: () => Array.from({ length: 24 }, (_, i) => i).filter(h => h < moment().hour()),
+                  disabledMinutes: () => Array.from({ length: 6 }, (_, i) => i * 10).filter(m => date.hour() === moment().hour() && m < moment().minute())
+                }
+              }
+
+              return ({});
+            }}
+            showTime={{ format: is12Hours() ? 'h:mm A' : 'HH:mm', minuteStep: 10, use12Hours: is12Hours() }}
+            format="DD-MMM-YYYY LT"
           />
         </Form.Item>
 

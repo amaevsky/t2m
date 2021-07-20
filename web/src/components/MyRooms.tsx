@@ -4,7 +4,7 @@ import { mapRooms, Room, roomsService } from "../services/roomsService";
 import { userService } from "../services/userService";
 
 import { connection } from "../realtime/roomsHub";
-import { RoomCard } from "./Card";
+import { RoomCard } from "./RoomCard";
 
 interface State {
   myRooms: Room[];

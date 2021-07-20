@@ -5,6 +5,7 @@ import { Room } from '../services/roomsService';
 
 import moment from 'moment';
 import { userService } from '../services/userService';
+import { Tile } from './Tile';
 
 interface Props {
   room: Room;
@@ -17,7 +18,6 @@ export class RoomCard extends React.Component<Props> {
   render() {
 
     const { room, secondaryActions, primaryAction } = this.props;
-    const host = room.participants[0];
     const partner = room.participants.find(p => userService.user?.id !== p.id);
 
     return (
@@ -95,13 +95,4 @@ export class RoomCard extends React.Component<Props> {
     );
   }
 
-}
-
-
-export const Tile = (props: any) => {
-  return (
-    <div {...props} className="tile">
-      {props.children}
-    </div>
-  );
 }

@@ -2,7 +2,7 @@ import { Button, Col, Row, Spin, Typography } from 'antd';
 import React from 'react';
 import { configService } from '../services/configService';
 import { userService } from '../services/userService';
-import { Tile } from './Card';
+import { Tile } from './Tile';
 
 const { Title } = Typography;
 
