@@ -4,7 +4,7 @@ import { mapRooms, Room, roomsService } from "../services/roomsService";
 import { userService } from "../services/userService";
 
 import { connection } from "../realtime/roomsHub";
-import { RoomCard } from "./RoomCard";
+import { RoomCard, RoomCardAction } from "./RoomCard";
 
 interface State {
   myRooms: Room[];
@@ -115,8 +115,20 @@ export class MyRooms extends React.Component<Props, State> {
       .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
       .map(r => {
         const secondary = [];
-        //const startable = new Date(r.startDate).getTime() - Date.now() < 1000 * 60 * 5 && r.participants.length > 1;
-        const primary = { action: () => this.join(r.id), title: 'Join a room' };
+        const isFull = r.participants.length > 1;
+        const startable = new Date(r.startDate).getTime() - Date.now() < 1000 * 60 * 5;
+        const primary: RoomCardAction = {
+          action: () => this.join(r.id),
+          title: 'Join a room',
+          disabled: !(startable && isFull)
+        };
+
+        if (!isFull) {
+          primary.tooltip = 'Nobody enter the room yet.';
+        } else if (!startable) {
+          primary.tooltip = 'Room can be joined 5 min before start.';
+        }
+
         if (r.hostUserId === userService.user?.id) {
           secondary.push({ action: () => this.remove(r.id), title: 'Remove' });
         } else {

@@ -1,5 +1,5 @@
 import { CalendarOutlined, ClockCircleOutlined, MoreOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Dropdown, Menu, Row, Space } from 'antd';
+import { Avatar, Button, Col, Dropdown, Menu, Row, Space, Tooltip } from 'antd';
 import React from 'react';
 import { Room } from '../services/roomsService';
 
@@ -7,10 +7,17 @@ import moment from 'moment';
 import { userService } from '../services/userService';
 import { Tile } from './Tile';
 
+export interface RoomCardAction {
+  title: string;
+  action: () => void;
+  disabled?: boolean;
+  tooltip?: string;
+}
+
 interface Props {
   room: Room;
-  primaryAction: { title: string, action: () => void };
-  secondaryActions?: { title: string, action: () => void }[];
+  primaryAction: RoomCardAction;
+  secondaryActions?: RoomCardAction[];
 }
 
 export class RoomCard extends React.Component<Props> {
@@ -89,7 +96,11 @@ export class RoomCard extends React.Component<Props> {
           </Col>
         </Row>
         <Row>
-          <Button onClick={primaryAction.action} style={{ width: '100%', fontWeight: 600 }} type='default' size='large'>{primaryAction.title}</Button>
+          <Tooltip title={primaryAction.tooltip}>
+            <Button disabled={primaryAction.disabled} onClick={() => primaryAction.action()} style={{ width: '100%', fontWeight: 600 }} type='default' size='large'>
+              {primaryAction.title}
+            </Button>
+          </Tooltip>
         </Row>
       </Tile>
     );
