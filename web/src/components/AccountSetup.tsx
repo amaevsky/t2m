@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Col, Row, Space, Typography } from 'antd';
+import { Row, Space, Typography } from 'antd';
 import { UserProfileEdit } from './UserProfileEdit';
 
 const { Title } = Typography;
