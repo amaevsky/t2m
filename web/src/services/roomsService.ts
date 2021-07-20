@@ -2,6 +2,14 @@ import { http, HttpResponse } from '../utilities/http';
 import { User } from './userService';
 
 const baseUrl = `rooms`;
+
+export const mapRooms = (rooms: Room[]): Room[] => {
+  return rooms.map(r => ({
+    ...r,
+    startDate: new Date(r.startDate),
+    endDate: new Date(r.endDate)
+  }));
+}
 class RoomsService {
   async join(roomId: string): Promise<string> {
     return (await http.get<string>(`${baseUrl}/join/${roomId}`)).data || '';
@@ -16,8 +24,7 @@ class RoomsService {
     if (options) {
       query = this.buildSearchQuery(options);
     }
-    return (await http.get<Room[]>(`${baseUrl}${query ? `?${query}` : ''}`)).data || [];
-
+    return mapRooms((await http.get<Room[]>(`${baseUrl}${query ? `?${query}` : ''}`)).data || []);
   }
 
   private buildSearchQuery(options: RoomSearchOptions): string {
@@ -32,7 +39,7 @@ class RoomsService {
   }
 
   async getUpcoming(): Promise<Room[]> {
-    return (await http.get<Room[]>(`${baseUrl}/me/upcoming`)).data || [];
+    return mapRooms((await http.get<Room[]>(`${baseUrl}/me/upcoming`)).data || []);
   }
 
   async enter(roomId: string) {
