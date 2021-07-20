@@ -1,6 +1,6 @@
 import { Col, Divider, Row, Select } from "antd";
 import React from "react";
-import { Room, RoomSearchOptions, roomsService } from "../services/roomsService";
+import { mapRooms, Room, RoomSearchOptions, roomsService } from "../services/roomsService";
 import { userService } from "../services/userService";
 
 import { Option } from "antd/lib/mentions";
@@ -42,24 +42,28 @@ export class FindRooms extends React.Component<Props, State> {
     };
 
     connection.on("OnAdd", (room: Room, by: string) => {
+      [room] = mapRooms([room]);
       if (by !== user?.id) {
         this.setState(prev => ({ availableRooms: [...prev.availableRooms, room] }));
       }
     });
 
     connection.on("OnChange", (room: Room) => {
+      [room] = mapRooms([room]);
       if (!isMy(room)) {
         this.setState(prev => ({ availableRooms: [...replace(prev.availableRooms, room)] }));
       }
     });
 
     connection.on("OnRemove", (room: Room) => {
+      [room] = mapRooms([room]);
       if (!isMy(room)) {
         this.setState(prev => ({ availableRooms: [...prev.availableRooms.filter(r => r.id !== room.id)] }));
       }
     });
 
     connection.on("OnEnter", (room: Room, by: string) => {
+      [room] = mapRooms([room]);
       if (isMy(room)) {
         if (by === user?.id) {
           this.setState(prev => ({
@@ -72,6 +76,7 @@ export class FindRooms extends React.Component<Props, State> {
     });
 
     connection.on("OnLeave", (room: Room, by: string) => {
+      [room] = mapRooms([room]);
       if (!isMy(room)) {
         if (by === user?.id) {
           this.setState(prev => ({
@@ -104,7 +109,8 @@ export class FindRooms extends React.Component<Props, State> {
 
   render() {
     const { filter } = this.state;
-    const filtredRooms = this.filter(filter);
+    const filtredRooms = this.filter(filter)
+      .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
     const roomsCards = filtredRooms.map(r => {
       const action = { action: () => this.enter(r.id), title: 'Enter a room' };
       return (

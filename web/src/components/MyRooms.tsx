@@ -1,6 +1,6 @@
 import { Col, Row } from "antd";
 import React from "react";
-import { Room, roomsService } from "../services/roomsService";
+import { mapRooms, Room, roomsService } from "../services/roomsService";
 import { userService } from "../services/userService";
 
 import { connection } from "../realtime/roomsHub";
@@ -35,24 +35,28 @@ export class MyRooms extends React.Component<Props, State> {
     };
 
     connection.on("OnAdd", (room: Room, by: string) => {
+      [room] = mapRooms([room]);
       if (by === user?.id) {
         this.setState(prev => ({ myRooms: [...prev.myRooms, room] }));
       }
     });
 
     connection.on("OnChange", (room: Room, by: string) => {
+      [room] = mapRooms([room]);
       if (isMy(room)) {
         this.setState(prev => ({ myRooms: [...replace(prev.myRooms, room)] }));
       }
     });
 
     connection.on("OnRemove", (room: Room, by: string) => {
+      [room] = mapRooms([room]);
       if (isMy(room)) {
         this.setState(prev => ({ myRooms: [...prev.myRooms.filter(r => r.id !== room.id)] }));
       }
     });
 
     connection.on("OnEnter", (room: Room, by: string) => {
+      [room] = mapRooms([room]);
       if (isMy(room)) {
         if (by === user?.id) {
           this.setState(prev => ({
@@ -66,6 +70,7 @@ export class MyRooms extends React.Component<Props, State> {
     });
 
     connection.on("OnLeave", (room: Room, by: string) => {
+      [room] = mapRooms([room]);
       if (isMy(room)) {
         this.setState(prev => ({ myRooms: [...replace(prev.myRooms, room)] }));
       } else {
@@ -106,22 +111,24 @@ export class MyRooms extends React.Component<Props, State> {
 
   render() {
     const { myRooms } = this.state;
-    const upcomingCards = myRooms.map(r => {
-      const secondary = [];
-      //const startable = new Date(r.startDate).getTime() - Date.now() < 1000 * 60 * 5 && r.participants.length > 1;
-      const primary = { action: () => this.join(r.id), title: 'Join a room' };
-      if (r.hostUserId === userService.user?.id) {
-        secondary.push({ action: () => this.remove(r.id), title: 'Remove' });
-      } else {
-        secondary.push({ action: () => this.leave(r.id), title: 'Leave' });
-      }
+    const upcomingCards = myRooms
+      .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+      .map(r => {
+        const secondary = [];
+        //const startable = new Date(r.startDate).getTime() - Date.now() < 1000 * 60 * 5 && r.participants.length > 1;
+        const primary = { action: () => this.join(r.id), title: 'Join a room' };
+        if (r.hostUserId === userService.user?.id) {
+          secondary.push({ action: () => this.remove(r.id), title: 'Remove' });
+        } else {
+          secondary.push({ action: () => this.leave(r.id), title: 'Leave' });
+        }
 
-      return (
-        <Col xl={4} md={6} sm={8} xs={12}>
-          <RoomCard room={r} primaryAction={primary} secondaryActions={secondary} />
-        </Col >
-      )
-    });
+        return (
+          <Col xl={4} md={6} sm={8} xs={12}>
+            <RoomCard room={r} primaryAction={primary} secondaryActions={secondary} />
+          </Col >
+        )
+      });
 
     return (
       <>
