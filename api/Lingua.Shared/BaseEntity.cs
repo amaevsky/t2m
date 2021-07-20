@@ -1,7 +1,9 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace Lingua.Shared
 {
+    [BsonIgnoreExtraElements]
     public abstract class BaseEntity
     {
         protected BaseEntity()

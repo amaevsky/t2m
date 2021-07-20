@@ -27,6 +27,8 @@ export interface User {
   id: string;
   firstname: string;
   lastname: string;
+  country: string;
+  dateOfBirth: string;
   email: string;
   avatarUrl: string;
   targetLanguage: string;

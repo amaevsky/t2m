@@ -27,7 +27,19 @@ namespace Lingua.API.Controllers
         [Route("languages")]
         public IActionResult Languages()
         {
-            return Ok(new List<string> { "English", "Russian", "German", "French", "Spanish", "Japanese", "Italian", "Chinese", "Korean" });
+            return Ok(new List<string> {
+                "English",
+                "Arabic",
+                "French",
+                "German",
+                "Italian",
+                "Japanese",
+                "Korean",
+                "Mandarin",
+                "Portuguese",
+                "Russian",
+                "Spanish",
+            });
         }
 
         [HttpGet]
