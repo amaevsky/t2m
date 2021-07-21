@@ -175,7 +175,8 @@ namespace Lingua.API.Controllers
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var room = await _roomService.Get(roomId);
-            await _roomService.Remove(roomId);
+            room.IsRemoved = true;
+            await _roomService.Update(room);
             await _roomsHub.Clients.All.OnRemove(room, userId);
             await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 

@@ -38,8 +38,10 @@ namespace Lingua.Data.Mongo
 
         public Task<IEnumerable<Room>> Get(Expression<Func<Room, bool>> filter = null)
         {
-            if (filter == null) filter = room => true; 
-            return Task.FromResult(_rooms.Find(filter).ToEnumerable());
+            if (filter == null) filter = room => true;
+            Expression<Func<Room, bool>> withoutRemoved = (Room r) => !r.IsRemoved;
+            var final = Builders<Room>.Filter.And(filter, withoutRemoved);
+            return Task.FromResult(_rooms.Find(final).ToEnumerable());
         }
 
         public async Task Remove(Guid roomId)
