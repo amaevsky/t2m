@@ -80,10 +80,12 @@ class HeaderComponent extends React.Component<Props, State> {
 
     return (
       <>
-        <header style={{ lineHeight: '78px', padding: '0 50px' }} className='primary-background'>
+        <header style={{ lineHeight: '78px', padding: '0 26px' }} className='primary-background'>
           <Row justify='space-between' align='middle'>
             <Col>
-              <Link to="/" className="primary-color" style={{ fontSize: 32, fontWeight: 700 }}>talk2me</Link>
+              <Link to="/">
+                <img height={45} src='/talk2me-unfilled.png' />
+              </Link>
             </Col>
             {userService.isAccountReady &&
               <>
