@@ -5,7 +5,7 @@ let base = 'https://api.t2m.app';
 if (process.env.NODE_ENV === 'development') {
   base = 'https://localhost:44361';
 } else if (process.env.NODE_ENV as string === 'staging') {
-  'https://staging-api.t2m.app';
+  base = 'https://staging-api.t2m.app';
 }
 
 export const BASE_URL = base;
