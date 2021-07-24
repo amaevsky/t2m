@@ -1,9 +1,14 @@
 import { notification } from 'antd';
 import axios, { AxiosError } from 'axios';
 
-export const BASE_URL = process.env.NODE_ENV === 'development'
-  ? 'https://localhost:44361'
-  : 'https://lingua-api.azurewebsites.net';
+let base = 'https://api.t2m.app';
+if (process.env.NODE_ENV === 'development') {
+  base = 'https://localhost:44361';
+} else if (process.env.NODE_ENV as string === 'staging') {
+  'https://staging-api.t2m.app';
+}
+
+export const BASE_URL = base;
 
 export const API_BASE_URL = `${BASE_URL}/api`;
 
@@ -42,7 +47,7 @@ class Http {
     if (ex.response?.status === 400) {
       notification.error({ message, placement: 'bottomRight' });
     }
-    
+
     return { errors: [message] };
   }
 

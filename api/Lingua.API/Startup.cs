@@ -42,7 +42,7 @@ namespace Lingua.API
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:3000", "https://lingua-web.azurewebsites.net/");
+                        builder.WithOrigins("http://localhost:3000", "https://staging.t2m.app", "https://t2m.app", "https://www.t2m.app");
                         builder.AllowAnyMethod();
                         builder.AllowAnyHeader();
                         builder.AllowCredentials();
