@@ -51,6 +51,7 @@ namespace Lingua.API
             });
 
             services.AddSignalR();
+            services.AddAutoMapper(typeof(Startup));
 
 
             services.AddSingleton<IAuthClient, AuthClient>();
@@ -60,6 +61,7 @@ namespace Lingua.API
             services.AddSingleton<IRoomRepository, RoomRepository>();
             services.AddSingleton<ITokenProvider, RefreshableTokenProvider>();
             services.AddSingleton<IEmailService, GmailService>();
+            services.AddSingleton<IRoomService, RoomService>();
 
             services.AddOptions();
             services.Configure<ZoomClientOptions>(Configuration.GetSection("ZoomClientOptions"));
