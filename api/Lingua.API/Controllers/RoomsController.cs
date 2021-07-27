@@ -191,6 +191,19 @@ namespace Lingua.API.Controllers
             var user = await _userService.Get(userId);
             var room = await _roomService.Get(roomId);
 
+            if (room.StartDate < DateTime.UtcNow)
+            {
+                return BadRequest("This room is already started.");
+            }
+            if (!room.Participants.Any(p => p.Id == userId))
+            {
+                return BadRequest("You have already entered this room.");
+            }
+            if (room.Participants.Count == room.MaxParticipants)
+            {
+                return BadRequest("This room is already full.");
+            }
+
             var start = room.StartDate;
             var end = room.StartDate.AddMinutes(room.DurationInMinutes);
 
