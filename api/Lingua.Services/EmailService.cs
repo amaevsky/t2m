@@ -1,15 +1,10 @@
-﻿using System;
+﻿using Lingua.Shared;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
-namespace Lingua.Shared
+namespace Lingua.Services
 {
-    public interface IEmailService
-    {
-        Task SendAsync(string subject, string body, params string[] recipients);
-    }
-
     public class GmailService : IEmailService
     {
         public async Task SendAsync(string subject, string body, params string[] recipients)

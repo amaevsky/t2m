@@ -1,6 +1,4 @@
-﻿using Lingua.Shared;
-using Lingua.Shared.Users;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -9,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Lingua.Data.Mongo
 {
-    public class UserService : IUserService
+    public class UserRepository : IUserRepository
     {
         private readonly IMongoCollection<User> _users;
 
-        public UserService(IOptions<MongoOptions> options)
+        public UserRepository(IOptions<MongoOptions> options)
         {
             var client = new MongoClient(options.Value.ConnectionString);
             var database = client.GetDatabase(options.Value.Database);

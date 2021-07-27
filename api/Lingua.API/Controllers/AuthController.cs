@@ -1,4 +1,5 @@
-﻿using Lingua.ZoomIntegration;
+﻿using Lingua.Data;
+using Lingua.ZoomIntegration;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -16,13 +17,13 @@ namespace Lingua.API.Controllers
     {
         private readonly IAuthClient _zoomAuthService;
         private readonly IUserService _zoomUserService;
-        private readonly Shared.Users.IUserService _userService;
+        private readonly IUserRepository _userRepository;
 
-        public AuthController(IAuthClient zoomAuthService, IUserService zoomUserService, Shared.Users.IUserService userService)
+        public AuthController(IAuthClient zoomAuthService, IUserService zoomUserService, IUserRepository userRepository)
         {
             _zoomAuthService = zoomAuthService;
             _zoomUserService = zoomUserService;
-            _userService = userService;
+            _userRepository = userRepository;
         }
 
         [HttpGet]
@@ -31,22 +32,22 @@ namespace Lingua.API.Controllers
         {
             var response = await _zoomAuthService.RequestAccessToken(authCode);
             var zoomUser = await _zoomUserService.GetUserProfile(response.AccessToken);
-            var user = (await _userService.Get(u => u.Email == zoomUser.Email)).FirstOrDefault();
+            var user = (await _userRepository.Get(u => u.Email == zoomUser.Email)).FirstOrDefault();
             var isNewAccount = user == null;
             if (isNewAccount)
             {
-                user = new Shared.User()
+                user = new User()
                 {
                     Email = zoomUser.Email,
                     Firstname = zoomUser.Firstname,
                     Lastname = zoomUser.Lastname,
                     AvatarUrl = zoomUser.PicUrl,
-                    ZoomProperties = new Shared.ZoomProperties
+                    ZoomProperties = new ZoomProperties
                     {
                         AccessTokens = response
                     }
                 };
-                await _userService.Create(user);
+                await _userRepository.Create(user);
             }
             else
             {
@@ -55,7 +56,7 @@ namespace Lingua.API.Controllers
                     user.AvatarUrl = zoomUser.PicUrl;
                 }
                 user.ZoomProperties.AccessTokens = response;
-                await _userService.Update(user);
+                await _userRepository.Update(user);
             }
 
             var claims = new List<Claim>
@@ -81,7 +82,7 @@ namespace Lingua.API.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-                var user = await _userService.Get(userId);
+                var user = await _userRepository.Get(userId);
                 return Ok();
             }
 
@@ -95,7 +96,7 @@ namespace Lingua.API.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-                var user = await _userService.Get(userId);
+                var user = await _userRepository.Get(userId);
 
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             }

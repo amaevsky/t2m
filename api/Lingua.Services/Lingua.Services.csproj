@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ZoomIntegration\Lingua.ZoomIntegration.csproj" />
+    <ProjectReference Include="..\Lingua.Shared\Lingua.Shared.csproj" />
   </ItemGroup>
 
 </Project>

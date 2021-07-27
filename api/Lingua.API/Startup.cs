@@ -1,5 +1,7 @@
 using Lingua.API.Realtime;
+using Lingua.Data;
 using Lingua.Data.Mongo;
+using Lingua.Services;
 using Lingua.Shared;
 using Lingua.ZoomIntegration;
 using Lingua.ZoomIntegration.Auth;
@@ -8,7 +10,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 namespace Lingua.API
@@ -53,10 +54,10 @@ namespace Lingua.API
 
 
             services.AddSingleton<IAuthClient, AuthClient>();
-            services.AddSingleton<IUserService, ZoomIntegration.UserService>();
-            services.AddSingleton<Shared.Users.IUserService, Data.Mongo.UserService>();
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IMeetingService, MeetingService>();
-            services.AddSingleton<IRoomService, RoomService>();
+            services.AddSingleton<IRoomRepository, RoomRepository>();
             services.AddSingleton<ITokenProvider, RefreshableTokenProvider>();
             services.AddSingleton<IEmailService, GmailService>();
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Lingua.Shared.Users
+namespace Lingua.Data
 {
-    public interface IUserService
+    public interface IUserRepository
     {
         Task<User> Create(User user);
         Task Update(User updated);

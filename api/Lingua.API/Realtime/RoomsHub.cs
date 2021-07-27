@@ -1,8 +1,6 @@
-﻿using Lingua.Shared;
+﻿using Lingua.Data;
 using Microsoft.AspNetCore.SignalR;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Lingua.API.Realtime
