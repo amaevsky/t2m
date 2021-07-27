@@ -19,7 +19,7 @@ export const UserProfileEdit = (props: { afterSave?: () => void }) => {
       name="basic"
       labelCol={{ span: 7 }}
       wrapperCol={{ span: 17 }}
-      initialValues={{ ...user, dateOfBirth: user?.dateOfBirth ? moment(user?.dateOfBirth).utc() : null}}
+      initialValues={{ ...user, dateOfBirth: user?.dateOfBirth ? moment(user?.dateOfBirth).utc() : null }}
       onFinish={(values) => save(values)}
     >
       <Form.Item
@@ -85,9 +85,18 @@ export const UserProfileEdit = (props: { afterSave?: () => void }) => {
       <Form.Item
         label="Date of birth"
         name="dateOfBirth"
-        rules={[{ required: true, message: 'Please select your date of birth.' }]}
+        rules={[
+          { required: true, message: 'Please select your date of birth.' },
+          {
+            validator: (_, value: moment.Moment) => {
+              return value.clone().add(14, 'year') > moment()
+                ? Promise.reject('You have to be at least 14 years old.')
+                : Promise.resolve();
+            }
+          }
+        ]}
       >
-        <DatePicker  format='L' style={{ width: '100%' }} />
+        <DatePicker format='L' style={{ width: '100%' }} />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
