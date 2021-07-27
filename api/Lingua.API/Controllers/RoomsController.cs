@@ -195,7 +195,7 @@ namespace Lingua.API.Controllers
             {
                 return BadRequest("This room is already started.");
             }
-            if (!room.Participants.Any(p => p.Id == userId))
+            if (room.Participants.Any(p => p.Id == userId))
             {
                 return BadRequest("You have already entered this room.");
             }

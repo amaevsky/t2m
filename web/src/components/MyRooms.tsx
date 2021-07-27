@@ -105,8 +105,13 @@ export class MyRooms extends React.Component<Props, State> {
   }
 
   private async join(roomId: string) {
+    const ref = window.open(undefined, '_blank') as any;
     const link = await roomsService.join(roomId);
-    window.open(link, '_blank')
+    if (link) {
+      ref.location = link;
+    } else {
+      ref.close();
+    }
   }
 
   render() {
