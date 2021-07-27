@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Lingua.Data;
 using Lingua.Shared;
 using Lingua.ZoomIntegration;
 using Lingua.ZoomIntegration.Auth;
@@ -18,19 +17,16 @@ namespace Lingua.Services
         private readonly IUserRepository _userRepository;
         private readonly ITokenProvider _tokenProvider;
         private readonly IMeetingService _zoomMeetingService;
-        private readonly IMapper _mapper;
 
         public RoomService(IRoomRepository roomRepository,
                             IUserRepository userRepository,
                             ITokenProvider tokenProvider,
-                            IMeetingService zoomMeetingService,
-                            IMapper mapper)
+                            IMeetingService zoomMeetingService)
         {
             _roomRepository = roomRepository;
             _userRepository = userRepository;
             _tokenProvider = tokenProvider;
             _zoomMeetingService = zoomMeetingService;
-            _mapper = mapper;
         }
 
         public async Task<List<Room>> AvailableForUser(SearchRoomOptions options, Guid userId)
@@ -47,10 +43,10 @@ namespace Lingua.Services
                 rooms = ApplySearchFilter(options, rooms);
             }
 
-            return _mapper.Map<List<Room>>(rooms.ToList());
+            return rooms.ToList();
         }
 
-        private static IEnumerable<Data.Room> ApplySearchFilter(SearchRoomOptions options, IEnumerable<Data.Room> rooms)
+        private static IEnumerable<Room> ApplySearchFilter(SearchRoomOptions options, IEnumerable<Room> rooms)
         {
             if (options?.Levels?.Any() == true)
             {
@@ -84,7 +80,7 @@ namespace Lingua.Services
                                )
                             );
 
-            return _mapper.Map<List<Room>>(rooms.ToList());
+            return rooms.ToList();
         }
 
         public async Task<Room> Create(CreateRoomOptions options, Guid userId)
@@ -103,7 +99,7 @@ namespace Lingua.Services
                 throw new Exception("You have conflicting rooms for this time frame");
             }
 
-            var room = new Data.Room
+            var room = new Room
             {
                 HostUserId = userId,
                 Language = options.Language,
@@ -118,7 +114,7 @@ namespace Lingua.Services
 
             await _roomRepository.Create(room);
 
-            return _mapper.Map<Room>(room);
+            return room;
         }
 
         public async Task<Room> Update(UpdateRoomOptions options, Guid userId)
@@ -140,7 +136,7 @@ namespace Lingua.Services
             await _roomRepository.Update(room);
             //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 
-            return _mapper.Map<Room>(room);
+            return room;
         }
 
         public async Task<Room> Remove(Guid roomId, Guid userId)
@@ -150,7 +146,7 @@ namespace Lingua.Services
             await _roomRepository.Update(room);
             //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 
-            return _mapper.Map<Room>(room);
+            return room;
         }
 
         public async Task<Room> Enter(Guid roomId, Guid userId)
@@ -193,7 +189,7 @@ namespace Lingua.Services
             await _roomRepository.Update(room);
             //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 
-            return _mapper.Map<Room>(room);
+            return room;
         }
 
         public async Task<Room> Leave(Guid roomId, Guid userId)
@@ -205,7 +201,7 @@ namespace Lingua.Services
             await _roomRepository.Update(room);
             //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 
-            return _mapper.Map<Room>(room);
+            return room;
         }
 
         public async Task<Room> Join(Guid roomId, Guid userId)
@@ -213,7 +209,7 @@ namespace Lingua.Services
             var room = await _roomRepository.Get(roomId);
             if (room.JoinUrl != null)
             {
-                return _mapper.Map<Room>(room);
+                return room;
             }
 
             var user = await _userRepository.Get(userId);
@@ -246,7 +242,7 @@ namespace Lingua.Services
                 await _userRepository.Update(user);
             }
 
-            return _mapper.Map<Room>(room);
+            return room;
 
         }
     }

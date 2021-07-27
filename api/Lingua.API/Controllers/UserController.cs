@@ -1,10 +1,9 @@
-﻿using Lingua.Data;
+﻿using Lingua.Shared;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using User = Lingua.Data.User;
 
 namespace Lingua.API.Controllers
 {
