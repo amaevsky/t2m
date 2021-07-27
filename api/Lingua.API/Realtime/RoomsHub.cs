@@ -1,4 +1,4 @@
-﻿using Lingua.Data;
+﻿using Lingua.Shared;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Threading.Tasks;

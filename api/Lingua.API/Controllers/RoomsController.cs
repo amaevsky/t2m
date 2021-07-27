@@ -1,17 +1,11 @@
 ﻿using Lingua.API.Realtime;
-using Lingua.Data;
 using Lingua.Shared;
-using Lingua.ZoomIntegration;
-using Lingua.ZoomIntegration.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using TimeZoneConverter;
-using Room = Lingua.Data.Room;
 
 namespace Lingua.API.Controllers
 {
@@ -19,27 +13,13 @@ namespace Lingua.API.Controllers
     [Route("api/[controller]")]
     public class RoomsController : ControllerBase
     {
-        private readonly IMeetingService _zoomMeetingService;
-        private readonly IRoomRepository _roomRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly ITokenProvider _tokenProvider;
+        private readonly IRoomService _roomService;
         private readonly IHubContext<RoomsHub, IRoomsRealtimeClient> _roomsHub;
-        private readonly IEmailService _emailService;
 
-        public RoomsController(IMeetingService zoomMeetingService,
-                               IRoomRepository roomRepository,
-                               IUserRepository userRepository,
-                               ITokenProvider tokenProvider,
-                               IHubContext<RoomsHub, IRoomsRealtimeClient> roomsHub,
-                               IEmailService emailService
-                               )
+        public RoomsController(IRoomService roomService, IHubContext<RoomsHub, IRoomsRealtimeClient> roomsHub)
         {
-            _zoomMeetingService = zoomMeetingService;
-            _roomRepository = roomRepository;
-            _userRepository = userRepository;
-            _tokenProvider = tokenProvider;
+            _roomService = roomService;
             _roomsHub = roomsHub;
-            _emailService = emailService;
         }
 
         [HttpGet]
@@ -47,43 +27,9 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> Available([FromQuery] SearchRoomOptions options)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var user = await _userRepository.Get(userId);
+            var rooms = await _roomService.AvailableForUser(options, userId);
 
-            var rooms = (await _roomRepository.Get(r =>
-                                    r.StartDate > DateTime.UtcNow
-                                    && r.Language == user.TargetLanguage
-                                    && !r.Participants.Any(p => p.Id == userId)))
-                .Where(r => r.Participants.Count < r.MaxParticipants);
-
-            if (options != null)
-            {
-                rooms = ApplySearchFilter(options, rooms);
-            }
-
-            return Ok(rooms.ToList());
-        }
-
-        private static IEnumerable<Room> ApplySearchFilter(SearchRoomOptions options, IEnumerable<Room> rooms)
-        {
-            if (options?.Levels?.Any() == true)
-            {
-                rooms = rooms.Where(r => options.Levels.Contains(r.Host.LanguageLevel));
-            }
-
-            if (options?.Days?.Any() == true)
-            {
-                var tz = TimeZoneInfo.FindSystemTimeZoneById(TZConvert.IanaToWindows(options.Timezone));
-                rooms = rooms.Where(r => options.Days.Contains(TimeZoneInfo.ConvertTimeFromUtc(r.StartDate, tz).DayOfWeek));
-            }
-
-            if ((bool)options?.TimeFrom.HasValue && (bool)options?.TimeTo.HasValue)
-            {
-                //store room.till date
-                rooms = rooms.Where(r => r.StartDate.TimeOfDay > options.TimeFrom.Value.TimeOfDay
-                                        && r.StartDate.TimeOfDay < options.TimeTo.Value.TimeOfDay);
-            }
-
-            return rooms;
+            return Ok(rooms);
         }
 
         [HttpGet]
@@ -91,17 +37,9 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> Upcoming()
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var user = await _userRepository.Get(userId);
+            var rooms = await _roomService.UpcomingForUser(userId);
 
-            var rooms = await _roomRepository.Get(r =>
-                            r.Participants.Any(p => p.Id == userId)
-                            && (
-                                (r.EndDate > DateTime.UtcNow && r.Participants.Count > 1)
-                                || r.StartDate > DateTime.UtcNow
-                               )
-                            );
-
-            return Ok(rooms.ToList());
+            return Ok(rooms);
         }
 
 
@@ -110,38 +48,17 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> Create(CreateRoomOptions options)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var user = await _userRepository.Get(userId);
-
-            var start = options.StartDate;
-            var end = options.StartDate.AddMinutes(options.DurationInMinutes);
-
-            var conflicts = await _roomRepository.Get(r =>
-                                r.StartDate < end
-                                && start < r.EndDate
-                                && r.Participants.Any(p => p.Id == userId));
-
-            if (conflicts.Any())
+            try
             {
-                return BadRequest("You have conflicting rooms for this time frame");
+                var room = await _roomService.Create(options, userId);
+                await _roomsHub.Clients.All.OnAdd(room, userId);
+
+                return Ok(room);
             }
-
-            var room = new Room
+            catch (Exception ex)
             {
-                HostUserId = userId,
-                Language = options.Language,
-                StartDate = start,
-                EndDate = end,
-                DurationInMinutes = options.DurationInMinutes,
-                Topic = options.Topic,
-                MaxParticipants = 2
-            };
-
-            room.Participants.Add(user);
-
-            await _roomRepository.Create(room);
-            await _roomsHub.Clients.All.OnAdd(room, userId);
-
-            return Ok(room);
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]
@@ -149,24 +66,8 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> Update(UpdateRoomOptions options)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
-            var room = await _roomRepository.Get(options.RoomId);
-            room.Topic = options.Topic;
-            if (options.StartDate.HasValue)
-            {
-                room.StartDate = options.StartDate.Value;
-                room.EndDate = options.StartDate.Value.AddMinutes(room.DurationInMinutes);
-            }
-
-            if (options.DurationInMinutes.HasValue)
-            {
-                room.DurationInMinutes = options.DurationInMinutes.Value;
-                room.EndDate = room.StartDate.AddMinutes(options.DurationInMinutes.Value);
-            }
-
-            await _roomRepository.Update(room);
+            var room = await _roomService.Update(options, userId);
             await _roomsHub.Clients.All.OnUpdate(room, userId);
-            await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 
             return Ok();
         }
@@ -176,11 +77,8 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> Remove(Guid roomId)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var room = await _roomRepository.Get(roomId);
-            room.IsRemoved = true;
-            await _roomRepository.Update(room);
+            var room = await _roomService.Remove(roomId, userId);
             await _roomsHub.Clients.All.OnRemove(room, userId);
-            await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 
             return Ok();
         }
@@ -190,46 +88,17 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> Enter(Guid roomId)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var user = await _userRepository.Get(userId);
-            var room = await _roomRepository.Get(roomId);
-
-            if (room.StartDate < DateTime.UtcNow)
+            try
             {
-                return BadRequest("This room is already started.");
+                var room = await _roomService.Enter(roomId, userId);
+                await _roomsHub.Clients.All.OnEnter(room, userId);
+
+                return Ok();
             }
-            if (room.Participants.Any(p => p.Id == userId))
+            catch (Exception ex)
             {
-                return BadRequest("You have already entered this room.");
+                return BadRequest(ex.Message);
             }
-            if (room.Participants.Count == room.MaxParticipants)
-            {
-                return BadRequest("This room is already full.");
-            }
-
-            var start = room.StartDate;
-            var end = room.StartDate.AddMinutes(room.DurationInMinutes);
-
-            var conflicts = await _roomRepository.Get(r =>
-                                r.StartDate < end
-                                && start < r.EndDate
-                                && r.Participants.Any(p => p.Id == userId));
-
-            if (conflicts.Any())
-            {
-                return BadRequest("You have conflicting rooms for this time frame");
-            }
-
-            if (room.Participants.Count == room.MaxParticipants)
-            {
-                return BadRequest("Room is already full");
-            }
-
-            room.Participants.Add(user);
-            await _roomRepository.Update(room);
-            await _roomsHub.Clients.All.OnEnter(room, userId);
-            await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
-
-            return Ok();
         }
 
         [HttpGet]
@@ -237,13 +106,8 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> Leave(Guid roomId)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var user = await _userRepository.Get(userId);
-
-            var room = await _roomRepository.Get(roomId);
-            room.Participants.RemoveAll(p => p.Id == user.Id);
-            await _roomRepository.Update(room);
+            var room = await _roomService.Leave(roomId, userId);
             await _roomsHub.Clients.All.OnLeave(room, userId);
-            await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 
             return Ok();
         }
@@ -252,45 +116,10 @@ namespace Lingua.API.Controllers
         [Route("join/{roomId}")]
         public async Task<IActionResult> Join(Guid roomId)
         {
-            var room = await _roomRepository.Get(roomId);
-            if (room.JoinUrl != null)
-            {
-                return Ok(room.JoinUrl);
-            }
-
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var user = await _userRepository.Get(userId);
-            var accessTokens = user.ZoomProperties?.AccessTokens;
-
-            if (accessTokens == null)
-            {
-                return BadRequest();
-            }
-
-            var updated = await _tokenProvider.UseToken(accessTokens, async (accessTokens) =>
-            {
-
-                var request = new CreateMeetingRequest
-                {
-                    Topic = room.Topic,
-                    Duration = room.DurationInMinutes,
-                    StartTime = room.StartDate,
-                    Type = MeetingType.Scheduled,
-                    Timezone = "UTC"
-                };
-
-                var meeting = await _zoomMeetingService.CreateMeeting(accessTokens.AccessToken, request);
-                room.JoinUrl = meeting.JoinUrl;
-                await _roomRepository.Update(room);
-            });
-
-            if (updated)
-            {
-                await _userRepository.Update(user);
-            }
+            var room = await _roomService.Join(roomId, userId);
 
             return Ok(room.JoinUrl);
-
         }
     }
 }
