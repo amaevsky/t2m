@@ -5,6 +5,11 @@ namespace Lingua.Shared
 {
     public class Room : AuditableEntity
     {
+        public Room()
+        {
+            Participants = new List<User>();
+        }
+
         public string Topic { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

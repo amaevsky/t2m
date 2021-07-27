@@ -1,4 +1,4 @@
-﻿using Lingua.Data;
+﻿using Lingua.Shared;
 using Lingua.ZoomIntegration;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

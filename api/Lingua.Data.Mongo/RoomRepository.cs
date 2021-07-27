@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Lingua.Shared;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;

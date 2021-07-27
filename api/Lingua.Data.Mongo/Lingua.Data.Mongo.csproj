@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Lingua.Data\Lingua.Data.csproj" />
+    <ProjectReference Include="..\Lingua.Shared\Lingua.Shared.csproj" />
   </ItemGroup>
 
 </Project>
