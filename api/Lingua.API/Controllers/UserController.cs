@@ -1,13 +1,10 @@
-﻿using Lingua.Shared;
-using Lingua.ZoomIntegration;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Lingua.Data;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using User = Lingua.Data.User;
 
 namespace Lingua.API.Controllers
 {
@@ -15,11 +12,11 @@ namespace Lingua.API.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly Shared.Users.IUserService _userService;
+        private readonly IUserRepository _userRepository;
 
-        public UserController(Shared.Users.IUserService userService)
+        public UserController(IUserRepository userRepository)
         {
-            _userService = userService;
+            _userRepository = userRepository;
         }
 
 
@@ -28,7 +25,7 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> GetProfile()
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var user = await _userService.Get(userId);
+            var user = await _userRepository.Get(userId);
             return Ok(user);
         }
 
@@ -37,7 +34,7 @@ namespace Lingua.API.Controllers
         [Route("")]
         public async Task<IActionResult> Update([FromBody]User user)
         {
-            await _userService.Update(user);
+            await _userRepository.Update(user);
             return Ok();
         }
     }

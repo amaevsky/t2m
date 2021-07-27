@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lingua.Data.Mongo\Lingua.Data.Mongo.csproj" />
+    <ProjectReference Include="..\Lingua.Services\Lingua.Services.csproj" />
+    <ProjectReference Include="..\Lingua.Shared\Lingua.Shared.csproj" />
     <ProjectReference Include="..\ZoomIntegration\Lingua.ZoomIntegration.csproj" />
   </ItemGroup>
 

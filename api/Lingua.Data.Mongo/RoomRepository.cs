@@ -1,5 +1,4 @@
-﻿using Lingua.Shared;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -8,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Lingua.Data.Mongo
 {
-    public class RoomService : IRoomService
+    public class RoomRepository : IRoomRepository
     {
         private readonly IMongoCollection<Room> _rooms;
 
-        public RoomService(IOptions<MongoOptions> options)
+        public RoomRepository(IOptions<MongoOptions> options)
         {
             var client = new MongoClient(options.Value.ConnectionString);
             var database = client.GetDatabase(options.Value.Database);

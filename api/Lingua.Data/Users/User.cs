@@ -1,8 +1,10 @@
 ﻿using Lingua.ZoomIntegration;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 
-namespace Lingua.Shared
+namespace Lingua.Data
 {
+    [BsonIgnoreExtraElements]
     public class User : AuditableEntity
     {
         public string Lastname { get; set; }

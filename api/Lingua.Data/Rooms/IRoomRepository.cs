@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Lingua.Shared
+namespace Lingua.Data
 {
-    public interface IRoomService
+    public interface IRoomRepository
     {
         Task<Room> Create(Room room);
         Task Update(Room updated);
