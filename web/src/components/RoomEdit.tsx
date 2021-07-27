@@ -32,11 +32,14 @@ export class RoomEdit extends React.Component<Props, State> {
       return !!(dateString.match(/am|pm/i) || date.toString().match(/am|pm/i));
     }
 
+    const timeStep = 10;
+    const startDate = moment().add('minute', timeStep - (moment().minutes() % timeStep));
+
     return (
       <Form
         labelCol={{ span: 5 }}
         wrapperCol={{ span: 19 }}
-        initialValues={{ language: user?.targetLanguage }}
+        initialValues={{ language: user?.targetLanguage, startDate }}
         onFinish={(values) => this.edit(values)}
       >
         <Form.Item
@@ -57,12 +60,13 @@ export class RoomEdit extends React.Component<Props, State> {
           <DatePicker
             style={{ width: '100%' }}
             showNow={false}
+            inputReadOnly={true}
             disabledDate={(date) => date && date < moment().startOf('day')}
             disabledTime={(date) => {
               if (date && date < moment().endOf('day')) {
                 return {
                   disabledHours: () => Array.from({ length: 24 }, (_, i) => i).filter(h => h < moment().hour()),
-                  disabledMinutes: () => Array.from({ length: 6 }, (_, i) => i * 10).filter(m => date.hour() === moment().hour() && m < moment().minute())
+                  disabledMinutes: () => Array.from({ length: 60 / timeStep }, (_, i) => i * timeStep).filter(m => date.hour() === moment().hour() && m < moment().minute())
                 }
               }
 
