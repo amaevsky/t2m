@@ -26,7 +26,8 @@ export class Login extends React.Component<any, State> {
 
     if (userService.isAuthenticated) {
       if (userService.isAccountReady) {
-        this.props.history.push("/");
+        const { from } = this.props.location.state || { from: { pathname: "/" } };
+        this.props.history.push(from);
       } else {
         this.props.history.push("/account/setup");
       }
