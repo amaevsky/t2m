@@ -5,11 +5,23 @@ import App from './components/App';
 import './styles/index.less';
 
 import { configService } from './services/configService';
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import { Landing } from './components/Landing';
+import { userService } from './services/userService';
 
-configService.initialize().then(() =>
+Promise.all([
+  configService.initialize(),
+  userService.initialize()
+]).then(() =>
   ReactDOM.render(
     <React.StrictMode>
-      <App />
+
+      <Router>
+        <Switch>
+          <Route path="/landing" component={Landing} />
+          <Route path="/" component={App} />
+        </Switch>
+      </Router>
     </React.StrictMode>,
     document.getElementById('root')
   )

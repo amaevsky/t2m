@@ -12,8 +12,7 @@ export default class App extends React.Component<any> {
 
   render() {
     return (
-
-      <Router>
+      <>
         <Header />
         <div style={{ padding: '0 10px' }}>
           <Switch>
@@ -25,11 +24,7 @@ export default class App extends React.Component<any> {
             <PrivateRoute path="/" component={FindRooms} />
           </Switch>
         </div>
-        <Switch>
-
-
-        </Switch>
-      </Router>
+      </>
     );
   }
 }
