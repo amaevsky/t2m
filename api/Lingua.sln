@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingua.Data.Mongo", "Lingua
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingua.Services", "Lingua.Services\Lingua.Services.csproj", "{EB15A657-86B8-4623-A1C6-90755278A06B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lingua.Service.Test", "Lingua.Service.Test\Lingua.Service.Test.csproj", "{18CF3093-BDEC-4503-9D11-D9BAD2B040E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{EB15A657-86B8-4623-A1C6-90755278A06B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB15A657-86B8-4623-A1C6-90755278A06B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB15A657-86B8-4623-A1C6-90755278A06B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18CF3093-BDEC-4503-9D11-D9BAD2B040E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18CF3093-BDEC-4503-9D11-D9BAD2B040E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18CF3093-BDEC-4503-9D11-D9BAD2B040E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18CF3093-BDEC-4503-9D11-D9BAD2B040E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

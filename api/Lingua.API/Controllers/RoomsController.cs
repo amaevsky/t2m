@@ -27,7 +27,7 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> Available([FromQuery] SearchRoomOptions options)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var rooms = await _roomService.AvailableForUser(options, userId);
+            var rooms = await _roomService.Available(options, userId);
 
             return Ok(rooms);
         }
@@ -37,7 +37,7 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> Upcoming()
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var rooms = await _roomService.UpcomingForUser(userId);
+            var rooms = await _roomService.Upcoming(userId);
 
             return Ok(rooms);
         }

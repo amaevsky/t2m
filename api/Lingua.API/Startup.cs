@@ -61,6 +61,7 @@ namespace Lingua.API
             services.AddSingleton<ITokenProvider, RefreshableTokenProvider>();
             services.AddSingleton<IEmailService, GmailService>();
             services.AddSingleton<IRoomService, RoomService>();
+            services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
             services.AddOptions();
             services.Configure<ZoomClientOptions>(Configuration.GetSection("ZoomClientOptions"));
