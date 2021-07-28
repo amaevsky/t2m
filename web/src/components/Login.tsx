@@ -2,7 +2,6 @@ import { Button, Col, Row, Spin, Typography } from 'antd';
 import React from 'react';
 import { configService } from '../services/configService';
 import { userService } from '../services/userService';
-import { Tile } from './Tile';
 
 const { Title } = Typography;
 
@@ -34,18 +33,18 @@ export class Login extends React.Component<any, State> {
     const { initializing } = this.state;
 
     return (
-      <Row align='middle' justify='center' style={{ minHeight: '100vh' }}>
+      <Row align='middle' justify='center' style={{ minHeight: 'calc(100vh - 78px)' }}>
         <Col>
           {initializing
             ? <Spin size='large'></Spin>
             :
-            <Tile style={{ padding: 16 }}>
-              <Title level={4}>Hi! Welcome to <b className='primary-color'>Talk2Me</b></Title>
+            <>
+              <Title level={2}>Welcome to <b className='primary-color'>Talk2Me</b></Title>
               <p>In order to use our app you have to login via Zoom</p>
               <Row justify='center' style={{ paddingTop: 16 }}>
-                <Button type='default' size='large' onClick={this.redirect}>Login via Zoom</Button>
+                <Button style={{ width: '100%' }} type='primary' size='large' onClick={this.redirect}>Login via Zoom</Button>
               </Row>
-            </Tile>
+            </>
           }
         </Col>
       </Row>
