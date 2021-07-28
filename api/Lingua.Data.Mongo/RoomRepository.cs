@@ -46,7 +46,8 @@ namespace Lingua.Data.Mongo
 
         public async Task Remove(Guid roomId)
         {
-            await _rooms.DeleteOneAsync(r => r.Id == roomId);
+            await _rooms.UpdateOneAsync(r => r.Id == roomId,
+                Builders<Room>.Update.Set(r => r.IsRemoved, true));
         }
 
         public async Task Update(Room updated)

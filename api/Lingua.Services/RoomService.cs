@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Lingua.Shared;
+﻿using Lingua.Shared;
 using Lingua.ZoomIntegration;
 using Lingua.ZoomIntegration.Auth;
 using System;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TimeZoneConverter;
-using Room = Lingua.Shared.Room;
 
 namespace Lingua.Services
 {
@@ -17,23 +15,26 @@ namespace Lingua.Services
         private readonly IUserRepository _userRepository;
         private readonly ITokenProvider _tokenProvider;
         private readonly IMeetingService _zoomMeetingService;
+        private readonly IDateTimeProvider _dateTime;
 
         public RoomService(IRoomRepository roomRepository,
                             IUserRepository userRepository,
                             ITokenProvider tokenProvider,
-                            IMeetingService zoomMeetingService)
+                            IMeetingService zoomMeetingService,
+                            IDateTimeProvider dateTime)
         {
             _roomRepository = roomRepository;
             _userRepository = userRepository;
             _tokenProvider = tokenProvider;
             _zoomMeetingService = zoomMeetingService;
+            _dateTime = dateTime;
         }
 
-        public async Task<List<Room>> AvailableForUser(SearchRoomOptions options, Guid userId)
+        public async Task<List<Room>> Available(SearchRoomOptions options, Guid userId)
         {
             var user = await _userRepository.Get(userId);
             var rooms = (await _roomRepository.Get(r =>
-                                    r.StartDate > DateTime.UtcNow
+                                    r.StartDate > _dateTime.UtcNow
                                     && r.Language == user.TargetLanguage
                                     && !r.Participants.Any(p => p.Id == userId)))
                 .Where(r => r.Participants.Count < r.MaxParticipants);
@@ -69,14 +70,14 @@ namespace Lingua.Services
             return rooms;
         }
 
-        public async Task<List<Room>> UpcomingForUser(Guid userId)
+        public async Task<List<Room>> Upcoming(Guid userId)
         {
             var user = await _userRepository.Get(userId);
             var rooms = await _roomRepository.Get(r =>
                             r.Participants.Any(p => p.Id == userId)
                             && (
-                                (r.EndDate > DateTime.UtcNow && r.Participants.Count > 1)
-                                || r.StartDate > DateTime.UtcNow
+                                (r.EndDate > _dateTime.UtcNow && r.Participants.Count > 1)
+                                || r.StartDate > _dateTime.UtcNow
                                )
                             );
 
@@ -89,10 +90,11 @@ namespace Lingua.Services
             var start = options.StartDate;
             var end = options.StartDate.AddMinutes(options.DurationInMinutes);
 
-            var conflicts = await _roomRepository.Get(r =>
+            var conflicts = (await _roomRepository.Get(r =>
                                 r.StartDate < end
                                 && start < r.EndDate
-                                && r.Participants.Any(p => p.Id == userId));
+                                && r.Participants.Any(p => p.Id == userId)))
+                            .Where(r => r.StartDate > _dateTime.UtcNow || r.Participants.Count == r.MaxParticipants);
 
             if (conflicts.Any())
             {
@@ -141,9 +143,8 @@ namespace Lingua.Services
 
         public async Task<Room> Remove(Guid roomId, Guid userId)
         {
+            await _roomRepository.Remove(roomId);
             var room = await _roomRepository.Get(roomId);
-            room.IsRemoved = true;
-            await _roomRepository.Update(room);
             //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
 
             return room;
@@ -154,7 +155,7 @@ namespace Lingua.Services
             var user = await _userRepository.Get(userId);
             var room = await _roomRepository.Get(roomId);
 
-            if (room.StartDate < DateTime.UtcNow)
+            if (room.StartDate < _dateTime.UtcNow)
             {
                 throw new Exception("This room is already started.");
             }
