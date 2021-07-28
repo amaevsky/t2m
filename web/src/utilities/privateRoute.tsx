@@ -14,7 +14,7 @@ export class PrivateRoute extends React.Component<any>  {
           ) : (
             <Redirect
               to={{
-                pathname: "/login",
+                pathname: "/landing",
                 state: { from: props.location }
               }}
             />

@@ -18,12 +18,6 @@ export class Login extends React.Component<any, State> {
   }
 
   async componentDidMount() {
-    try {
-      await userService.initialize();
-    } catch {
-
-    }
-
     if (userService.isAuthenticated) {
       if (userService.isAccountReady) {
         const { from } = this.props.location.state || { from: { pathname: "/" } };
