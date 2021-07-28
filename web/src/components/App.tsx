@@ -7,13 +7,16 @@ import { PrivateRoute } from '../utilities/privateRoute';
 import { LoginRedirect } from './LoginRedirect';
 import { Login } from './Login';
 import { AccountSetup } from './AccountSetup';
+import { Affix } from 'antd';
 
 export default class App extends React.Component<any> {
 
   render() {
     return (
       <>
-        <Header />
+        <Affix offsetTop={0}>
+          <Header />
+        </Affix>
         <div style={{ padding: '0 10px' }}>
           <Switch>
             <Route path="/redirect" component={LoginRedirect} />

@@ -80,7 +80,7 @@ class HeaderComponent extends React.Component<Props, State> {
 
     return (
       <>
-        <header style={{ lineHeight: '78px', padding: '0 26px' }} className='primary-background'>
+        <header>
           <Row justify='space-between' align='middle'>
             <Col>
               <Link to="/">
