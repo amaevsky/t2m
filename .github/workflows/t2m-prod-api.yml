@@ -29,6 +29,10 @@ jobs:
       working-directory: 'api'
       run: dotnet build --configuration Release
 
+    - name: Test
+      working-directory: 'api'
+      run: dotnet test --no-build --verbosity normal
+
     - name: dotnet publish
       working-directory: 'api'
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
