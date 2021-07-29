@@ -6,7 +6,7 @@ import { userService } from '../services/userService';
 import { UserProfileEdit } from './UserProfileEdit';
 import { RoomEdit } from './RoomEdit';
 import { Room, RoomCreateOptions, roomsService } from '../services/roomsService';
-import { MenuOutlined } from '@ant-design/icons';
+import { CalendarOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { IHasBreakpoint, withBreakpoint } from '../utilities/withBreakpoints';
 
 interface State {
@@ -29,54 +29,50 @@ class HeaderComponent extends React.Component<Props, State> {
 
     const { md } = this.props.breakpoint;
     const active = this.props.location.pathname;
+    const tabs =
+      <Menu overflowedIndicator={false} selectedKeys={[active]} style={{ background: 'initial', fontSize: 14, border: 'none', fontWeight: 600 }} mode='horizontal'>
+        {md ?
+          <>
+            <Menu.Item key='/' ><Link to='/'>Find a room</Link></Menu.Item>
+            <Menu.Item key='/rooms/my'><Link to='/rooms/my'>My rooms</Link></Menu.Item>
+          </>
+          :
+          <>
+            <Menu.Item key='/' ><Link to='/'><SearchOutlined style={{ fontSize: 16 }} /></Link></Menu.Item>
+            <Menu.Item key='/rooms/my'><Link to='/rooms/my'><CalendarOutlined style={{ fontSize: 16 }} /></Link></Menu.Item>
+          </>
+        }
+      </Menu>;
 
-    const tabItems =
-      <>
-        <Menu.Item key='/'><Link to='/'>Find a room</Link></Menu.Item>
-        <Menu.Item key='/rooms/my'><Link to='/rooms/my'>My rooms</Link></Menu.Item>
-      </>;
-
-    const accountActions =
-      <>
+    const accountMenu = (
+      <Menu mode='inline'>
         <Menu.Item key="edi2t">
           <Button size='small' type='link' onClick={() => this.setState({ isEditProfileOpen: true })}>Edit profile</Button>
         </Menu.Item>
         <Menu.Item key="signout">
           <Button size='small' type='link' onClick={() => this.logout()}>Sign out</Button>
         </Menu.Item>
-      </>
-
-    const tabs =
-      <Menu selectedKeys={[active]} style={{ background: 'initial', fontSize: 14, border: 'none', fontWeight: 600 }} mode='horizontal'>
-        {tabItems}
-      </Menu>;
-
-    const menu = (
-      <Menu mode='inline'>
-        {accountActions}
       </Menu>
     );
 
     const createBtn =
-      <Button
-        type='primary'
-        size='middle'
-        onClick={() => this.setState({ isAddRoomOpen: true })}
-      >Create a room
-      </Button>;
-
-    const mobile =
-      <Menu mode='vertical'>
-        <Menu.Item>
-          {createBtn}
-        </Menu.Item>
-        <Menu.ItemGroup title="Navigation">
-          {tabItems}
-        </Menu.ItemGroup>
-        <Menu.ItemGroup title="Account">
-          {accountActions}
-        </Menu.ItemGroup>
-      </Menu>;
+      md ?
+        <Button
+          type='primary'
+          size='middle'
+          onClick={() => this.setState({ isAddRoomOpen: true })}
+        >
+          Create a room
+        </Button>
+        :
+        <Button
+          type='primary'
+          size='middle'
+          shape='circle'
+          onClick={() => this.setState({ isAddRoomOpen: true })}
+        >
+          <PlusOutlined />
+        </Button >
 
     return (
       <>
@@ -89,45 +85,23 @@ class HeaderComponent extends React.Component<Props, State> {
             </Col>
             {!this.props.empty &&
               <>
-                {md &&
-                  <>
-                    <Col>
-                      <Row align='middle'>
-                        {tabs}
-                      </Row>
-                    </Col>
-                    <Col>
-                      <Row>
-                        <Space size='large'>
-                          {createBtn}
-                          <a role='button'>
-                            <Dropdown overlay={menu} trigger={['click']}>
-                              <Space>
-                                <MenuOutlined />
-                                <Avatar size='default' src={userService.user?.avatarUrl}></Avatar>
-                              </Space>
-                            </Dropdown>
-                          </a>
-                        </Space>
-                      </Row>
-
-                    </Col>
-                  </>
-                }
-
-                {!md &&
-                  <>
-                    <Col>
-                      <a role='button'>
-                        <Dropdown overlay={mobile} trigger={['click']}>
-                          <Space>
-                            <MenuOutlined />
-                          </Space>
-                        </Dropdown>
-                      </a>
-                    </Col>
-                  </>
-                }
+                <Col>
+                  <Row align='middle'>
+                    <Space>
+                      {tabs}
+                      {createBtn}
+                    </Space>
+                  </Row>
+                </Col>
+                <Col>
+                  <Row>
+                    <a role='button'>
+                      <Dropdown overlay={accountMenu} trigger={['click']}>
+                        <Avatar size='default' src={userService.user?.avatarUrl}></Avatar>
+                      </Dropdown>
+                    </a>
+                  </Row>
+                </Col>
               </>
             }
           </Row>
