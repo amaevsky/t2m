@@ -6,6 +6,12 @@ body {
   background: #f8f9fd;
 }
 
+.help-container {
+  a {
+    color: @primary-color; // link color
+  }
+}
+
 .room-topic {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -19,6 +25,7 @@ body {
   &:hover {
     box-shadow: 8px 28px 48px -6px rgba(0, 0, 0, 0.19);
   }
+
   background: #fff;
   border-radius: 16px;
   border: 1px solid @border-color-base;

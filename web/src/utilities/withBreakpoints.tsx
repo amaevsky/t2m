@@ -6,8 +6,8 @@ export interface IHasBreakpoint {
 }
 
 export const withBreakpoint = (Component: any) => {
-  return () => {
+  return (props: any) => {
     const breakpoint = useBreakpoint();
-    return <Component breakpoint={ breakpoint } />
+    return <Component {...props} breakpoint={breakpoint} />
   }
 }

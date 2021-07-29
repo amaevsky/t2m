@@ -15,7 +15,7 @@ interface State {
 }
 
 interface Props extends IHasBreakpoint, RouteComponentProps {
-
+  empty?: boolean
 }
 
 class HeaderComponent extends React.Component<Props, State> {
@@ -87,7 +87,7 @@ class HeaderComponent extends React.Component<Props, State> {
                 <img height={45} src='/talk2me-unfilled.png' />
               </Link>
             </Col>
-            {userService.isAccountReady &&
+            {!this.props.empty &&
               <>
                 {md &&
                   <>
@@ -171,4 +171,4 @@ class HeaderComponent extends React.Component<Props, State> {
   }
 }
 
-export const Header = withBreakpoint(withRouter(HeaderComponent));
+export const Header = withRouter(withBreakpoint(HeaderComponent));
