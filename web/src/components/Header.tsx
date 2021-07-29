@@ -38,11 +38,11 @@ class HeaderComponent extends React.Component<Props, State> {
 
     const accountActions =
       <>
-        <Menu.Item key="signout">
-          <Button size='small' type='link' onClick={() => this.logout()}>Sign out</Button>
-        </Menu.Item>
         <Menu.Item key="edi2t">
           <Button size='small' type='link' onClick={() => this.setState({ isEditProfileOpen: true })}>Edit profile</Button>
+        </Menu.Item>
+        <Menu.Item key="signout">
+          <Button size='small' type='link' onClick={() => this.logout()}>Sign out</Button>
         </Menu.Item>
       </>
 
