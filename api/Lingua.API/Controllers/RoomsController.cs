@@ -1,8 +1,11 @@
-﻿using Lingua.API.Realtime;
+﻿using AutoMapper;
+using Lingua.API.Realtime;
+using Lingua.API.ViewModels;
 using Lingua.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -15,11 +18,13 @@ namespace Lingua.API.Controllers
     {
         private readonly IRoomService _roomService;
         private readonly IHubContext<RoomsHub, IRoomsRealtimeClient> _roomsHub;
+        private readonly IMapper _mapper;
 
-        public RoomsController(IRoomService roomService, IHubContext<RoomsHub, IRoomsRealtimeClient> roomsHub)
+        public RoomsController(IRoomService roomService, IHubContext<RoomsHub, IRoomsRealtimeClient> roomsHub, IMapper mapper)
         {
             _roomService = roomService;
             _roomsHub = roomsHub;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -29,7 +34,7 @@ namespace Lingua.API.Controllers
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var rooms = await _roomService.Available(options, userId);
 
-            return Ok(rooms);
+            return Ok(_mapper.Map<List<RoomViewModel>>(rooms));
         }
 
         [HttpGet]
@@ -39,7 +44,7 @@ namespace Lingua.API.Controllers
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var rooms = await _roomService.Upcoming(userId);
 
-            return Ok(rooms);
+            return Ok(_mapper.Map<List<RoomViewModel>>(rooms));
         }
 
 
@@ -51,9 +56,10 @@ namespace Lingua.API.Controllers
             try
             {
                 var room = await _roomService.Create(options, userId);
-                await _roomsHub.Clients.All.OnAdd(room, userId);
+                var vm = _mapper.Map<RoomViewModel>(room);
+                await _roomsHub.Clients.All.OnAdd(vm, userId);
 
-                return Ok(room);
+                return Ok(vm);
             }
             catch (Exception ex)
             {
@@ -67,7 +73,8 @@ namespace Lingua.API.Controllers
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var room = await _roomService.Update(options, userId);
-            await _roomsHub.Clients.All.OnUpdate(room, userId);
+            var vm = _mapper.Map<RoomViewModel>(room);
+            await _roomsHub.Clients.All.OnUpdate(vm, userId);
 
             return Ok();
         }
@@ -78,7 +85,8 @@ namespace Lingua.API.Controllers
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var room = await _roomService.Remove(roomId, userId);
-            await _roomsHub.Clients.All.OnRemove(room, userId);
+            var vm = _mapper.Map<RoomViewModel>(room);
+            await _roomsHub.Clients.All.OnRemove(vm, userId);
 
             return Ok();
         }
@@ -91,7 +99,8 @@ namespace Lingua.API.Controllers
             try
             {
                 var room = await _roomService.Enter(roomId, userId);
-                await _roomsHub.Clients.All.OnEnter(room, userId);
+                var vm = _mapper.Map<RoomViewModel>(room);
+                await _roomsHub.Clients.All.OnEnter(vm, userId);
 
                 return Ok();
             }
@@ -107,7 +116,8 @@ namespace Lingua.API.Controllers
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var room = await _roomService.Leave(roomId, userId);
-            await _roomsHub.Clients.All.OnLeave(room, userId);
+            var vm = _mapper.Map<RoomViewModel>(room);
+            await _roomsHub.Clients.All.OnLeave(vm, userId);
 
             return Ok();
         }
