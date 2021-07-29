@@ -25,6 +25,7 @@ namespace Lingua.ZoomIntegration.Auth
             tokens.RefreshToken = newTokens.RefreshToken;
             tokens.ExpiresAt = newTokens.ExpiresAt;
 
+            await action(tokens);
             return true;
         }
     }
