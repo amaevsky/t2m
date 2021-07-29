@@ -12,7 +12,7 @@ export const Landing = (props: any) => {
 
               <img height='120' src='/talk2me-unfilled.png'></img>
 
-              <Title level={3}>Improve any language by speaking with people who has the same level of language. For Free.</Title>
+              <Title level={3}>Improve any language by speaking with people who have the same level of language. For Free.</Title>
 
               <ul style={{ fontSize: 14 }}>
                 <li>connect with people with the same goal</li>

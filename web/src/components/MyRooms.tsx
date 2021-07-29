@@ -149,13 +149,11 @@ export class MyRooms extends React.Component<Props, State> {
 
     return (
       <>
-        <div style={{ padding: 16 }}>
-          {!!myRooms.length &&
-            <Row gutter={[16, 16]}>
-              {upcomingCards}
-            </Row>
-          }
-        </div>
+        {!!myRooms.length &&
+          <Row gutter={[16, 16]}>
+            {upcomingCards}
+          </Row>
+        }
       </>
     )
   }

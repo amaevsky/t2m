@@ -100,6 +100,7 @@ export class FindRooms extends React.Component<Props, State> {
 
   private async getData() {
     const rooms = await roomsService.getAvailable(this.state.filter);
+    //const rooms = Array(20).fill((await roomsService.getAvailable(this.state.filter))[0]);
     this.setState({ availableRooms: rooms });
   }
 
@@ -122,29 +123,27 @@ export class FindRooms extends React.Component<Props, State> {
 
     return (
       <>
-        <div style={{ padding: 16 }}>
-          <Row style={{ padding: '8px 0', overflow: 'auto' }} gutter={16} wrap={false}>
-            <Col>
-              <Select maxTagCount={1} mode="tags" style={{ width: '150px' }} placeholder="Levels..." onChange={(values) => this.levelsChanged(values as string[])}>
-                {configService.config.languageLevels.map(l => <Option key={l.code} value={l.code}>{l.code}</Option>)}
-              </Select>
-            </Col>
-            <Col>
-              <Select maxTagCount={1} mode="tags" style={{ width: '150px' }} placeholder="Days of week..." onChange={(values) => this.daysChanged(values as string[])}>
-                {Object.keys(configService.config.days).map(d => <Option key={d}>{d}</Option>)}
-              </Select>
-            </Col>
-            <Col>
-              <TimeRange onChange={(value) => this.timeRangeChanged(value)} />
-            </Col>
-          </Row>
+        <Row style={{ padding: '8px 0', overflow: 'auto' }} gutter={16} wrap={false}>
+          <Col>
+            <Select maxTagCount={1} mode="tags" style={{ width: '150px' }} placeholder="Levels..." onChange={(values) => this.levelsChanged(values as string[])}>
+              {configService.config.languageLevels.map(l => <Option key={l.code} value={l.code}>{l.code}</Option>)}
+            </Select>
+          </Col>
+          <Col>
+            <Select maxTagCount={1} mode="tags" style={{ width: '150px' }} placeholder="Days of week..." onChange={(values) => this.daysChanged(values as string[])}>
+              {Object.keys(configService.config.days).map(d => <Option key={d}>{d}</Option>)}
+            </Select>
+          </Col>
+          <Col>
+            <TimeRange onChange={(value) => this.timeRangeChanged(value)} />
+          </Col>
+        </Row>
 
-          <Divider></Divider>
+        <Divider></Divider>
 
-          <Row gutter={[16, 16]}>
-            {roomsCards}
-          </Row>
-        </div>
+        <Row gutter={[16, 16]}>
+          {roomsCards}
+        </Row>
       </>
     )
   }

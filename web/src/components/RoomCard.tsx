@@ -39,7 +39,7 @@ export class RoomCard extends React.Component<Props> {
                   </Col>
                   <Col>
                     <b>{partner.firstname} {partner.lastname[0]}.</b>
-                    <p style={{ fontSize: 11 }}>{room.language} {partner.languageLevel}</p>
+                    <div style={{ fontSize: 11 }}>{room.language} {partner.languageLevel}</div>
                   </Col>
                 </>
               }
@@ -50,7 +50,7 @@ export class RoomCard extends React.Component<Props> {
                   </Col>
                   <Col>
                     <b>{'<roommate>'}</b>
-                    <p style={{ fontSize: 11 }}>{room.language}</p>
+                    <div style={{ fontSize: 11 }}>{room.language}</div>
                   </Col>
                 </>
               }
@@ -79,13 +79,13 @@ export class RoomCard extends React.Component<Props> {
         <Row className='primary-color' style={{ fontSize: 12, fontWeight: 600, marginTop: 8 }}>
           <Space>
             <CalendarOutlined />
-            <p>{moment(room.startDate).format('ddd, MMM DD')}</p>
+            <div>{moment(room.startDate).format('ddd, MMM DD')}</div>
           </Space>
         </Row>
         <Row className='primary-color' style={{ fontSize: 12, fontWeight: 600 }}>
           <Space>
             <ClockCircleOutlined />
-            <p>{moment(room.startDate).format('LT')} - {moment(room.endDate).format('LT')}</p>
+            <div>{moment(room.startDate).format('LT')} - {moment(room.endDate).format('LT')}</div>
           </Space>
         </Row>
         <Row style={{ margin: '10px 0', height: 40 }}>

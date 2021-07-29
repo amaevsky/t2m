@@ -2,10 +2,6 @@
 @import '~antd/dist/antd.less'; // Import Ant Design styles by less entry
 @import './antd.overrides.less';
 
-p {
-  margin: 0
-}
-
 body {
   background: #f8f9fd;
 }
@@ -20,9 +16,12 @@ body {
 }
 
 .tile {
-  box-shadow: 8px 28px 48px -6px rgba(0, 0, 0, 0.19);
+  &:hover {
+    box-shadow: 8px 28px 48px -6px rgba(0, 0, 0, 0.19);
+  }
   background: #fff;
   border-radius: 16px;
+  border: 1px solid @border-color-base;
 }
 
 .primary-color {
@@ -33,7 +32,8 @@ body {
   background: @primary-color;
 }
 
-header {
+header,
+footer {
   line-height: 78px;
   padding: 0 26px;
   background: #f8f9fd;
