@@ -8,6 +8,7 @@ import { RoomEdit } from './RoomEdit';
 import { Room, RoomCreateOptions, roomsService } from '../services/roomsService';
 import { CalendarOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { IHasBreakpoint, withBreakpoint } from '../utilities/withBreakpoints';
+import { routes } from './App';
 
 interface State {
   isEditProfileOpen: boolean;
@@ -33,13 +34,13 @@ class HeaderComponent extends React.Component<Props, State> {
       <Menu overflowedIndicator={false} selectedKeys={[active]} style={{ background: 'initial', fontSize: 14, border: 'none', fontWeight: 600 }} mode='horizontal'>
         {md ?
           <>
-            <Menu.Item key='/' ><Link to='/'>Find a room</Link></Menu.Item>
-            <Menu.Item key='/rooms/my'><Link to='/rooms/my'>My rooms</Link></Menu.Item>
+            <Menu.Item key={routes.app.findRoom}><Link to={routes.app.findRoom}>Find a room</Link></Menu.Item>
+            <Menu.Item key={routes.app.myRooms}><Link to={routes.app.myRooms}>My rooms</Link></Menu.Item>
           </>
           :
           <>
-            <Menu.Item key='/' ><Link to='/'><SearchOutlined style={{ fontSize: 16 }} /></Link></Menu.Item>
-            <Menu.Item key='/rooms/my'><Link to='/rooms/my'><CalendarOutlined style={{ fontSize: 16 }} /></Link></Menu.Item>
+            <Menu.Item key={routes.app.findRoom}><Link to={routes.app.findRoom}><SearchOutlined style={{ fontSize: 16 }} /></Link></Menu.Item>
+            <Menu.Item key={routes.app.myRooms}><Link to={routes.app.myRooms}><CalendarOutlined style={{ fontSize: 16 }} /></Link></Menu.Item>
           </>
         }
       </Menu>;
@@ -79,7 +80,7 @@ class HeaderComponent extends React.Component<Props, State> {
         <header>
           <Row justify='space-between' align='middle'>
             <Col>
-              <Link to="/">
+              <Link to={routes.default}>
                 <img height={45} src='/talk2me-unfilled.png' />
               </Link>
             </Col>
@@ -141,7 +142,7 @@ class HeaderComponent extends React.Component<Props, State> {
 
   async logout(): Promise<void> {
     await authService.logout();
-    this.props.history.push('/');
+    this.props.history.push(routes.default);
   }
 }
 

@@ -2,6 +2,7 @@ import { Button, Col, Row, Spin, Typography } from 'antd';
 import React from 'react';
 import { configService } from '../services/configService';
 import { userService } from '../services/userService';
+import { routes } from './App';
 
 const { Title } = Typography;
 
@@ -19,10 +20,10 @@ export class Login extends React.Component<any, State> {
   async componentDidMount() {
     if (userService.isAuthenticated) {
       if (userService.isAccountReady) {
-        const { from } = this.props.location.state || { from: { pathname: "/" } };
+        const { from } = this.props.location.state || { from: { pathname: routes.default } };
         this.props.history.push(from);
       } else {
-        this.props.history.push("/account/setup");
+        this.props.history.push(routes.login.accountSetup);
       }
     }
 
@@ -33,7 +34,7 @@ export class Login extends React.Component<any, State> {
     const { initializing } = this.state;
 
     return (
-      <Row align='middle' justify='center' style={{ minHeight: 'calc(100vh - 78px)' }}>
+      <Row style={{ flex: 1 }} align='middle' justify='center'>
         <Col>
           {initializing
             ? <Spin size='large'></Spin>

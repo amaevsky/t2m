@@ -13,16 +13,34 @@ import { Terms } from './Terms';
 import { Privacy } from './Privacy';
 import { Landing } from './Landing';
 
+export const routes = {
+  help: {
+    contactUs: 'https://docs.google.com/forms/d/1EB_9SI8j2VvZ_kruKddlR0AkS5g1YuwvIwhJMJPdJPY/edit',//'/help/contact-us',
+    privacy: '/help/privacy',
+    terms: '/help/terms'
+  },
+  login: {
+    redirect: '/redirect',
+    login: '/login',
+    accountSetup: '/account/setup',
+  },
+  app: {
+    myRooms: '/rooms/my',
+    findRoom: '/rooms/find'
+  },
+  default: '/'
+}
+
 export default class App extends React.Component<any> {
 
   render() {
     return (
       <>
         <Switch>
-          <Route path="/landing" component={Landing} />
-          <Route path="/help" component={HelpPages} />
-          <Route path={['/redirect', '/login', '/account/setup']} component={LoginPages} />
-          <PrivateRoute path="/" component={AppPages} />
+          <Route path={Object.values(routes.help)} component={HelpPages} />
+          <Route path={Object.values(routes.login)} component={LoginPages} />
+          <PrivateRoute path={Object.values(routes.app)} component={AppPages} />
+          <Route path={routes.default} component={Landing} />
         </Switch>
       </>
     );
@@ -38,9 +56,9 @@ export const HelpPages = () => {
       <div style={{ padding: '16px 26px' }}>
         <div className='help-container'>
           <Switch>
-            <Route path="/help/contact-us" component={ContactUs} />
-            <Route path="/help/terms" component={Terms} />
-            <Route path="/help/privacy" component={Privacy} />
+            <Route path={routes.help.contactUs} component={ContactUs} />
+            <Route path={routes.help.terms} component={Terms} />
+            <Route path={routes.help.privacy} component={Privacy} />
           </Switch>
         </div>
       </div>
@@ -57,8 +75,8 @@ export const AppPages = () => {
       </Affix>
       <div style={{ padding: '16px 26px', minHeight: 'calc(100vh - 158px)' }}>
         <Switch>
-          <PrivateRoute path="/rooms/my" component={MyRooms} />
-          <PrivateRoute path="/" component={FindRooms} />
+          <PrivateRoute path={routes.app.myRooms} component={MyRooms} />
+          <PrivateRoute path={routes.app.findRoom} component={FindRooms} />
         </Switch>
       </div>
       <Footer />
@@ -71,9 +89,9 @@ export const Footer = () => {
     <footer>
       <Space size='large'>
         <span>&copy; 2021 Talk2Me</span>
-        <a target='_blank' href="/help/terms">Terms</a>
-        <a target='_blank' href="/help/privacy">Privacy</a>
-        <a target='_blank' href="/help/contact-us">Contact Us</a>
+        <a target='_blank' href={routes.help.terms}>Terms</a>
+        <a target='_blank' href={routes.help.privacy}>Privacy</a>
+        <a target='_blank' href={routes.help.contactUs}>Contact Us</a>
       </Space>
     </footer>
   );
@@ -82,11 +100,13 @@ export const Footer = () => {
 export const LoginPages = () => {
   return (
     <>
-      <Switch>
-        <Route path="/redirect" component={LoginRedirect} />
-        <Route path="/login" component={Login} />
-        <Route path="/account/setup" component={AccountSetup} />
-      </Switch>
+      <div style={{ display: 'flex', padding: '16px 26px', minHeight: 'calc(100vh - 78px)' }}>
+        <Switch>
+          <Route path={routes.login.redirect} component={LoginRedirect} />
+          <Route path={routes.login.login} component={Login} />
+          <Route path={routes.login.accountSetup} component={AccountSetup} />
+        </Switch>
+      </div>
       <Footer />
     </>
   );

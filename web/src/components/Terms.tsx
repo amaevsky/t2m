@@ -1,3 +1,5 @@
+import { routes } from "./App";
+
 export const Terms = (props: any) => {
   return (
     <>
@@ -33,9 +35,9 @@ export const Terms = (props: any) => {
         <p data-renderer-start-pos="2455">By registering, or by using our websites, services, our mobile applications, developer platform, or other information provided as part of the Services (“Talk2Me”), you agree that you are entering into a legally binding agreement with Talk2Me, <a href="https://t2m.app/login" title="https://t2m.app/login" data-renderer-mark="true">https://t2m.app/</a>   (“we”, “us”, “our”, “Talk2Me”). You also agree that these Terms of Service (“Terms”) govern your access to and use of the services and any information appearing on the services. Your access to and use of the Services is conditioned on your acceptance of and compliance with these Terms. By accessing or using the services you agree to be bound by these Terms.</p>
         <p data-renderer-start-pos="3078">We may, in our sole discretion, modify or update this Agreement from time to time, and so you should review this page periodically. Your continued use of the Service after any changes constitutes your acceptance of the new Terms of Use.</p>
         <p data-renderer-start-pos="3316">Your privacy and your ability to control your data is very important to us. Any information that you provide to us is subject to&nbsp;<strong data-renderer-mark="true">
-          <a href="/help/privacy">our Privacy Policy</a>
+          <a href={routes.help.privacy}>our Privacy Policy</a>
         </strong>, which governs our collection and use of your information. You understand that through your use of the Services you consent to the collection and use (as set forth in the&nbsp;<strong data-renderer-mark="true">
-            <a href="/help/privacy">Privacy Policy</a>
+            <a href={routes.help.privacy}>Privacy Policy</a>
           </strong>) of this information, including the transfer of this information to the United States and/or other countries for storage, processing and use by us.</p>
         <h3 data-renderer-start-pos="3799">
           OWNERSHIP, LICENSE AND WARRANTY FOR INFORMATION YOU SUBMIT
@@ -151,7 +153,7 @@ export const Terms = (props: any) => {
           </li>
         </ul>
         <p data-renderer-start-pos="10859">Talk2Me reserves the right to decide what behaviors fall into these categories and will make reasonable efforts to deny access to users who do not comply with these Terms. However, Talk2Me does not guarantee you will not be connected to violators before they are banned. Please report abuse by clicking on the REPORT link, or <strong data-renderer-mark="true">
-          <a href='/help/contact-us'>contacting us here</a>
+          <a href={routes.help.contactUs}>contacting us here</a>
         </strong>.</p>
         <p data-renderer-start-pos="11206">You understand and agree that you may be exposed to User Content (as defined below) that is inaccurate, objectionable, inappropriate for children, or otherwise unsuited to your purpose, and you agree that Talk2Me shall not be liable for any damages you allege to incur as a result of User Content.</p>
         <h3 data-renderer-start-pos="11505">CONTENT AND CONVERSATIONS
@@ -181,7 +183,7 @@ export const Terms = (props: any) => {
           NOTICE AND TAKE-DOWN
         </h3>
         <p data-renderer-start-pos="17611">If we receive any notification that any material that you post, upload, edit, host, share, broadcast, stream, transmit and/or publish on the Services (“User Submission”) is inappropriate, infringes any rights of any third party, or if we wish to remove your User Submission for any reason whatsoever, we reserve the right to remove such User Submission for any reason immediately or within such other timescales as may be decided by us in our sole discretion. The User Submission shall be taken down without any admission as to liability and without prejudice to any rights, remedies or defenses, all of which are expressly reserved. You acknowledge and agree that Talk2Me is under no obligation to put back such User Submission at any time. If User Submissions infringe, or if you believe that User Submissions infringe any of your rights (including intellectual property rights) or are unlawful, please contact us immediately using the in app feature or by <strong data-renderer-mark="true">
-          <a href='/help/contact-us'>contacting us here</a>
+          <a href={routes.help.contactUs}>contacting us here</a>
         </strong>
         </p>
         <h3 id="TRADEMARKS" data-renderer-start-pos="18591">
@@ -194,7 +196,7 @@ export const Terms = (props: any) => {
         <p data-renderer-start-pos="19794">We will have the right to suspend or disable your Account or terminate these Terms of Service, at our sole discretion, without prior notice to you and without recourse to the courts, if you breach any of these Terms of Service or if we decide to cease offering the Services to users in your jurisdiction generally. We reserve the right to revoke your access to and use of the Services at any time, with or without cause.</p>
         <p data-renderer-start-pos="20216">In the event we terminate these Terms of Service for your breach, you will remain liable for all amounts due hereunder, to the extent that there are amounts outstanding and payable to Talk2Me.</p>
         <p data-renderer-start-pos="20410">You may cancel your Account at any time by using the ‘delete account’ feature or by <strong data-renderer-mark="true">
-          <a href='/help/contact-us'>contacting us here</a>
+          <a href={routes.help.contactUs}>contacting us here</a>
         </strong>.</p>
         <h3 id="WARRANTIES" data-renderer-start-pos="20515">
           WARRANTIES
@@ -214,7 +216,7 @@ export const Terms = (props: any) => {
           ENTIRE AGREEMENT
         </h3>
         <p data-renderer-start-pos="24283">These Terms and our&nbsp;<strong data-renderer-mark="true">
-          <a href='/help/privacy'>Privacy Policy</a>
+          <a href={routes.help.privacy}>Privacy Policy</a>
         </strong>&nbsp;are the entire and exclusive agreement between Talk2Me and you regarding the Services (excluding any services for which you have a separate agreement with Talk2Me that is explicitly in addition or in place of these Terms), and these Terms supersede and replace any prior agreements between Talk2Me and you regarding the Services.</p>
         <p data-renderer-start-pos="24649">We may revise these Terms from time to time, the most current version will always be here. If the revision, in our sole discretion, is material we will notify you via email to the email associated with your account. By continuing to access or use the Services after those revisions become effective, you agree to be bound by the revised Terms.</p>
         <h3 id="DISPUTE-RESOLUTION" data-renderer-start-pos="24994">
@@ -229,7 +231,7 @@ export const Terms = (props: any) => {
         <p data-renderer-start-pos="27448">You may have rights or obligations under local law other than those enumerated here.</p>
         <p data-renderer-start-pos="27534">
           <strong data-renderer-mark="true">
-            <a href='/help/contact-us'>You can reach us here.</a>
+            <a href={routes.help.contactUs}>You can reach us here.</a>
           </strong>
         </p>
       </div>

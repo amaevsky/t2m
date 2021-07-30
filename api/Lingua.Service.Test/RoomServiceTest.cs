@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Newtonsoft.Json;
 
 namespace Lingua.Service.Test
 {
@@ -506,7 +507,7 @@ namespace Lingua.Service.Test
         }
 
         [TestMethod]
-        public void Create_ShouldCallRepository()
+        public void Create_ShouldCallRepositoryAndReturnSameItem()
         {
             //arrange
 
@@ -521,6 +522,8 @@ namespace Lingua.Service.Test
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
+            Room savedRoom = null;
+            roomRepoMock.Setup(r => r.Create(It.IsAny<Room>())).Callback((Room room) => savedRoom = Helper.DeepClone(room));
 
             //act
 
@@ -536,6 +539,7 @@ namespace Lingua.Service.Test
 
             //assert
             roomRepoMock.Verify(r => r.Create(It.IsAny<Room>()));
+            savedRoom.Should().BeEquivalentTo(room);
         }
 
         [TestMethod]
@@ -831,6 +835,125 @@ namespace Lingua.Service.Test
 
             //assert
             //no exception
+        }
+
+
+
+        [TestMethod]
+        public void Update_ShouldUpdatePropertiesCorrectlyBasedOnOptions()
+        {
+            //arrange
+
+            var zoomAuthMock = new Mock<IAuthClient>();
+            var zoomMettingsMock = new Mock<IMeetingService>();
+            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var roomRepoMock = new Mock<IRoomRepository>();
+            var userRepoMock = new Mock<IUserRepository>();
+            var dateTimeMock = new Mock<IDateTimeProvider>();
+
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+
+            var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
+            userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
+
+            var existing = new Room
+            {
+                HostUserId = user.Id,
+                StartDate = new DateTime(2020, 1, 1, 11, 50, 0),
+                EndDate = new DateTime(2020, 1, 1, 12, 20, 0),
+                DurationInMinutes = 30,
+                Language = "English",
+                MaxParticipants = 2,
+                Participants = new List<User> { user }
+            };
+
+            roomRepoMock.Setup(r => r.Get(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(existing));
+
+            //act
+
+            var options = new UpdateRoomOptions
+            {
+                RoomId = existing.Id,
+                DurationInMinutes = 60,
+                StartDate = new DateTime(2020, 1, 1, 12, 0, 0),
+                Topic = "topic"
+            };
+
+            var expected = Helper.DeepClone(existing);
+            expected.DurationInMinutes = 60;
+            expected.StartDate = new DateTime(2020, 1, 1, 12, 0, 0);
+            expected.EndDate = new DateTime(2020, 1, 1, 13, 00, 0);
+            expected.Topic = "topic";
+
+            var updated = service.Update(options, user.Id).Result;
+
+            //assert
+            expected.Should().BeEquivalentTo(updated);
+        }
+
+        [TestMethod]
+        public void Update_ShouldCallRepositoryAndReturnSameItem()
+        {
+            //arrange
+
+            var zoomAuthMock = new Mock<IAuthClient>();
+            var zoomMettingsMock = new Mock<IMeetingService>();
+            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var roomRepoMock = new Mock<IRoomRepository>();
+            var userRepoMock = new Mock<IUserRepository>();
+            var dateTimeMock = new Mock<IDateTimeProvider>();
+
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+
+            var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
+            userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
+
+            var existing = new Room
+            {
+                HostUserId = user.Id,
+                StartDate = new DateTime(2020, 1, 1, 11, 50, 0),
+                EndDate = new DateTime(2020, 1, 1, 12, 20, 0),
+                DurationInMinutes = 30,
+                Language = "English",
+                MaxParticipants = 2,
+                Participants = new List<User> { user }
+            };
+
+            roomRepoMock.Setup(r => r.Get(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(existing));
+
+            Room savedRoom = null;
+            roomRepoMock.Setup(r => r.Update(It.IsAny<Room>())).Callback((Room room) => savedRoom = Helper.DeepClone(room));
+
+            //act
+
+            var options = new UpdateRoomOptions
+            {
+                RoomId = existing.Id,
+                DurationInMinutes = 60,
+                StartDate = new DateTime(2020, 1, 1, 12, 0, 0),
+                Topic = "topic"
+            };
+
+            var room = service.Update(options, user.Id).Result;
+
+            //assert
+            roomRepoMock.Verify(r => r.Update(It.IsAny<Room>()));
+            savedRoom.Should().BeEquivalentTo(room);
+        }
+
+
+
+
+    }
+
+    public static class Helper
+    {
+        public static T DeepClone<T>(T item)
+        {
+            var serialized = JsonConvert.SerializeObject(item);
+            return JsonConvert.DeserializeObject<T>(serialized);
         }
     }
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router';
+import { routes } from '../components/App';
 import { userService } from '../services/userService';
 export class PrivateRoute extends React.Component<any>  {
 
@@ -14,7 +15,7 @@ export class PrivateRoute extends React.Component<any>  {
           ) : (
             <Redirect
               to={{
-                pathname: "/landing",
+                pathname: routes.default,
                 state: { from: props.location }
               }}
             />

@@ -1,3 +1,5 @@
+import { routes } from "./App";
+
 export const Privacy = () => {
   return (
     <>
@@ -22,7 +24,7 @@ export const Privacy = () => {
         <p data-renderer-start-pos="1353">This statement details how we handle personal data here at Talk2Me. We are respectful of the data that is shared with us by our members and take protecting it very seriously.</p>
         <p data-renderer-start-pos="1733">Please take the time to read these details to fully understand how we handle your data and keep it safe.</p>
         <p data-renderer-start-pos="2116">For all requests concerning the security of your data, please <strong data-renderer-mark="true">
-          <a href='/help/contact-us'>contact us here</a>
+          <a href={routes.help.contactUs}>contact us here</a>
         </strong>.</p>
         <h5 id="Personal-Data" data-renderer-start-pos="2196">
           Personal Data
@@ -115,7 +117,7 @@ export const Privacy = () => {
         <p data-renderer-start-pos="9145">For this purpose, a cookie may be stored on your device. Cookies are small text files that are stored on your computer’s hard drive. They enable recognition of your computer but do not permit you to be personally identified.</p>
         <p data-renderer-start-pos="9371">If you do not want cookies to be installed, you can opt out using your browser settings. On mobile devices you can opt out of sharing advertising identifiers.</p>
         <p data-renderer-start-pos="9667">You can edit, hide and delete personal data in the My Profile settings within the Talk2Me app. Also, you can request the deletion of your account or ask for certain profile information to be changed by <strong data-renderer-mark="true">
-          <a href='/help/contact-us'>contacting us here</a>
+          <a href={routes.help.contactUs}>contacting us here</a>
         </strong>.</p>
         <h5 id="Data-Protection" data-renderer-start-pos="9890">
           Data Protection
@@ -127,7 +129,7 @@ export const Privacy = () => {
           Our Policy on Children’s Information
         </h5>
         <p data-renderer-start-pos="10913">Children under 14 are not allowed to use Talk2Me. If you are based in the European Economic Area (EEA), you may only use Talk2Me if you are over the age at which you can provide consent to data processing under the laws of your country or if verifiable parental consent for your use of Talk2Me has been provided to us. If you are a parent and you learn that your child is using Talk2Me and you don’t want them to, please <strong data-renderer-mark="true">
-          <a href='/help/contact-us'>contact&nbsp;us here</a>
+          <a href={routes.help.contactUs}>contact&nbsp;us here</a>
         </strong>.</p>
         <h5 id="Cookies" data-renderer-start-pos="11352">
           Cookies
