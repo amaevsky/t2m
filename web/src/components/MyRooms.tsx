@@ -129,7 +129,7 @@ export class MyRooms extends React.Component<Props, State> {
         };
 
         if (!isFull) {
-          primary.tooltip = 'Nobody enter the room yet.';
+          primary.tooltip = 'Nobody has entered the room yet.';
         } else if (!startable) {
           primary.tooltip = 'Room can be joined 5 min before start.';
         }
