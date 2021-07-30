@@ -124,7 +124,7 @@ export class MyRooms extends React.Component<Props, State> {
         const startable = new Date(r.startDate).getTime() - Date.now() < 1000 * 60 * 5;
         const primary: RoomCardAction = {
           action: () => this.join(r.id),
-          title: 'Join a room',
+          title: 'Join the room',
           disabled: !(startable && isFull)
         };
 

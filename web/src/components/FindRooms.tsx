@@ -113,7 +113,7 @@ export class FindRooms extends React.Component<Props, State> {
     const filtredRooms = this.filter(filter)
       .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
     const roomsCards = filtredRooms.map(r => {
-      const action = { action: () => this.enter(r.id), title: 'Enter a room' };
+      const action = { action: () => this.enter(r.id), title: 'Enter the room' };
       return (
         <Col xl={4} md={6} sm={8} xs={12}>
           <RoomCard room={r} primaryAction={action} />
