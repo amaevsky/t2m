@@ -7,12 +7,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System.Net;
 
 namespace Lingua.API
 {
@@ -80,6 +78,8 @@ namespace Lingua.API
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Lingua.API v1"));
             // }
 
+            app.UseMiddleware<ExceptionMiddleware>();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -87,32 +87,6 @@ namespace Lingua.API
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseExceptionHandler(appError =>
-            {
-                appError.Run(async context =>
-                {
-                    context.Response.ContentType = "text/plain";
-                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                    if (contextFeature != null)
-                    {
-                        var response = "";
-                        if (contextFeature.Error is ValidationException)
-                        {
-                            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                            response = contextFeature.Error.Message;
-                        }
-                        else
-                        {
-                            logger.LogError(contextFeature.Error.ToString());
-                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                            response = "Internal server error occured.";
-                        }
-
-                        await context.Response.WriteAsync(response);
-                    }
-                });
-            });
 
             app.UseEndpoints(endpoints =>
             {

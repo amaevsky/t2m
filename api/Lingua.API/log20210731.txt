@@ -1,0 +1,206 @@
+2021-07-31 10:31:00.122 -05:00 [INF] User profile is available. Using 'C:\Users\Artsiom_Mayeuski\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-07-31 10:31:01.075 -05:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-07-31 10:31:01.080 -05:00 [INF] Hosting environment: Development
+2021-07-31 10:31:01.080 -05:00 [INF] Content root path: C:\lingua\api\Lingua.API
+2021-07-31 10:31:01.127 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/swagger/index.html - -
+2021-07-31 10:31:01.464 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/swagger/index.html - - - 200 - text/html;charset=utf-8 342.8512ms
+2021-07-31 10:31:02.167 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/swagger/v1/swagger.json - -
+2021-07-31 10:31:02.420 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 252.7578ms
+2021-07-31 10:31:16.550 -05:00 [INF] Request starting HTTP/2 OPTIONS https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 - -
+2021-07-31 10:31:16.644 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:16.649 -05:00 [INF] Request finished HTTP/2 OPTIONS https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 - - - 204 - - 99.4774ms
+2021-07-31 10:31:16.654 -05:00 [INF] Request starting HTTP/2 POST https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0
+2021-07-31 10:31:16.655 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:16.684 -05:00 [INF] Executing endpoint '/roomsHub/negotiate'
+2021-07-31 10:31:16.728 -05:00 [INF] Executed endpoint '/roomsHub/negotiate'
+2021-07-31 10:31:16.729 -05:00 [INF] Request finished HTTP/2 POST https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0 - 200 316 application/json 75.3160ms
+2021-07-31 10:31:16.771 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/config/languages - -
+2021-07-31 10:31:16.779 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:16.780 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.ConfigController.Languages (Lingua.API)'
+2021-07-31 10:31:16.783 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/config/languagelevels - -
+2021-07-31 10:31:16.786 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:16.795 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/config/zoom - -
+2021-07-31 10:31:16.797 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:16.812 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/user/me - -
+2021-07-31 10:31:16.812 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:16.839 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.ConfigController.LanguageLevels (Lingua.API)'
+2021-07-31 10:31:16.842 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.ConfigController.ZoomOAuthUrl (Lingua.API)'
+2021-07-31 10:31:16.842 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.UserController.GetProfile (Lingua.API)'
+2021-07-31 10:31:16.862 -05:00 [INF] Route matched with {action = "Languages", controller = "Config"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Languages() on controller Lingua.API.Controllers.ConfigController (Lingua.API).
+2021-07-31 10:31:16.862 -05:00 [INF] Route matched with {action = "LanguageLevels", controller = "Config"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult LanguageLevels() on controller Lingua.API.Controllers.ConfigController (Lingua.API).
+2021-07-31 10:31:16.862 -05:00 [INF] Route matched with {action = "ZoomOAuthUrl", controller = "Config"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ZoomOAuthUrl() on controller Lingua.API.Controllers.ConfigController (Lingua.API).
+2021-07-31 10:31:16.864 -05:00 [INF] Route matched with {action = "GetProfile", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProfile() on controller Lingua.API.Controllers.UserController (Lingua.API).
+2021-07-31 10:31:16.919 -05:00 [INF] Request starting HTTP/1.1 GET https://localhost:44361/roomsHub?id=cTNE7zc4wnJZ8LhqoNH3Jw - -
+2021-07-31 10:31:16.920 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:16.923 -05:00 [INF] Executing endpoint '/roomsHub'
+2021-07-31 10:31:18.161 -05:00 [INF] Executing ForbidResult with authentication schemes ([]).
+2021-07-31 10:31:18.164 -05:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`2[[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]][]'.
+2021-07-31 10:31:18.164 -05:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2021-07-31 10:31:18.164 -05:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2021-07-31 10:31:18.181 -05:00 [INF] AuthenticationScheme: Cookies was forbidden.
+2021-07-31 10:31:18.181 -05:00 [INF] Executed action Lingua.API.Controllers.ConfigController.ZoomOAuthUrl (Lingua.API) in 1303.4144ms
+2021-07-31 10:31:18.181 -05:00 [INF] Executed action Lingua.API.Controllers.UserController.GetProfile (Lingua.API) in 1316.476ms
+2021-07-31 10:31:18.183 -05:00 [INF] Executed action Lingua.API.Controllers.ConfigController.Languages (Lingua.API) in 1320.1834ms
+2021-07-31 10:31:18.186 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.UserController.GetProfile (Lingua.API)'
+2021-07-31 10:31:18.186 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.ConfigController.Languages (Lingua.API)'
+2021-07-31 10:31:18.186 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.ConfigController.ZoomOAuthUrl (Lingua.API)'
+2021-07-31 10:31:18.188 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/config/languages - - - 200 - application/json;+charset=utf-8 1416.6216ms
+2021-07-31 10:31:18.190 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/config/zoom - - - 200 - text/plain;+charset=utf-8 1395.3151ms
+2021-07-31 10:31:18.190 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/user/me - - - 302 - - 1377.8592ms
+2021-07-31 10:31:18.195 -05:00 [INF] Executed action Lingua.API.Controllers.ConfigController.LanguageLevels (Lingua.API) in 1332.4876ms
+2021-07-31 10:31:18.196 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.ConfigController.LanguageLevels (Lingua.API)'
+2021-07-31 10:31:18.197 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/config/languagelevels - - - 200 - application/json;+charset=utf-8 1413.7640ms
+2021-07-31 10:31:18.198 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/Account/AccessDenied?ReturnUrl=%2Fapi%2Fuser%2Fme - -
+2021-07-31 10:31:18.199 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:18.201 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/Account/AccessDenied?ReturnUrl=%2Fapi%2Fuser%2Fme - - - 404 - - 3.1479ms
+2021-07-31 10:31:42.033 -05:00 [INF] Executed endpoint '/roomsHub'
+2021-07-31 10:31:42.040 -05:00 [INF] Request finished HTTP/1.1 GET https://localhost:44361/roomsHub?id=cTNE7zc4wnJZ8LhqoNH3Jw - - - 101 - - 25120.2033ms
+2021-07-31 10:31:43.241 -05:00 [INF] Request starting HTTP/2 OPTIONS https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 - -
+2021-07-31 10:31:43.242 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:43.243 -05:00 [INF] Request finished HTTP/2 OPTIONS https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 - - - 204 - - 1.3742ms
+2021-07-31 10:31:43.247 -05:00 [INF] Request starting HTTP/2 POST https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0
+2021-07-31 10:31:43.247 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:43.247 -05:00 [INF] Executing endpoint '/roomsHub/negotiate'
+2021-07-31 10:31:43.248 -05:00 [INF] Executed endpoint '/roomsHub/negotiate'
+2021-07-31 10:31:43.249 -05:00 [INF] Request finished HTTP/2 POST https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0 - 200 316 application/json 2.7686ms
+2021-07-31 10:31:43.457 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/config/languages - -
+2021-07-31 10:31:43.463 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/config/zoom - -
+2021-07-31 10:31:43.464 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:43.464 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:43.465 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.ConfigController.Languages (Lingua.API)'
+2021-07-31 10:31:43.465 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.ConfigController.ZoomOAuthUrl (Lingua.API)'
+2021-07-31 10:31:43.465 -05:00 [INF] Route matched with {action = "Languages", controller = "Config"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Languages() on controller Lingua.API.Controllers.ConfigController (Lingua.API).
+2021-07-31 10:31:43.465 -05:00 [INF] Route matched with {action = "ZoomOAuthUrl", controller = "Config"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ZoomOAuthUrl() on controller Lingua.API.Controllers.ConfigController (Lingua.API).
+2021-07-31 10:31:43.465 -05:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2021-07-31 10:31:43.465 -05:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2021-07-31 10:31:43.466 -05:00 [INF] Executed action Lingua.API.Controllers.ConfigController.ZoomOAuthUrl (Lingua.API) in 1.0557ms
+2021-07-31 10:31:43.466 -05:00 [INF] Executed action Lingua.API.Controllers.ConfigController.Languages (Lingua.API) in 1.214ms
+2021-07-31 10:31:43.466 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.ConfigController.ZoomOAuthUrl (Lingua.API)'
+2021-07-31 10:31:43.466 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.ConfigController.Languages (Lingua.API)'
+2021-07-31 10:31:43.468 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/config/zoom - - - 200 - text/plain;+charset=utf-8 4.9427ms
+2021-07-31 10:31:43.468 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/config/languages - - - 200 - application/json;+charset=utf-8 10.9999ms
+2021-07-31 10:31:43.468 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/config/languagelevels - -
+2021-07-31 10:31:43.469 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:43.470 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.ConfigController.LanguageLevels (Lingua.API)'
+2021-07-31 10:31:43.470 -05:00 [INF] Route matched with {action = "LanguageLevels", controller = "Config"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult LanguageLevels() on controller Lingua.API.Controllers.ConfigController (Lingua.API).
+2021-07-31 10:31:43.470 -05:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`2[[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]][]'.
+2021-07-31 10:31:43.472 -05:00 [INF] Executed action Lingua.API.Controllers.ConfigController.LanguageLevels (Lingua.API) in 1.807ms
+2021-07-31 10:31:43.472 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.ConfigController.LanguageLevels (Lingua.API)'
+2021-07-31 10:31:43.477 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/config/languagelevels - - - 200 - application/json;+charset=utf-8 8.7218ms
+2021-07-31 10:31:43.478 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/user/me - -
+2021-07-31 10:31:43.478 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:43.478 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.UserController.GetProfile (Lingua.API)'
+2021-07-31 10:31:43.479 -05:00 [INF] Route matched with {action = "GetProfile", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProfile() on controller Lingua.API.Controllers.UserController (Lingua.API).
+2021-07-31 10:31:43.479 -05:00 [INF] Executing ForbidResult with authentication schemes ([]).
+2021-07-31 10:31:43.479 -05:00 [INF] AuthenticationScheme: Cookies was forbidden.
+2021-07-31 10:31:43.480 -05:00 [INF] Executed action Lingua.API.Controllers.UserController.GetProfile (Lingua.API) in 0.8927ms
+2021-07-31 10:31:43.480 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.UserController.GetProfile (Lingua.API)'
+2021-07-31 10:31:43.483 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/user/me - - - 302 - - 4.7979ms
+2021-07-31 10:31:43.533 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/Account/AccessDenied?ReturnUrl=%2Fapi%2Fuser%2Fme - -
+2021-07-31 10:31:43.535 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:43.537 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/Account/AccessDenied?ReturnUrl=%2Fapi%2Fuser%2Fme - - - 404 - - 4.3160ms
+2021-07-31 10:31:43.748 -05:00 [INF] Request starting HTTP/1.1 GET https://localhost:44361/roomsHub?id=pomA7da5VDajGT-21PfyDQ - -
+2021-07-31 10:31:43.749 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:43.749 -05:00 [INF] Executing endpoint '/roomsHub'
+2021-07-31 10:31:49.849 -05:00 [INF] Executed endpoint '/roomsHub'
+2021-07-31 10:31:49.850 -05:00 [INF] Request finished HTTP/1.1 GET https://localhost:44361/roomsHub?id=pomA7da5VDajGT-21PfyDQ - - - 101 - - 6101.3729ms
+2021-07-31 10:31:50.811 -05:00 [INF] Request starting HTTP/2 OPTIONS https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 - -
+2021-07-31 10:31:50.811 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:50.812 -05:00 [INF] Request finished HTTP/2 OPTIONS https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 - - - 204 - - 1.6428ms
+2021-07-31 10:31:50.823 -05:00 [INF] Request starting HTTP/2 POST https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0
+2021-07-31 10:31:50.823 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:50.824 -05:00 [INF] Executing endpoint '/roomsHub/negotiate'
+2021-07-31 10:31:50.830 -05:00 [INF] Executed endpoint '/roomsHub/negotiate'
+2021-07-31 10:31:50.831 -05:00 [INF] Request finished HTTP/2 POST https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0 - 200 316 application/json 8.1042ms
+2021-07-31 10:31:51.020 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/config/languages - -
+2021-07-31 10:31:51.021 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:51.021 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.ConfigController.Languages (Lingua.API)'
+2021-07-31 10:31:51.022 -05:00 [INF] Route matched with {action = "Languages", controller = "Config"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Languages() on controller Lingua.API.Controllers.ConfigController (Lingua.API).
+2021-07-31 10:31:51.022 -05:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2021-07-31 10:31:51.024 -05:00 [INF] Executed action Lingua.API.Controllers.ConfigController.Languages (Lingua.API) in 2.1054ms
+2021-07-31 10:31:51.024 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.ConfigController.Languages (Lingua.API)'
+2021-07-31 10:31:51.027 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/config/zoom - -
+2021-07-31 10:31:51.027 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/config/languages - - - 200 - application/json;+charset=utf-8 8.1870ms
+2021-07-31 10:31:51.027 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:51.027 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/config/languagelevels - -
+2021-07-31 10:31:51.028 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:51.028 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.ConfigController.ZoomOAuthUrl (Lingua.API)'
+2021-07-31 10:31:51.028 -05:00 [INF] Route matched with {action = "ZoomOAuthUrl", controller = "Config"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ZoomOAuthUrl() on controller Lingua.API.Controllers.ConfigController (Lingua.API).
+2021-07-31 10:31:51.028 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.ConfigController.LanguageLevels (Lingua.API)'
+2021-07-31 10:31:51.028 -05:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2021-07-31 10:31:51.028 -05:00 [INF] Route matched with {action = "LanguageLevels", controller = "Config"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult LanguageLevels() on controller Lingua.API.Controllers.ConfigController (Lingua.API).
+2021-07-31 10:31:51.029 -05:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`2[[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]][]'.
+2021-07-31 10:31:51.029 -05:00 [INF] Executed action Lingua.API.Controllers.ConfigController.ZoomOAuthUrl (Lingua.API) in 0.6675ms
+2021-07-31 10:31:51.029 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.ConfigController.ZoomOAuthUrl (Lingua.API)'
+2021-07-31 10:31:51.030 -05:00 [INF] Executed action Lingua.API.Controllers.ConfigController.LanguageLevels (Lingua.API) in 1.4693ms
+2021-07-31 10:31:51.030 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.ConfigController.LanguageLevels (Lingua.API)'
+2021-07-31 10:31:51.030 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/config/zoom - - - 200 - text/plain;+charset=utf-8 2.8314ms
+2021-07-31 10:31:51.031 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/config/languagelevels - - - 200 - application/json;+charset=utf-8 3.3575ms
+2021-07-31 10:31:51.031 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/user/me - -
+2021-07-31 10:31:51.032 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:51.032 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.UserController.GetProfile (Lingua.API)'
+2021-07-31 10:31:51.032 -05:00 [INF] Route matched with {action = "GetProfile", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProfile() on controller Lingua.API.Controllers.UserController (Lingua.API).
+2021-07-31 10:31:51.032 -05:00 [INF] Executing ForbidResult with authentication schemes ([]).
+2021-07-31 10:31:51.033 -05:00 [INF] AuthenticationScheme: Cookies was forbidden.
+2021-07-31 10:31:51.033 -05:00 [INF] Executed action Lingua.API.Controllers.UserController.GetProfile (Lingua.API) in 0.4154ms
+2021-07-31 10:31:51.033 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.UserController.GetProfile (Lingua.API)'
+2021-07-31 10:31:51.039 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/user/me - - - 302 - - 7.3618ms
+2021-07-31 10:31:51.355 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/Account/AccessDenied?ReturnUrl=%2Fapi%2Fuser%2Fme - -
+2021-07-31 10:31:51.357 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:51.362 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/Account/AccessDenied?ReturnUrl=%2Fapi%2Fuser%2Fme - - - 404 - - 7.5503ms
+2021-07-31 10:31:51.363 -05:00 [INF] Request starting HTTP/1.1 GET https://localhost:44361/roomsHub?id=eaQRCGRoUi0BqYSvM-CgWA - -
+2021-07-31 10:31:51.363 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:31:51.364 -05:00 [INF] Executing endpoint '/roomsHub'
+2021-07-31 10:35:03.920 -05:00 [INF] User profile is available. Using 'C:\Users\Artsiom_Mayeuski\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-07-31 10:35:04.961 -05:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-07-31 10:35:04.962 -05:00 [INF] Hosting environment: Development
+2021-07-31 10:35:04.962 -05:00 [INF] Content root path: C:\lingua\api\Lingua.API
+2021-07-31 10:35:04.988 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/swagger/index.html - -
+2021-07-31 10:35:05.379 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/swagger/index.html - - - 200 - text/html;charset=utf-8 391.2855ms
+2021-07-31 10:35:06.175 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/swagger/v1/swagger.json - -
+2021-07-31 10:35:06.634 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 461.6247ms
+2021-07-31 10:35:22.454 -05:00 [INF] Request starting HTTP/2 OPTIONS https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 - -
+2021-07-31 10:35:22.557 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:35:22.564 -05:00 [INF] Request finished HTTP/2 OPTIONS https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 - - - 204 - - 109.8618ms
+2021-07-31 10:35:22.591 -05:00 [INF] Request starting HTTP/2 POST https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0
+2021-07-31 10:35:22.593 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:35:22.645 -05:00 [INF] Executing endpoint '/roomsHub/negotiate'
+2021-07-31 10:35:22.695 -05:00 [INF] Executed endpoint '/roomsHub/negotiate'
+2021-07-31 10:35:22.698 -05:00 [INF] Request finished HTTP/2 POST https://localhost:44361/roomsHub/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0 - 200 316 application/json 107.1791ms
+2021-07-31 10:35:22.700 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/config/languages - -
+2021-07-31 10:35:22.706 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/config/zoom - -
+2021-07-31 10:35:22.707 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/config/languagelevels - -
+2021-07-31 10:35:22.717 -05:00 [INF] Request starting HTTP/2 GET https://localhost:44361/api/user/me - -
+2021-07-31 10:35:22.726 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:35:22.726 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:35:22.726 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:35:22.726 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:35:22.726 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.ConfigController.ZoomOAuthUrl (Lingua.API)'
+2021-07-31 10:35:22.726 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.ConfigController.LanguageLevels (Lingua.API)'
+2021-07-31 10:35:22.727 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.UserController.GetProfile (Lingua.API)'
+2021-07-31 10:35:22.729 -05:00 [INF] Executing endpoint 'Lingua.API.Controllers.ConfigController.Languages (Lingua.API)'
+2021-07-31 10:35:22.775 -05:00 [INF] Route matched with {action = "Languages", controller = "Config"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Languages() on controller Lingua.API.Controllers.ConfigController (Lingua.API).
+2021-07-31 10:35:22.775 -05:00 [INF] Route matched with {action = "ZoomOAuthUrl", controller = "Config"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ZoomOAuthUrl() on controller Lingua.API.Controllers.ConfigController (Lingua.API).
+2021-07-31 10:35:22.775 -05:00 [INF] Route matched with {action = "LanguageLevels", controller = "Config"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult LanguageLevels() on controller Lingua.API.Controllers.ConfigController (Lingua.API).
+2021-07-31 10:35:22.776 -05:00 [INF] Route matched with {action = "GetProfile", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProfile() on controller Lingua.API.Controllers.UserController (Lingua.API).
+2021-07-31 10:35:23.042 -05:00 [INF] Request starting HTTP/1.1 GET https://localhost:44361/roomsHub?id=iekS0QcllEoz32XRHBs7Aw - -
+2021-07-31 10:35:23.043 -05:00 [INF] CORS policy execution successful.
+2021-07-31 10:35:23.048 -05:00 [INF] Executing endpoint '/roomsHub'
+2021-07-31 10:35:24.056 -05:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`2[[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]][]'.
+2021-07-31 10:35:24.056 -05:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2021-07-31 10:35:24.056 -05:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2021-07-31 10:35:24.056 -05:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2021-07-31 10:35:24.070 -05:00 [INF] Executed action Lingua.API.Controllers.ConfigController.ZoomOAuthUrl (Lingua.API) in 1283.4404ms
+2021-07-31 10:35:24.071 -05:00 [INF] Executed action Lingua.API.Controllers.ConfigController.Languages (Lingua.API) in 1295.7556ms
+2021-07-31 10:35:24.076 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.ConfigController.ZoomOAuthUrl (Lingua.API)'
+2021-07-31 10:35:24.076 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.ConfigController.Languages (Lingua.API)'
+2021-07-31 10:35:24.078 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/config/languages - - - 200 - application/json;+charset=utf-8 1378.1638ms
+2021-07-31 10:35:24.078 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/config/zoom - - - 200 - text/plain;+charset=utf-8 1371.9786ms
+2021-07-31 10:35:24.081 -05:00 [INF] Executed action Lingua.API.Controllers.ConfigController.LanguageLevels (Lingua.API) in 1305.0877ms
+2021-07-31 10:35:24.081 -05:00 [INF] Executed action Lingua.API.Controllers.UserController.GetProfile (Lingua.API) in 1304.6624ms
+2021-07-31 10:35:24.081 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.UserController.GetProfile (Lingua.API)'
+2021-07-31 10:35:24.081 -05:00 [INF] Executed endpoint 'Lingua.API.Controllers.ConfigController.LanguageLevels (Lingua.API)'
+2021-07-31 10:35:24.085 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/config/languagelevels - - - 200 - application/json;+charset=utf-8 1378.5012ms
+2021-07-31 10:35:24.088 -05:00 [INF] Request finished HTTP/2 GET https://localhost:44361/api/user/me - - - 401 - application/problem+json;+charset=utf-8 1371.0091ms
+2021-07-31 10:35:47.807 -05:00 [INF] Executed endpoint '/roomsHub'
+2021-07-31 10:35:47.813 -05:00 [INF] Request finished HTTP/1.1 GET https://localhost:44361/roomsHub?id=iekS0QcllEoz32XRHBs7Aw - - - 101 - - 24771.1834ms

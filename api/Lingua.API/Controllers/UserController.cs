@@ -23,6 +23,11 @@ namespace Lingua.API.Controllers
         [Route("me")]
         public async Task<IActionResult> GetProfile()
         {
+            if (!HttpContext.User.Claims.Any())
+            {
+                return Unauthorized();
+            }
+
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userRepository.Get(userId);
             return Ok(user);
@@ -31,7 +36,7 @@ namespace Lingua.API.Controllers
 
         [HttpPut]
         [Route("")]
-        public async Task<IActionResult> Update([FromBody]User user)
+        public async Task<IActionResult> Update([FromBody] User user)
         {
             await _userRepository.Update(user);
             return Ok();
