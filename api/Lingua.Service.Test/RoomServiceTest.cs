@@ -1,7 +1,6 @@
 using Lingua.Services;
 using Lingua.Shared;
 using Lingua.ZoomIntegration;
-using Lingua.ZoomIntegration.Auth;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -23,13 +22,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -67,13 +66,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -110,13 +109,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -153,13 +152,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -196,13 +195,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -244,13 +243,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -288,13 +287,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -331,13 +330,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -374,13 +373,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -417,13 +416,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -463,13 +462,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -512,13 +511,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -548,13 +547,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -597,13 +596,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -646,13 +645,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -695,13 +694,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -744,13 +743,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -793,13 +792,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -845,13 +844,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -898,13 +897,13 @@ namespace Lingua.Service.Test
             //arrange
 
             var zoomAuthMock = new Mock<IAuthClient>();
-            var zoomMettingsMock = new Mock<IMeetingService>();
-            var tokenProvider = new RefreshableTokenProvider(zoomAuthMock.Object);
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
             var roomRepoMock = new Mock<IRoomRepository>();
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, tokenProvider, zoomMettingsMock.Object, dateTimeMock.Object);
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));

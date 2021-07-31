@@ -53,18 +53,11 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> Create(CreateRoomOptions options)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            try
-            {
-                var room = await _roomService.Create(options, userId);
-                var vm = _mapper.Map<RoomViewModel>(room);
-                await _roomsHub.Clients.All.OnAdd(vm, userId);
+            var room = await _roomService.Create(options, userId);
+            var vm = _mapper.Map<RoomViewModel>(room);
+            await _roomsHub.Clients.All.OnAdd(vm, userId);
 
-                return Ok(vm);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(vm);
         }
 
         [HttpPut]
@@ -96,18 +89,11 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> Enter(Guid roomId)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            try
-            {
-                var room = await _roomService.Enter(roomId, userId);
-                var vm = _mapper.Map<RoomViewModel>(room);
-                await _roomsHub.Clients.All.OnEnter(vm, userId);
+            var room = await _roomService.Enter(roomId, userId);
+            var vm = _mapper.Map<RoomViewModel>(room);
+            await _roomsHub.Clients.All.OnEnter(vm, userId);
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok();
         }
 
         [HttpGet]

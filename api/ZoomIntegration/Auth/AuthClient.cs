@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lingua.ZoomIntegration
 {
-    public class AuthClient : IAuthClient
+    public class AuthClient : BaseClient, IAuthClient
     {
         private readonly ZoomClientOptions _options;
         private readonly HttpClient _httpClient;
@@ -26,9 +25,7 @@ namespace Lingua.ZoomIntegration
 
         public async Task<AccessTokens> RefreshAccessToken(string refreshToken)
         {
-            var request = new HttpRequestMessage();
-            request.Method = HttpMethod.Post;
-            request.Content = new FormUrlEncodedContent(
+            var body = new FormUrlEncodedContent(
                 new Dictionary<string, string>
                 {
                         { "refresh_token", refreshToken },
@@ -36,27 +33,12 @@ namespace Lingua.ZoomIntegration
                 }
             );
 
-            var response = await _httpClient.SendAsync(request);
-            if (response.IsSuccessStatusCode)
-            {
-                dynamic resp = JsonConvert.DeserializeObject<object>(await response.Content.ReadAsStringAsync());
-
-                return new AccessTokens
-                {
-                    AccessToken = resp.access_token,
-                    RefreshToken = resp.refresh_token,
-                    ExpiresAt = DateTime.UtcNow.AddSeconds((double)resp.expires_in)
-                };
-            }
-
-            throw new Exception("Cannot refresh access token");
+            return await RequestAccessToken(body);
         }
 
         public async Task<AccessTokens> RequestAccessToken(string authCode)
         {
-            var request = new HttpRequestMessage();
-            request.Method = HttpMethod.Post;
-            request.Content = new FormUrlEncodedContent(
+            var body = new FormUrlEncodedContent(
                 new Dictionary<string, string>
                 {
                         { "code", authCode },
@@ -65,20 +47,24 @@ namespace Lingua.ZoomIntegration
                 }
             );
 
+            return await RequestAccessToken(body);
+        }
+
+        public async Task<AccessTokens> RequestAccessToken(HttpContent body)
+        {
+            var request = new HttpRequestMessage();
+            request.Method = HttpMethod.Post;
+            request.Content = body;
+
             var response = await _httpClient.SendAsync(request);
-            if (response.IsSuccessStatusCode)
+            var resp = await ExtractResponse<AccessTokenResponse>(response);
+
+            return new AccessTokens
             {
-                dynamic resp = JsonConvert.DeserializeObject<object>(await response.Content.ReadAsStringAsync());
-
-                return new AccessTokens
-                {
-                    AccessToken = resp.access_token,
-                    RefreshToken = resp.refresh_token,
-                    ExpiresAt = DateTime.UtcNow.AddSeconds((double)resp.expires_in)
-                };
-            }
-
-            throw new Exception("Cannot get access token");
+                AccessToken = resp.AccessToken,
+                RefreshToken = resp.RefreshToken,
+                ExpiresAt = DateTime.UtcNow.AddSeconds(resp.ExpiresIn)
+            };
         }
 
     }

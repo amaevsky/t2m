@@ -16,10 +16,10 @@ namespace Lingua.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthClient _zoomAuthService;
-        private readonly IUserService _zoomUserService;
+        private readonly IUserClient _zoomUserService;
         private readonly IUserRepository _userRepository;
 
-        public AuthController(IAuthClient zoomAuthService, IUserService zoomUserService, IUserRepository userRepository)
+        public AuthController(IAuthClient zoomAuthService, IUserClient zoomUserService, IUserRepository userRepository)
         {
             _zoomAuthService = zoomAuthService;
             _zoomUserService = zoomUserService;
@@ -30,8 +30,10 @@ namespace Lingua.API.Controllers
         [Route("login/zoom")]
         public async Task<IActionResult> ZoomLogin(string authCode)
         {
-            var response = await _zoomAuthService.RequestAccessToken(authCode);
-            var zoomUser = await _zoomUserService.GetUserProfile(response.AccessToken);
+            var tokens = await _zoomAuthService.RequestAccessToken(authCode);
+            var response = await _zoomUserService.GetUserProfile(tokens);
+            var zoomUser = response.Response;
+            
             var user = (await _userRepository.Get(u => u.Email == zoomUser.Email)).FirstOrDefault();
             var isNewAccount = user == null;
             if (isNewAccount)
@@ -44,7 +46,7 @@ namespace Lingua.API.Controllers
                     AvatarUrl = zoomUser.PicUrl,
                     ZoomProperties = new ZoomProperties
                     {
-                        AccessTokens = response
+                        AccessTokens = tokens
                     }
                 };
                 await _userRepository.Create(user);
@@ -55,7 +57,7 @@ namespace Lingua.API.Controllers
                 {
                     user.AvatarUrl = zoomUser.PicUrl;
                 }
-                user.ZoomProperties.AccessTokens = response;
+                user.ZoomProperties.AccessTokens = tokens;
                 await _userRepository.Update(user);
             }
 

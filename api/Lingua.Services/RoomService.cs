@@ -1,6 +1,5 @@
 ﻿using Lingua.Shared;
 using Lingua.ZoomIntegration;
-using Lingua.ZoomIntegration.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,23 +8,28 @@ using TimeZoneConverter;
 
 namespace Lingua.Services
 {
+    public class ValidationException : Exception
+    {
+        public ValidationException(string message) : base(message)
+        {
+
+        }
+    }
+
     public class RoomService : IRoomService
     {
         private readonly IRoomRepository _roomRepository;
         private readonly IUserRepository _userRepository;
-        private readonly ITokenProvider _tokenProvider;
-        private readonly IMeetingService _zoomMeetingService;
+        private readonly IMeetingClient _zoomMeetingService;
         private readonly IDateTimeProvider _dateTime;
 
         public RoomService(IRoomRepository roomRepository,
                             IUserRepository userRepository,
-                            ITokenProvider tokenProvider,
-                            IMeetingService zoomMeetingService,
+                            IMeetingClient zoomMeetingService,
                             IDateTimeProvider dateTime)
         {
             _roomRepository = roomRepository;
             _userRepository = userRepository;
-            _tokenProvider = tokenProvider;
             _zoomMeetingService = zoomMeetingService;
             _dateTime = dateTime;
         }
@@ -98,7 +102,7 @@ namespace Lingua.Services
 
             if (conflicts.Any())
             {
-                throw new Exception("You have conflicting rooms for this time frame");
+                throw new ValidationException("You have conflicting rooms for this time frame");
             }
 
             var room = new Room
@@ -157,15 +161,15 @@ namespace Lingua.Services
 
             if (room.StartDate < _dateTime.UtcNow)
             {
-                throw new Exception("This room is already started.");
+                throw new ValidationException("This room is already started.");
             }
             if (room.Participants.Any(p => p.Id == userId))
             {
-                throw new Exception("You have already entered this room.");
+                throw new ValidationException("You have already entered this room.");
             }
             if (room.Participants.Count == room.MaxParticipants)
             {
-                throw new Exception("This room is already full.");
+                throw new ValidationException("This room is already full.");
             }
 
             var start = room.StartDate;
@@ -178,12 +182,12 @@ namespace Lingua.Services
 
             if (conflicts.Any())
             {
-                throw new Exception("You have conflicting rooms for this time frame");
+                throw new ValidationException("You have conflicting rooms for this time frame");
             }
 
             if (room.Participants.Count == room.MaxParticipants)
             {
-                throw new Exception("Room is already full");
+                throw new ValidationException("Room is already full");
             }
 
             room.Participants.Add(user);
@@ -216,29 +220,20 @@ namespace Lingua.Services
             var user = await _userRepository.Get(userId);
             var accessTokens = user.ZoomProperties?.AccessTokens;
 
-            if (accessTokens == null)
+            var request = new CreateMeetingRequest
             {
-                throw new Exception("User does not have zoom access");
-            }
+                Topic = room.Topic,
+                Duration = room.DurationInMinutes,
+                StartTime = room.StartDate,
+                Type = MeetingType.Scheduled,
+                Timezone = "UTC"
+            };
 
-            var updated = await _tokenProvider.UseToken(accessTokens, async (accessTokens) =>
-            {
+            var response = await _zoomMeetingService.CreateMeeting(accessTokens, request);
+            room.JoinUrl = response.Response.JoinUrl;
+            await _roomRepository.Update(room);
 
-                var request = new CreateMeetingRequest
-                {
-                    Topic = room.Topic,
-                    Duration = room.DurationInMinutes,
-                    StartTime = room.StartDate,
-                    Type = MeetingType.Scheduled,
-                    Timezone = "UTC"
-                };
-
-                var meeting = await _zoomMeetingService.CreateMeeting(accessTokens.AccessToken, request);
-                room.JoinUrl = meeting.JoinUrl;
-                await _roomRepository.Update(room);
-            });
-
-            if (updated)
+            if (response.NewTokens != null)
             {
                 await _userRepository.Update(user);
             }
