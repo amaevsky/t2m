@@ -20,6 +20,7 @@ namespace Lingua.Shared
 
     public class ZoomProperties
     {
+        public string UserId { get; set; }
         public AccessTokens AccessTokens { get; set; }
     }
 }

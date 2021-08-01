@@ -41,11 +41,12 @@ namespace Lingua.API.Controllers
                 user = new User()
                 {
                     Email = zoomUser.Email,
-                    Firstname = zoomUser.Firstname,
-                    Lastname = zoomUser.Lastname,
+                    Firstname = zoomUser.FirstName,
+                    Lastname = zoomUser.LastName,
                     AvatarUrl = zoomUser.PicUrl,
                     ZoomProperties = new ZoomProperties
                     {
+                        UserId = zoomUser.Id,
                         AccessTokens = tokens
                     }
                 };

@@ -6,5 +6,6 @@
         public string ClientSecret { get; set; }
         public string RedirectUri { get; set; }
         public string OAuthUrl { get; set; }
+        public string VerificationToken { get; set; }
     }
 }
