@@ -15,7 +15,7 @@ import { Landing } from './Landing';
 
 export const routes = {
   help: {
-    contactUs: 'https://docs.google.com/forms/d/1EB_9SI8j2VvZ_kruKddlR0AkS5g1YuwvIwhJMJPdJPY/edit',//'/help/contact-us',
+    contactUs: '/help/contact-us',
     privacy: '/help/privacy',
     terms: '/help/terms'
   },
@@ -53,7 +53,7 @@ export const HelpPages = () => {
       <Affix offsetTop={0}>
         <Header empty={true} />
       </Affix>
-      <div style={{ padding: '16px 26px' }}>
+      <div style={{ padding: '16px 26px', minHeight: 'calc(100vh - 156px)' }}>
         <div className='help-container'>
           <Switch>
             <Route path={routes.help.contactUs} component={ContactUs} />
