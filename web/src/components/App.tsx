@@ -12,10 +12,12 @@ import { ContactUs } from './ContactUs';
 import { Terms } from './Terms';
 import { Privacy } from './Privacy';
 import { Landing } from './Landing';
+import { ZoomDocumentation } from './ZoomDocumentation';
 
 export const routes = {
   help: {
     contactUs: '/help/contact-us',
+    zoomDocs: '/help/zoom',
     privacy: '/help/privacy',
     terms: '/help/terms'
   },
@@ -57,6 +59,7 @@ export const HelpPages = () => {
         <div className='help-container'>
           <Switch>
             <Route path={routes.help.contactUs} component={ContactUs} />
+            <Route path={routes.help.zoomDocs} component={ZoomDocumentation} />
             <Route path={routes.help.terms} component={Terms} />
             <Route path={routes.help.privacy} component={Privacy} />
           </Switch>
