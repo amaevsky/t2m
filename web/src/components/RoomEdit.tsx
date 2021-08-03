@@ -19,7 +19,10 @@ interface State {
 export class RoomEdit extends React.Component<Props, State> {
 
   edit(values: any) {
-    const room = { ...values } as Room;
+    const room = {
+      ...values,
+      startDate: (values.startDate as moment.Moment).seconds(0).milliseconds(0)
+    } as Room;
     this.props.onEdit(room);
   }
 
