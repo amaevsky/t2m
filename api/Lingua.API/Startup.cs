@@ -58,13 +58,14 @@ namespace Lingua.API
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IMeetingClient, MeetingClient>();
             services.AddSingleton<IRoomRepository, RoomRepository>();
-            services.AddSingleton<IEmailService, GmailService>();
+            services.AddSingleton<IEmailService, SmtpEmailService>();
             services.AddSingleton<IRoomService, RoomService>();
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
             services.AddOptions();
             services.Configure<ZoomClientOptions>(Configuration.GetSection("ZoomClientOptions"));
             services.Configure<MongoOptions>(Configuration.GetSection("MongoOptions"));
+            services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

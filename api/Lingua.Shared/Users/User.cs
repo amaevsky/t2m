@@ -1,5 +1,6 @@
 ﻿using Lingua.ZoomIntegration;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 using System;
 
 namespace Lingua.Shared
@@ -16,6 +17,9 @@ namespace Lingua.Shared
         public string LanguageLevel { get; set; }
         public string AvatarUrl { get; set; }
         public ZoomProperties ZoomProperties { get; set; }
+
+        [JsonIgnore]
+        public string Fullname => $"{Firstname} {Lastname}"; 
     }
 
     public class ZoomProperties

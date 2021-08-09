@@ -14,16 +14,19 @@ namespace Lingua.Services
         private readonly IUserRepository _userRepository;
         private readonly IMeetingClient _zoomMeetingService;
         private readonly IDateTimeProvider _dateTime;
+        private readonly IEmailService _emailService;
 
         public RoomService(IRoomRepository roomRepository,
                             IUserRepository userRepository,
                             IMeetingClient zoomMeetingService,
-                            IDateTimeProvider dateTime)
+                            IDateTimeProvider dateTime,
+                            IEmailService emailService)
         {
             _roomRepository = roomRepository;
             _userRepository = userRepository;
             _zoomMeetingService = zoomMeetingService;
             _dateTime = dateTime;
+            _emailService = emailService;
         }
 
         public async Task<List<Room>> Available(SearchRoomOptions options, Guid userId)
@@ -132,16 +135,40 @@ namespace Lingua.Services
             }
 
             await _roomRepository.Update(room);
-            //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
+
+            SendUpdateEmail(room, userId, "Room has been updated.");
 
             return room;
+        }
+
+        private void SendUpdateEmail(Room room, Guid userId, string message)
+        {
+            var body = $@"
+{message}
+
+Room details:
+
+Date: {room.StartDate}
+Language: {room.Language}
+Topic: {room.Topic ?? "<no topic>"}
+Participants: {string.Join(',', room.Participants.Select(p => p.Fullname))}
+";
+            _emailService.SendAsync(
+                "Room update",
+                body,
+                room.Participants
+                    .Where(u => u.Id != userId)
+                    .Select(p => p.Email)
+                    .ToArray()
+                ).ConfigureAwait(false);
         }
 
         public async Task<Room> Remove(Guid roomId, Guid userId)
         {
             await _roomRepository.Remove(roomId);
             var room = await _roomRepository.Get(roomId);
-            //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
+
+            SendUpdateEmail(room, userId, $"Room has been removed by host.");
 
             return room;
         }
@@ -179,7 +206,8 @@ namespace Lingua.Services
 
             room.Participants.Add(user);
             await _roomRepository.Update(room);
-            //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
+
+            SendUpdateEmail(room, userId, $"User {user.Fullname} entered the room.");
 
             return room;
         }
@@ -191,7 +219,8 @@ namespace Lingua.Services
             var room = await _roomRepository.Get(roomId);
             room.Participants.RemoveAll(p => p.Id == user.Id);
             await _roomRepository.Update(room);
-            //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
+
+            SendUpdateEmail(room, userId, $"User {user.Fullname} left the room.");
 
             return room;
         }
