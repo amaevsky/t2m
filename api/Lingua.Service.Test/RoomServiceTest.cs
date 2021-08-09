@@ -587,7 +587,7 @@ namespace Lingua.Service.Test
             Func<Task<Room>> action = () => service.Create(options, user.Id);
 
             //assert
-            Assert.ThrowsExceptionAsync<ValidationException>(action, "You have conflicting rooms for this time frame").Wait();
+            Assert.ThrowsExceptionAsync<ValidationException>(action, ValidationExceptionType.Rooms_Create_Conflict.ToString()).Wait();
         }
 
         [TestMethod]
@@ -636,7 +636,7 @@ namespace Lingua.Service.Test
             Func<Task<Room>> action = () => service.Create(options, user.Id);
 
             //assert
-            Assert.ThrowsExceptionAsync<ValidationException>(action, "You have conflicting rooms for this time frame").Wait();
+            Assert.ThrowsExceptionAsync<ValidationException>(action, ValidationExceptionType.Rooms_Create_Conflict.ToString()).Wait();
         }
 
         [TestMethod]
@@ -685,7 +685,7 @@ namespace Lingua.Service.Test
             Func<Task<Room>> action = () => service.Create(options, user.Id);
 
             //assert
-            Assert.ThrowsExceptionAsync<ValidationException>(action, "You have conflicting rooms for this time frame").Wait();
+            Assert.ThrowsExceptionAsync<ValidationException>(action, ValidationExceptionType.Rooms_Create_Conflict.ToString()).Wait();
         }
 
         [TestMethod]
@@ -734,7 +734,7 @@ namespace Lingua.Service.Test
             Func<Task<Room>> action = () => service.Create(options, user.Id);
 
             //assert
-            Assert.ThrowsExceptionAsync<ValidationException>(action, "You have conflicting rooms for this time frame").Wait();
+            Assert.ThrowsExceptionAsync<ValidationException>(action, ValidationExceptionType.Rooms_Create_Conflict.ToString()).Wait();
         }
 
         [TestMethod]

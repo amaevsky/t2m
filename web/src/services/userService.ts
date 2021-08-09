@@ -1,3 +1,4 @@
+import { notification } from 'antd';
 import { http } from '../utilities/http';
 
 const baseUrl = `user`;
@@ -18,8 +19,14 @@ class UserService {
   }
 
   async update(user: User) {
-    await http.put<User>(`${baseUrl}`, user);
+    const resp = await http.put<User>(`${baseUrl}`, user);
     this.user = user;
+    if (!resp.errors) {
+      notification.success({
+        placement: 'bottomRight',
+        message: 'The changes were successfully saved.'
+      });
+    }
   }
 }
 

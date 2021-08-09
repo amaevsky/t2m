@@ -8,14 +8,6 @@ using TimeZoneConverter;
 
 namespace Lingua.Services
 {
-    public class ValidationException : Exception
-    {
-        public ValidationException(string message) : base(message)
-        {
-
-        }
-    }
-
     public class RoomService : IRoomService
     {
         private readonly IRoomRepository _roomRepository;
@@ -102,7 +94,7 @@ namespace Lingua.Services
 
             if (conflicts.Any())
             {
-                throw new ValidationException("You have conflicting rooms for this time frame");
+                throw new ValidationException(ValidationExceptionType.Rooms_Create_Conflict);
             }
 
             var room = new Room
@@ -161,15 +153,15 @@ namespace Lingua.Services
 
             if (room.StartDate < _dateTime.UtcNow)
             {
-                throw new ValidationException("This room is already started.");
+                throw new ValidationException(ValidationExceptionType.Rooms_Enter_AlreadyStarted);
             }
             if (room.Participants.Any(p => p.Id == userId))
             {
-                throw new ValidationException("You have already entered this room.");
+                return room;
             }
             if (room.Participants.Count == room.MaxParticipants)
             {
-                throw new ValidationException("This room is already full.");
+                throw new ValidationException(ValidationExceptionType.Rooms_Enter_AlreadyFull);
             }
 
             var start = room.StartDate;
@@ -182,12 +174,7 @@ namespace Lingua.Services
 
             if (conflicts.Any())
             {
-                throw new ValidationException("You have conflicting rooms for this time frame");
-            }
-
-            if (room.Participants.Count == room.MaxParticipants)
-            {
-                throw new ValidationException("Room is already full");
+                throw new ValidationException(ValidationExceptionType.Rooms_Enter_Conflict);
             }
 
             room.Participants.Add(user);
