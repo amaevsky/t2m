@@ -4,6 +4,7 @@ import { User, userService } from '../services/userService';
 import country from 'country-list-js';
 
 import moment from 'moment';
+import 'moment-timezone';
 
 export const UserProfileEdit = (props: { afterSave?: () => void }) => {
   const user = userService.user;
@@ -19,7 +20,7 @@ export const UserProfileEdit = (props: { afterSave?: () => void }) => {
       name="basic"
       labelCol={{ span: 7 }}
       wrapperCol={{ span: 17 }}
-      initialValues={{ ...user, dateOfBirth: user?.dateOfBirth ? moment(user?.dateOfBirth).utc() : null }}
+      initialValues={{ ...user, timezone: moment.tz.guess(), dateOfBirth: user?.dateOfBirth ? moment(user?.dateOfBirth).utc() : null }}
       onFinish={(values) => save(values)}
     >
       <Form.Item
@@ -97,6 +98,18 @@ export const UserProfileEdit = (props: { afterSave?: () => void }) => {
         ]}
       >
         <DatePicker format='L' style={{ width: '100%' }} />
+      </Form.Item>
+
+      <Form.Item
+        label="Timezone"
+        name="timezone"
+        rules={[{ required: true, message: 'Please select timezone.' }]}
+      >
+        <Select>
+          {
+            moment.tz.names().map(t => <Select.Option value={t}>{t}</Select.Option>)
+          }
+        </Select>
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

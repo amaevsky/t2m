@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TimeZoneConverter;
 
 namespace Lingua.Services
 {
@@ -40,13 +39,13 @@ namespace Lingua.Services
 
             if (options != null)
             {
-                rooms = ApplySearchFilter(options, rooms);
+                rooms = ApplySearchFilter(options, rooms, user.Timezone);
             }
 
             return rooms.ToList();
         }
 
-        private static IEnumerable<Room> ApplySearchFilter(SearchRoomOptions options, IEnumerable<Room> rooms)
+        private static IEnumerable<Room> ApplySearchFilter(SearchRoomOptions options, IEnumerable<Room> rooms, string timezone)
         {
             if (options?.Levels?.Any() == true)
             {
@@ -55,8 +54,7 @@ namespace Lingua.Services
 
             if (options?.Days?.Any() == true)
             {
-                var tz = TimeZoneInfo.FindSystemTimeZoneById(TZConvert.IanaToWindows(options.Timezone));
-                rooms = rooms.Where(r => options.Days.Contains(TimeZoneInfo.ConvertTimeFromUtc(r.StartDate, tz).DayOfWeek));
+                rooms = rooms.Where(r => options.Days.Contains(Utilities.ConvertToTimezone(r.StartDate, timezone).DayOfWeek));
             }
 
             if ((bool)options?.TimeFrom.HasValue && (bool)options?.TimeTo.HasValue)
@@ -143,24 +141,25 @@ namespace Lingua.Services
 
         private void SendUpdateEmail(Room room, Guid userId, string message)
         {
-            var body = $@"
+            var recipients = room.Participants.Where(u => u.Id != userId);
+
+            foreach (var recipient in recipients)
+            {
+                var body = $@"
 {message}
 
 Room details:
 
-Date: {room.StartDate}
+Date: { Utilities.ConvertToTimezone(room.StartDate, recipient.Timezone)}
 Language: {room.Language}
-Topic: {room.Topic ?? "<no topic>"}
-Participants: {string.Join(',', room.Participants.Select(p => p.Fullname))}
-";
-            _emailService.SendAsync(
-                "Room update",
-                body,
-                room.Participants
-                    .Where(u => u.Id != userId)
-                    .Select(p => p.Email)
-                    .ToArray()
-                ).ConfigureAwait(false);
+Topic: {room.Topic ?? "<no topic>"}";
+
+                _emailService.SendAsync(
+                    "Room update",
+                    body,
+                    recipient.Email
+                    ).ConfigureAwait(false);
+            }
         }
 
         public async Task<Room> Remove(Guid roomId, Guid userId)
@@ -207,7 +206,7 @@ Participants: {string.Join(',', room.Participants.Select(p => p.Fullname))}
             room.Participants.Add(user);
             await _roomRepository.Update(room);
 
-            SendUpdateEmail(room, userId, $"User {user.Fullname} entered the room.");
+            SendUpdateEmail(room, userId, $"{user.Fullname} entered the room.");
 
             return room;
         }
@@ -220,7 +219,7 @@ Participants: {string.Join(',', room.Participants.Select(p => p.Fullname))}
             room.Participants.RemoveAll(p => p.Id == user.Id);
             await _roomRepository.Update(room);
 
-            SendUpdateEmail(room, userId, $"User {user.Fullname} left the room.");
+            SendUpdateEmail(room, userId, $"{user.Fullname} left the room.");
 
             return room;
         }

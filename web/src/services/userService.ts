@@ -40,6 +40,7 @@ export interface User {
   avatarUrl: string;
   targetLanguage: string;
   languageLevel: string;
+  timezone: string;
 }
 
 export const userService = new UserService();
