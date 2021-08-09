@@ -73,9 +73,9 @@ export const UserProfileEdit = (props: { afterSave?: () => void }) => {
       </Form.Item>
 
       <Form.Item
-        label="Country"
+        label="Country of origin"
         name="country"
-        rules={[{ required: true, message: 'Please select your country.' }]}
+        rules={[{ required: true, message: 'Please select your country of origin.' }]}
       >
         <Select showSearch>
           {country.names().sort().map(n => <Select.Option value={n}>{n}</Select.Option>)}
