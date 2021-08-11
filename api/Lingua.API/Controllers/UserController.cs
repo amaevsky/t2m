@@ -50,6 +50,7 @@ namespace Lingua.API.Controllers
 <body>
 
 <p>Hi {user.Firstname} 👋<p>
+<br/>
 <p>Welcome and thanks for joining Talk2Me! We hope you will enjoy practicing language with us. Here are 4 steps to help start your journey:<p>
 <p>
 <div>1️⃣ Go to <a href={"https://t2m.app/rooms/find"}>Find a Room page</a> and enter any room which works for you.</div>
@@ -59,8 +60,10 @@ namespace Lingua.API.Controllers
 </p>
 <p>⚠ If you have any questions or need help, please feel free to <a href={"https://t2m.app/help/contact-us"}>contact us here</a>.</b><p>
 <br/>
-<p>Best Regards,</p>
-<p>Talk2Me App Team</p>
+<p>
+<div>Best Regards,</div>
+<div>Talk2Me App Team</div>
+</p>
 
 </body>
 </html>

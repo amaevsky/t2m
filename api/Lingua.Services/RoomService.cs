@@ -150,6 +150,7 @@ namespace Lingua.Services
 <body>
 
 <p>Hi {recipient.Firstname} 👋<p>
+<br/>
 <p>🆕 There is an update regarding your room: {message}<p>
 <p>📅 Room details:<p>
 <ul>
@@ -158,10 +159,12 @@ namespace Lingua.Services
  <li>Language: {room.Language}</li>
  <li>Topic: {room.Topic ?? "&lt;no topic&gt;"}</li>
 </ul>
-<p>⚠ Please don’t reply to this email - it's not monitored. <b>If you want to contact us, please use this <a href={"https://t2m.app/help/contact-us"}>link</a>.</b><p>
-<br />
-<p>Best Regards,</p>
-<p>Talk2Me App Team</p>
+<p>⚠ Please don’t reply to this email - it's not monitored. If you want to contact us, please use this <a href={"https://t2m.app/help/contact-us"}>link</a>.<p>
+<br/>
+<p>
+<div>Best Regards,</div>
+<div>Talk2Me App Team</div>
+</p>
 
 </body>
 </html>";
