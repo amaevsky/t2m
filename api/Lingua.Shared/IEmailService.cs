@@ -4,6 +4,6 @@ namespace Lingua.Shared
 {
     public interface IEmailService
     {
-        Task SendAsync(string subject, string body, params string[] recipients);
+        Task SendAsync(string subject, string body, bool isHtml, params string[] recipients);
     }
 }

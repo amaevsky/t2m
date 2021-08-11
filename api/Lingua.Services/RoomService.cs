@@ -146,17 +146,29 @@ namespace Lingua.Services
             foreach (var recipient in recipients)
             {
                 var body = $@"
-{message}
+<html>
+<body>
 
-Room details:
+<p>Hi there 👋<p>
+<p>🆕 There is an update regarding your room: {message}<p>
+<p>📅 Room details:<p>
+<ul>
+</ul>
+ <li>Date: { Utilities.ConvertToTimezone(room.StartDate, recipient.Timezone)}</li>
+ <li>Language: {room.Language}</li>
+ <li>Topic: {room.Topic ?? "&lt;no topic&gt;"}</li>
+</ul>
+<p>⚠ Please don’t reply to this email - it's not monitored. <b>If you want to contact us, please use this <a href={"https://t2m.app/help/contact-us"}>link</a>.</b><p>
+<p>Best Regards,</p>
+<p>Talk2Me App Team</p>
 
-Date: { Utilities.ConvertToTimezone(room.StartDate, recipient.Timezone)}
-Language: {room.Language}
-Topic: {room.Topic ?? "<no topic>"}";
+</body>
+</html>";
 
                 _emailService.SendAsync(
                     "Room update",
                     body,
+                    true,
                     recipient.Email
                     ).ConfigureAwait(false);
             }
@@ -164,10 +176,11 @@ Topic: {room.Topic ?? "<no topic>"}";
 
         public async Task<Room> Remove(Guid roomId, Guid userId)
         {
+            var user = await _userRepository.Get(userId);
             await _roomRepository.Remove(roomId);
             var room = await _roomRepository.Get(roomId);
 
-            SendUpdateEmail(room, userId, $"Room has been removed by host.");
+            SendUpdateEmail(room, userId, $"<b>{user.Fullname} deleted the room you have previously entered.</b> You can go ahead and create your own room for that time.");
 
             return room;
         }
@@ -206,7 +219,7 @@ Topic: {room.Topic ?? "<no topic>"}";
             room.Participants.Add(user);
             await _roomRepository.Update(room);
 
-            SendUpdateEmail(room, userId, $"{user.Fullname} entered the room.");
+            SendUpdateEmail(room, userId, $"<b>{user.Fullname} entered the room.</b>");
 
             return room;
         }
@@ -219,7 +232,7 @@ Topic: {room.Topic ?? "<no topic>"}";
             room.Participants.RemoveAll(p => p.Id == user.Id);
             await _roomRepository.Update(room);
 
-            SendUpdateEmail(room, userId, $"{user.Fullname} left the room.");
+            SendUpdateEmail(room, userId, $"<b>{user.Fullname} left the room.</b>");
 
             return room;
         }

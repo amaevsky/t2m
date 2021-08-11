@@ -39,9 +39,9 @@ namespace Lingua.Services
             }
         }
 
-        public async Task SendAsync(string subject, string body, params string[] recipients)
+        public async Task SendAsync(string subject, string body, bool isHtml = true, params string[] recipients)
         {
-            var fromAddress = new MailAddress(_settings.Email);
+            var fromAddress = new MailAddress(_settings.Email, _settings.DisplayName);
 
             foreach (var recepient in recipients)
             {
@@ -51,6 +51,7 @@ namespace Lingua.Services
                 {
                     Subject = subject,
                     Body = body,
+                    IsBodyHtml = isHtml,
 
                 })
                 {
