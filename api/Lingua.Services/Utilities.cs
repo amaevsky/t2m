@@ -11,7 +11,7 @@ namespace Lingua.Services
     {
         public static DateTime ConvertToTimezone(DateTime utc, string timezone)
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById(TZConvert.IanaToWindows(timezone));
+            var tz = TZConvert.GetTimeZoneInfo(timezone);
             return TimeZoneInfo.ConvertTimeFromUtc(utc, tz);
         }
     }
