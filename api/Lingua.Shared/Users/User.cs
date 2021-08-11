@@ -19,8 +19,8 @@ namespace Lingua.Shared
         public string Timezone { get; set; }
         public ZoomProperties ZoomProperties { get; set; }
 
-        [JsonIgnore]
-        public string Fullname => $"{Firstname} {Lastname}"; 
+        public string Fullname => $"{Firstname} {Lastname}";
+        public bool IsReady => !string.IsNullOrEmpty(LanguageLevel);
     }
 
     public class ZoomProperties

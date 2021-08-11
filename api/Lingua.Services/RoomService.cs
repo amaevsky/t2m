@@ -149,7 +149,7 @@ namespace Lingua.Services
 <html>
 <body>
 
-<p>Hi there 👋<p>
+<p>Hi {recipient.Firstname} 👋<p>
 <p>🆕 There is an update regarding your room: {message}<p>
 <p>📅 Room details:<p>
 <ul>
@@ -159,6 +159,7 @@ namespace Lingua.Services
  <li>Topic: {room.Topic ?? "&lt;no topic&gt;"}</li>
 </ul>
 <p>⚠ Please don’t reply to this email - it's not monitored. <b>If you want to contact us, please use this <a href={"https://t2m.app/help/contact-us"}>link</a>.</b><p>
+<br />
 <p>Best Regards,</p>
 <p>Talk2Me App Team</p>
 
