@@ -6,11 +6,11 @@ import country from 'country-list-js';
 import moment from 'moment';
 import 'moment-timezone';
 
-export const UserProfileEdit = (props: { afterSave?: () => void }) => {
+export const UserProfileEdit = (props: { initialSetup?: boolean, afterSave?: () => void }) => {
   const user = userService.user;
   const save = async (values: any) => {
     const toSave: User = { ...userService.user, ...values, dateOfBirth: moment.utc(values.dateOfBirth).format() };
-    await userService.update(toSave);
+    await userService.update(toSave, props.initialSetup);
 
     props.afterSave?.();
   }

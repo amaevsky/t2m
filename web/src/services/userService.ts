@@ -18,10 +18,10 @@ class UserService {
     this.user = (await http.get<User>(`${baseUrl}/me`)).data || null;
   }
 
-  async update(user: User) {
+  async update(user: User, silent: boolean = false) {
     const resp = await http.put<User>(`${baseUrl}`, user);
     this.user = user;
-    if (!resp.errors) {
+    if (!resp.errors && !silent) {
       notification.success({
         placement: 'bottomRight',
         message: 'The changes were successfully saved.'

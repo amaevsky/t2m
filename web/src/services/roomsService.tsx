@@ -22,7 +22,7 @@ class RoomsService {
     if (!resp.errors) {
       notification.success({
         placement: 'bottomRight',
-        message: <span>The room was successfully created. You can find it on <a href={routes.app.myRooms}>My room</a> page.</span>
+        message: <span>The room was successfully created. You can find it on <a className="primary-color" href={routes.app.myRooms}>My rooms</a> page.</span>
       });
     }
     return resp;
@@ -56,7 +56,7 @@ class RoomsService {
     if (!resp.errors) {
       notification.success({
         placement: 'bottomRight',
-        message: <span>You successfully entered the room. You can find it on <a href={routes.app.myRooms}>My room</a> page.</span>
+        message: <span>You successfully entered the room. You can find it on <a className="primary-color" href={routes.app.myRooms}>My rooms</a> page.</span>
       });
     }
   }
