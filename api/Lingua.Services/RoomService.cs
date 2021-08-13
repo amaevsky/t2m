@@ -14,18 +14,21 @@ namespace Lingua.Services
         private readonly IMeetingClient _zoomMeetingService;
         private readonly IDateTimeProvider _dateTime;
         private readonly IEmailService _emailService;
+        private readonly ITemplateProvider _templateProvider;
 
         public RoomService(IRoomRepository roomRepository,
                             IUserRepository userRepository,
                             IMeetingClient zoomMeetingService,
                             IDateTimeProvider dateTime,
-                            IEmailService emailService)
+                            IEmailService emailService,
+                            ITemplateProvider templateProvider)
         {
             _roomRepository = roomRepository;
             _userRepository = userRepository;
             _zoomMeetingService = zoomMeetingService;
             _dateTime = dateTime;
             _emailService = emailService;
+            _templateProvider = templateProvider;
         }
 
         public async Task<List<Room>> Available(SearchRoomOptions options, Guid userId)
@@ -139,35 +142,13 @@ namespace Lingua.Services
             return room;
         }
 
-        private void SendUpdateEmail(Room room, Guid userId, string message)
+        private async Task SendUpdateEmail(Room room, Guid userId, string message)
         {
             var recipients = room.Participants.Where(u => u.Id != userId);
 
             foreach (var recipient in recipients)
             {
-                var body = $@"
-<html>
-<body>
-
-<p>Hi {recipient.Firstname} 👋<p>
-<br/>
-<p>🆕 There is an update regarding your room: {message}<p>
-<p>📅 Room details:<p>
-<ul>
-</ul>
- <li>Date: { Utilities.ConvertToTimezone(room.StartDate, recipient.Timezone)}</li>
- <li>Language: {room.Language}</li>
- <li>Topic: {room.Topic ?? "&lt;no topic&gt;"}</li>
-</ul>
-<p>⚠ Please don’t reply to this email - it's not monitored. If you want to contact us, please use this <a href={"https://t2m.app/help/contact-us"}>link</a>.<p>
-<br/>
-<p>
-<div>Best Regards,</div>
-<div>Talk2Me App Team</div>
-</p>
-
-</body>
-</html>";
+                var body = await _templateProvider.GetRoomUpdateEmail(message, room, recipient);
 
                 _emailService.SendAsync(
                     "Room update",

@@ -1,0 +1,29 @@
+﻿@namespace Lingua.EmailTemplates
+@model RoomUpdateModel;
+@using Lingua.Shared;
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <p>Hi @Model.Recepient.Firstname 👋<p>
+        <br />
+    <p>🆕 There is an update regarding your room: @Html.Raw(Model.Message)<p>
+    <p>📅 Room details:<p>
+        <ul>
+            <li>Date: @{ Utilities.ConvertToTimezone(Model.Room.StartDate, Model.Recepient.Timezone);}</li>
+            <li>Language: @Model.Room.Language</li>
+            <li>Topic:@(Model.Room.Topic ?? "<no topic>")</li>
+        </ul>
+    <p>⚠ Please don’t reply to this email - it's not monitored. If you want to contact us, please use this <a href="https://t2m.app/help/contact-us">link</a>.</p>
+    <br />
+    <p>
+        <div>Best Regards,</div>
+        <div>Talk2Me App Team</div>
+    </p>
+
+</body>
+</html>
