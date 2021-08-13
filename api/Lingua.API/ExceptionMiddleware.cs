@@ -42,7 +42,7 @@ namespace Lingua.API
             {
                 _logger.LogError(exception.ToString());
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                response = "Internal server error occured.";
+                response = exception.ToString();
             }
 
             await context.Response.WriteAsync(response);

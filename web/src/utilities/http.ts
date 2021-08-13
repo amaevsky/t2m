@@ -40,12 +40,15 @@ class Http {
   }
 
   private handleError(ex: AxiosError): HttpResponse<any> {
-    const message = ex.response?.status === 400
-      ? ex.response?.data as string
-      : 'Error occured.';
+    const message: string = ex.response?.data;
 
     if (ex.response?.status === 400) {
       notification.error({ message, placement: 'bottomRight' });
+    }
+
+    if (ex.response?.status === 500) {
+      console.error(message);
+      notification.error({ message: 'Oops. Something went wrong.', placement: 'bottomRight' });
     }
 
     return { errors: [message] };
