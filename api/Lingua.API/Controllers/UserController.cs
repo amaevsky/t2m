@@ -1,4 +1,6 @@
-﻿using Lingua.Shared;
+﻿using AutoMapper;
+using Lingua.API.ViewModels;
+using Lingua.Shared;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -12,10 +14,12 @@ namespace Lingua.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserRepository userRepository, IMapper mapper) 
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
 
@@ -30,7 +34,7 @@ namespace Lingua.API.Controllers
 
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userRepository.Get(userId);
-            return Ok(user);
+            return Ok(_mapper.Map<UserViewModel>(user));
         }
 
 
