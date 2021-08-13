@@ -1,5 +1,7 @@
+import { notification } from 'antd';
 import { http, HttpResponse } from '../utilities/http';
 import { User } from './userService';
+import { routes } from '../components/App';
 
 const baseUrl = `rooms`;
 
@@ -16,7 +18,14 @@ class RoomsService {
   }
 
   async create(options: RoomCreateOptions): Promise<HttpResponse> {
-    return await http.post(baseUrl, options);
+    const resp = await http.post(baseUrl, options);
+    if (!resp.errors) {
+      notification.success({
+        placement: 'bottomRight',
+        message: <span>The room was successfully created. You can find it on <a className="primary-color" href={routes.app.myRooms}>My rooms</a> page.</span>
+      });
+    }
+    return resp;
   }
 
   async getAvailable(options?: RoomSearchOptions): Promise<Room[]> {
@@ -43,17 +52,34 @@ class RoomsService {
   }
 
   async enter(roomId: string) {
-    await http.get(`${baseUrl}/enter/${roomId}`);
+    const resp = await http.get(`${baseUrl}/enter/${roomId}`);
+    if (!resp.errors) {
+      notification.success({
+        placement: 'bottomRight',
+        message: <span>You successfully entered the room. You can find it on <a className="primary-color" href={routes.app.myRooms}>My rooms</a> page.</span>
+      });
+    }
   }
 
   async leave(roomId: string) {
-    await http.get(`${baseUrl}/leave/${roomId}`);
+    const resp = await http.get(`${baseUrl}/leave/${roomId}`);
+    if (!resp.errors) {
+      notification.success({
+        placement: 'bottomRight',
+        message: 'You successfully left the room.'
+      });
+    }
   }
 
   async remove(roomId: string) {
-    await http.delete(`${baseUrl}/${roomId}`);
+    const resp = await http.delete(`${baseUrl}/${roomId}`);
+    if (!resp.errors) {
+      notification.success({
+        placement: 'bottomRight',
+        message: 'The room was successfully removed.'
+      });
+    }
   }
-
 }
 
 export interface RoomCreateOptions {
@@ -68,7 +94,6 @@ export interface RoomSearchOptions {
   days?: number[];
   timeFrom?: Date;
   timeTo?: Date;
-  timezone?: string;
 }
 
 export interface Room {

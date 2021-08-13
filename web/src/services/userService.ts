@@ -1,3 +1,4 @@
+import { notification } from 'antd';
 import { http } from '../utilities/http';
 
 const baseUrl = `user`;
@@ -17,9 +18,15 @@ class UserService {
     this.user = (await http.get<User>(`${baseUrl}/me`)).data || null;
   }
 
-  async update(user: User) {
-    await http.put<User>(`${baseUrl}`, user);
+  async update(user: User, silent: boolean = false) {
+    const resp = await http.put<User>(`${baseUrl}`, user);
     this.user = user;
+    if (!resp.errors && !silent) {
+      notification.success({
+        placement: 'bottomRight',
+        message: 'The changes were successfully saved.'
+      });
+    }
   }
 }
 
@@ -33,6 +40,7 @@ export interface User {
   avatarUrl: string;
   targetLanguage: string;
   languageLevel: string;
+  timezone: string;
 }
 
 export const userService = new UserService();

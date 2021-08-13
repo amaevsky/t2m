@@ -4,34 +4,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TimeZoneConverter;
 
 namespace Lingua.Services
 {
-    public class ValidationException : Exception
-    {
-        public ValidationException(string message) : base(message)
-        {
-
-        }
-    }
-
     public class RoomService : IRoomService
     {
         private readonly IRoomRepository _roomRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMeetingClient _zoomMeetingService;
         private readonly IDateTimeProvider _dateTime;
+        private readonly IEmailService _emailService;
+        private readonly ITemplateProvider _templateProvider;
 
         public RoomService(IRoomRepository roomRepository,
                             IUserRepository userRepository,
                             IMeetingClient zoomMeetingService,
-                            IDateTimeProvider dateTime)
+                            IDateTimeProvider dateTime,
+                            IEmailService emailService,
+                            ITemplateProvider templateProvider)
         {
             _roomRepository = roomRepository;
             _userRepository = userRepository;
             _zoomMeetingService = zoomMeetingService;
             _dateTime = dateTime;
+            _emailService = emailService;
+            _templateProvider = templateProvider;
         }
 
         public async Task<List<Room>> Available(SearchRoomOptions options, Guid userId)
@@ -45,13 +42,13 @@ namespace Lingua.Services
 
             if (options != null)
             {
-                rooms = ApplySearchFilter(options, rooms);
+                rooms = ApplySearchFilter(options, rooms, user.Timezone);
             }
 
             return rooms.ToList();
         }
 
-        private static IEnumerable<Room> ApplySearchFilter(SearchRoomOptions options, IEnumerable<Room> rooms)
+        private static IEnumerable<Room> ApplySearchFilter(SearchRoomOptions options, IEnumerable<Room> rooms, string timezone)
         {
             if (options?.Levels?.Any() == true)
             {
@@ -60,8 +57,7 @@ namespace Lingua.Services
 
             if (options?.Days?.Any() == true)
             {
-                var tz = TimeZoneInfo.FindSystemTimeZoneById(TZConvert.IanaToWindows(options.Timezone));
-                rooms = rooms.Where(r => options.Days.Contains(TimeZoneInfo.ConvertTimeFromUtc(r.StartDate, tz).DayOfWeek));
+                rooms = rooms.Where(r => options.Days.Contains(Utilities.ConvertToTimezone(r.StartDate, timezone).DayOfWeek));
             }
 
             if ((bool)options?.TimeFrom.HasValue && (bool)options?.TimeTo.HasValue)
@@ -102,7 +98,7 @@ namespace Lingua.Services
 
             if (conflicts.Any())
             {
-                throw new ValidationException("You have conflicting rooms for this time frame");
+                throw new ValidationException(ValidationExceptionType.Rooms_Create_Conflict);
             }
 
             var room = new Room
@@ -140,16 +136,36 @@ namespace Lingua.Services
             }
 
             await _roomRepository.Update(room);
-            //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
+
+            SendUpdateEmail(room, userId, "Room has been updated.");
 
             return room;
         }
 
+        private async Task SendUpdateEmail(Room room, Guid userId, string message)
+        {
+            var recipients = room.Participants.Where(u => u.Id != userId);
+
+            foreach (var recipient in recipients)
+            {
+                var body = await _templateProvider.GetRoomUpdateEmail(message, room, recipient);
+
+                _emailService.SendAsync(
+                    "Room update",
+                    body,
+                    true,
+                    recipient.Email
+                    ).ConfigureAwait(false);
+            }
+        }
+
         public async Task<Room> Remove(Guid roomId, Guid userId)
         {
+            var user = await _userRepository.Get(userId);
             await _roomRepository.Remove(roomId);
             var room = await _roomRepository.Get(roomId);
-            //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
+
+            SendUpdateEmail(room, userId, $"<b>{user.Fullname} deleted the room you have previously entered.</b> You can go ahead and create your own room for that time.");
 
             return room;
         }
@@ -161,15 +177,15 @@ namespace Lingua.Services
 
             if (room.StartDate < _dateTime.UtcNow)
             {
-                throw new ValidationException("This room is already started.");
+                throw new ValidationException(ValidationExceptionType.Rooms_Enter_AlreadyStarted);
             }
             if (room.Participants.Any(p => p.Id == userId))
             {
-                throw new ValidationException("You have already entered this room.");
+                return room;
             }
             if (room.Participants.Count == room.MaxParticipants)
             {
-                throw new ValidationException("This room is already full.");
+                throw new ValidationException(ValidationExceptionType.Rooms_Enter_AlreadyFull);
             }
 
             var start = room.StartDate;
@@ -182,17 +198,13 @@ namespace Lingua.Services
 
             if (conflicts.Any())
             {
-                throw new ValidationException("You have conflicting rooms for this time frame");
-            }
-
-            if (room.Participants.Count == room.MaxParticipants)
-            {
-                throw new ValidationException("Room is already full");
+                throw new ValidationException(ValidationExceptionType.Rooms_Enter_Conflict);
             }
 
             room.Participants.Add(user);
             await _roomRepository.Update(room);
-            //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
+
+            SendUpdateEmail(room, userId, $"<b>{user.Fullname} entered the room.</b>");
 
             return room;
         }
@@ -204,7 +216,8 @@ namespace Lingua.Services
             var room = await _roomRepository.Get(roomId);
             room.Participants.RemoveAll(p => p.Id == user.Id);
             await _roomRepository.Update(room);
-            //await _emailService.SendAsync("Test", "Test", room.Participants.Select(p => p.Email).ToArray());
+
+            SendUpdateEmail(room, userId, $"<b>{user.Fullname} left the room.</b>");
 
             return room;
         }

@@ -1,5 +1,6 @@
 ﻿using Lingua.ZoomIntegration;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 using System;
 
 namespace Lingua.Shared
@@ -15,7 +16,11 @@ namespace Lingua.Shared
         public string TargetLanguage { get; set; }
         public string LanguageLevel { get; set; }
         public string AvatarUrl { get; set; }
+        public string Timezone { get; set; }
         public ZoomProperties ZoomProperties { get; set; }
+
+        public string Fullname => $"{Firstname} {Lastname}";
+        public bool IsReady => !string.IsNullOrEmpty(LanguageLevel);
     }
 
     public class ZoomProperties

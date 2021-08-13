@@ -1,4 +1,5 @@
 ﻿using Lingua.Services;
+using Lingua.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
@@ -32,16 +33,16 @@ namespace Lingua.API
         {
             context.Response.ContentType = "text/plain";
             string response;
-            if (exception is ValidationException)
+            if (exception is ValidationException validationEx)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                response = exception.Message;
+                response = validationEx.UserFriendlyMessage;
             }
             else
             {
                 _logger.LogError(exception.ToString());
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                response = "Internal server error occured.";
+                response = exception.ToString();
             }
 
             await context.Response.WriteAsync(response);

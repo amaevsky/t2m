@@ -15,7 +15,7 @@ export class AccountSetup extends React.Component<any> {
             <Title level={4}>Hi! Welcome to <b className='primary-color'>Talk2Me</b></Title>
             <p>To start practicing language, please provide the following details:</p>
           </div>
-          <UserProfileEdit afterSave={() => this.props.history.push(routes.default)} />
+          <UserProfileEdit initialSetup={true} afterSave={() => this.props.history.push(routes.default)} />
         </Space>
       </Row >
     );
