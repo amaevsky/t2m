@@ -89,12 +89,7 @@ namespace Lingua.Services
             var user = await _userRepository.Get(userId);
             var start = options.StartDate;
             var end = options.StartDate.AddMinutes(options.DurationInMinutes);
-
-            var conflicts = (await _roomRepository.Get(r =>
-                                r.StartDate < end
-                                && start < r.EndDate
-                                && r.Participants.Any(p => p.Id == userId)))
-                            .Where(r => r.StartDate > _dateTime.UtcNow || r.Participants.Count == r.MaxParticipants);
+            var conflicts = await GetConflicts(userId, start, end);
 
             if (conflicts.Any())
             {
@@ -117,6 +112,15 @@ namespace Lingua.Services
             await _roomRepository.Create(room);
 
             return room;
+        }
+
+        private async Task<IEnumerable<Room>> GetConflicts(Guid userId, DateTime start, DateTime end)
+        {
+            return (await _roomRepository.Get(r =>
+                                r.StartDate < end
+                                && start < r.EndDate
+                                && r.Participants.Any(p => p.Id == userId)))
+                            .Where(r => r.StartDate > _dateTime.UtcNow || r.Participants.Count == r.MaxParticipants);
         }
 
         public async Task<Room> Update(UpdateRoomOptions options, Guid userId)
@@ -191,10 +195,7 @@ namespace Lingua.Services
             var start = room.StartDate;
             var end = room.StartDate.AddMinutes(room.DurationInMinutes);
 
-            var conflicts = await _roomRepository.Get(r =>
-                                r.StartDate < end
-                                && start < r.EndDate
-                                && r.Participants.Any(p => p.Id == userId));
+            var conflicts = await GetConflicts(userId, start, end);
 
             if (conflicts.Any())
             {
