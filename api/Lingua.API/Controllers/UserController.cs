@@ -1,4 +1,6 @@
-﻿using Lingua.Shared;
+﻿using AutoMapper;
+using Lingua.API.ViewModels;
+using Lingua.Shared;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -14,10 +16,12 @@ namespace Lingua.API.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
         private readonly ITemplateProvider _templateProvider;
+        private readonly IMapper _mapper;
 
-        public UserController(IUserRepository userRepository, IEmailService emailService, ITemplateProvider templateProvider)
+        public UserController(IUserRepository userRepository, IMapper mapper, IEmailService emailService, ITemplateProvider templateProvider)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
             _emailService = emailService;
             _templateProvider = templateProvider;
         }
@@ -34,7 +38,7 @@ namespace Lingua.API.Controllers
 
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var user = await _userRepository.Get(userId);
-            return Ok(user);
+            return Ok(_mapper.Map<UserViewModel>(user));
         }
 
 
