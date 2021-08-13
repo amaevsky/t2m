@@ -141,9 +141,19 @@ export class FindRooms extends React.Component<Props, State> {
 
         <Divider></Divider>
 
-        <Row gutter={[16, 16]}>
-          {roomsCards}
-        </Row>
+        {roomsCards?.length ?
+          <Row gutter={[16, 16]}>
+            {roomsCards}
+          </Row>
+          :
+          <Row style={{ flex: 1 }} align='middle' justify='center'>
+            <Col style={{ fontSize: 14 }}>
+              <Row style={{ fontSize: 26 }} justify='center'><p>🙈🙉🙊</p></Row>
+              <Row justify='center'>Seems like there are no available rooms.</Row>
+              <Row justify='center'>Change the filter or create your own room.</Row>
+            </Col>
+          </Row>
+        }
       </>
     )
   }

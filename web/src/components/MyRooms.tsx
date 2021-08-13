@@ -5,6 +5,8 @@ import { userService } from "../services/userService";
 
 import { connection } from "../realtime/roomsHub";
 import { RoomCard, RoomCardAction } from "./RoomCard";
+import { Link } from "react-router-dom";
+import { routes } from "./App";
 
 interface State {
   myRooms: Room[];
@@ -149,9 +151,17 @@ export class MyRooms extends React.Component<Props, State> {
 
     return (
       <>
-        {!!myRooms.length &&
+        {myRooms.length ?
           <Row gutter={[16, 16]}>
             {upcomingCards}
+          </Row>
+          :
+          <Row style={{ flex: 1 }} align='middle' justify='center'>
+            <Col style={{ fontSize: 14 }}>
+              <Row style={{ fontSize: 26 }} justify='center'><p>🤷‍♀️</p></Row>
+              <Row justify='center'> Currently you don’t have any upcoming rooms.</Row>
+              <Row justify='center'>Go&nbsp;<Link className="primary-color" to={routes.app.findRoom}><b>here</b></Link>&nbsp;and enter any room or create your own.</Row>
+            </Col>
           </Row>
         }
       </>

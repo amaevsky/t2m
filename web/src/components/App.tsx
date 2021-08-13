@@ -76,7 +76,7 @@ export const AppPages = () => {
       <Affix offsetTop={0}>
         <Header />
       </Affix>
-      <div style={{ padding: '16px 26px', minHeight: 'calc(100vh - 158px)' }}>
+      <div style={{ display: 'flex', flexDirection:'column', padding: '16px 26px', minHeight: 'calc(100vh - 158px)' }}>
         <Switch>
           <PrivateRoute path={routes.app.myRooms} component={MyRooms} />
           <PrivateRoute path={routes.app.findRoom} component={FindRooms} />
