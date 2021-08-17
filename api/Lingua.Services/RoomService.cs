@@ -1,5 +1,6 @@
 ﻿using Lingua.Shared;
 using Lingua.ZoomIntegration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +16,15 @@ namespace Lingua.Services
         private readonly IDateTimeProvider _dateTime;
         private readonly IEmailService _emailService;
         private readonly ITemplateProvider _templateProvider;
+        private readonly ILogger<RoomService> _logger;
 
         public RoomService(IRoomRepository roomRepository,
                             IUserRepository userRepository,
                             IMeetingClient zoomMeetingService,
                             IDateTimeProvider dateTime,
                             IEmailService emailService,
-                            ITemplateProvider templateProvider)
+                            ITemplateProvider templateProvider,
+                            ILogger<RoomService> logger = null)
         {
             _roomRepository = roomRepository;
             _userRepository = userRepository;
@@ -29,6 +32,7 @@ namespace Lingua.Services
             _dateTime = dateTime;
             _emailService = emailService;
             _templateProvider = templateProvider;
+            _logger = logger;
         }
 
         public async Task<List<Room>> Available(SearchRoomOptions options, Guid userId)
@@ -146,20 +150,31 @@ namespace Lingua.Services
             return room;
         }
 
-        private async Task SendUpdateEmail(Room room, Guid userId, string message)
+        private async void SendUpdateEmail(Room room, Guid userId, string message)
         {
             var recipients = room.Participants.Where(u => u.Id != userId);
 
             foreach (var recipient in recipients)
             {
-                var body = await _templateProvider.GetRoomUpdateEmail(message, room, recipient);
+                try
+                {
+                    _logger?.LogInformation($"Before room:{room?.Id} update message is sent to {recipient?.Email}");
 
-                _emailService.SendAsync(
-                    "Room update",
-                    body,
-                    true,
-                    recipient.Email
-                    ).ConfigureAwait(false);
+                    var body = await _templateProvider.GetRoomUpdateEmail(message, room, recipient);
+
+                    await _emailService.SendAsync(
+                        "Room update",
+                        body,
+                        true,
+                        recipient.Email
+                        ).ConfigureAwait(false);
+
+                    _logger?.LogInformation($"After room:{room?.Id} update message is sent to {recipient?.Email}");
+                }
+                catch (Exception ex)
+                {
+                    _logger?.LogError(ex, $"Room:{room?.Id} update message is failed to sent to {recipient?.Email}");
+                }
             }
         }
 
