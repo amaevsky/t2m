@@ -11,6 +11,7 @@ namespace Lingua.API
             CreateMap<Room, RoomViewModel>();
             CreateMap<User, RoomUserViewModel>();
             CreateMap<User, UserViewModel>();
+            CreateMap<UserViewModel, User>();
         }
     }
 }

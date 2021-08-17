@@ -44,12 +44,16 @@ namespace Lingua.API.Controllers
 
         [HttpPut]
         [Route("")]
-        public async Task<IActionResult> Update([FromBody] User user)
+        public async Task<IActionResult> Update([FromBody] UserViewModel userModel)
         {
-            var current = await _userRepository.Get(user.Id);
+            var current = await _userRepository.Get(userModel.Id);
+            var isReady = current.IsReady;
+
+            //override current object here
+            var user = _mapper.Map(userModel, current);
             await _userRepository.Update(user);
 
-            if (!current.IsReady)
+            if (!isReady)
             {
                 var body = await _templateProvider.GetWelcomeLetterEmail(user);
                 _emailService.SendAsync("Welcome!", body, true, user.Email).ConfigureAwait(false);
