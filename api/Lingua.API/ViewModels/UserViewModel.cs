@@ -13,5 +13,6 @@ namespace Lingua.API.ViewModels
         public string TargetLanguage { get; set; }
         public string LanguageLevel { get; set; }
         public string AvatarUrl { get; set; }
+        public string Timezone { get; set; }
     }
 }
