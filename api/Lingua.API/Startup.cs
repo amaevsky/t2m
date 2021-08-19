@@ -92,6 +92,8 @@ namespace Lingua.API
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseMiddleware<LogUserNameMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
