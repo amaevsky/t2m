@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 namespace Lingua.API
 {
@@ -83,7 +84,6 @@ namespace Lingua.API
             // }
 
             app.UseMiddleware<ExceptionMiddleware>();
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -93,6 +93,8 @@ namespace Lingua.API
             app.UseAuthorization();
 
             app.UseMiddleware<LogUserNameMiddleware>();
+            app.UseSerilogRequestLogging();
+
 
             app.UseEndpoints(endpoints =>
             {
