@@ -5,6 +5,7 @@ import country from 'country-list-js';
 
 import moment from 'moment';
 import 'moment-timezone';
+import { DateFormat } from '../utilities/date';
 
 export const UserProfileEdit = (props: { initialSetup?: boolean, afterSave?: () => void }) => {
   const user = userService.user;
@@ -97,7 +98,7 @@ export const UserProfileEdit = (props: { initialSetup?: boolean, afterSave?: () 
           }
         ]}
       >
-        <DatePicker format='L' style={{ width: '100%' }} />
+        <DatePicker format={DateFormat} style={{ width: '100%' }} />
       </Form.Item>
 
       <Form.Item

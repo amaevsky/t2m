@@ -1,6 +1,7 @@
 import { Button, Col, Dropdown, Row, Slider } from 'antd';
 import React from 'react';
 import moment from 'moment';
+import { TimeFormat } from '../utilities/date';
 
 interface Props {
   onChange: (value?: { from: Date, to: Date }) => void
@@ -44,7 +45,7 @@ export class TimeRange extends React.Component<Props, State> {
             </Col>
           </Row>
         }>
-        <Button type='default'>{moment(from).format('LT')} - {moment(to).format('LT')}</Button>
+        <Button type='default'>{moment(from).format(TimeFormat)} - {moment(to).format(TimeFormat)}</Button>
       </Dropdown>
     );
   }

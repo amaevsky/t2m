@@ -6,6 +6,7 @@ import { configService } from '../services/configService';
 import { userService } from '../services/userService';
 
 import moment from 'moment';
+import { DateTimeFormat, is12Hours, TimeFormat } from '../utilities/date';
 interface Props {
   room: Partial<Room>,
   onEdit: (room: Room) => void
@@ -28,13 +29,6 @@ export class RoomEdit extends React.Component<Props, State> {
 
   render() {
     const user = userService.user;
-    const is12Hours = () => {
-      var date = new Date();
-      var dateString = date.toLocaleTimeString();
-
-      return !!(dateString.match(/am|pm/i) || date.toString().match(/am|pm/i));
-    }
-
     const timeStep = 10;
     const startDate = moment().add('minute', timeStep - (moment().minutes() % timeStep));
 
@@ -75,8 +69,8 @@ export class RoomEdit extends React.Component<Props, State> {
 
               return ({});
             }}
-            showTime={{ format: is12Hours() ? 'h:mm A' : 'HH:mm', minuteStep: 10, use12Hours: is12Hours() }}
-            format="DD-MMM-YYYY LT"
+            showTime={{ format: TimeFormat, minuteStep: 10, use12Hours: is12Hours }}
+            format={DateTimeFormat}
           />
         </Form.Item>
 

@@ -6,6 +6,7 @@ import { Room } from '../services/roomsService';
 import moment from 'moment';
 import { userService } from '../services/userService';
 import { Tile } from './Tile';
+import { DateFormat_DayOfWeek, TimeFormat } from '../utilities/date';
 
 export interface RoomCardAction {
   title: string;
@@ -79,13 +80,13 @@ export class RoomCard extends React.Component<Props> {
         <Row className='primary-color' style={{ fontSize: 12, fontWeight: 600, marginTop: 8 }}>
           <Space>
             <CalendarOutlined />
-            <div>{moment(room.startDate).format('ddd, MMM DD')}</div>
+            <div>{moment(room.startDate).format(DateFormat_DayOfWeek)}</div>
           </Space>
         </Row>
         <Row className='primary-color' style={{ fontSize: 12, fontWeight: 600 }}>
           <Space>
             <ClockCircleOutlined />
-            <div>{moment(room.startDate).format('LT')} - {moment(room.endDate).format('LT')}</div>
+            <div>{moment(room.startDate).format(TimeFormat)} - {moment(room.endDate).format(TimeFormat)}</div>
           </Space>
         </Row>
         <Row style={{ margin: '10px 0', height: 40 }}>
