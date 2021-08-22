@@ -1,6 +1,5 @@
 ﻿using Lingua.Shared;
 using Lingua.ZoomIntegration;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,25 +13,19 @@ namespace Lingua.Services
         private readonly IUserRepository _userRepository;
         private readonly IMeetingClient _zoomMeetingService;
         private readonly IDateTimeProvider _dateTime;
-        private readonly IEmailService _emailService;
-        private readonly ITemplateProvider _templateProvider;
-        private readonly ILogger<RoomService> _logger;
+        private readonly IEnumerable<IRoomUpdatesObserver> _updatesObservers;
 
         public RoomService(IRoomRepository roomRepository,
                             IUserRepository userRepository,
                             IMeetingClient zoomMeetingService,
                             IDateTimeProvider dateTime,
-                            IEmailService emailService,
-                            ITemplateProvider templateProvider,
-                            ILogger<RoomService> logger = null)
+                            IEnumerable<IRoomUpdatesObserver> updatesObservers = null)
         {
             _roomRepository = roomRepository;
             _userRepository = userRepository;
             _zoomMeetingService = zoomMeetingService;
             _dateTime = dateTime;
-            _emailService = emailService;
-            _templateProvider = templateProvider;
-            _logger = logger;
+            _updatesObservers = updatesObservers ?? Enumerable.Empty<IRoomUpdatesObserver>();
         }
 
         public async Task<List<Room>> Available(SearchRoomOptions options, Guid userId)
@@ -99,7 +92,7 @@ namespace Lingua.Services
                                )
                             );
 
-            return rooms.ToList();
+            return rooms.OrderByDescending(r => r.StartDate).ToList();
         }
 
         public async Task<Room> Create(CreateRoomOptions options, Guid userId)
@@ -128,8 +121,25 @@ namespace Lingua.Services
             room.Participants.Add(user);
 
             await _roomRepository.Create(room);
+            Notify(RoomUpdateType.Created, user, room);
 
             return room;
+        }
+
+        private void Notify(RoomUpdateType updateType, User user, Room room)
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var tasks = _updatesObservers.Select(o => o.OnUpdate(updateType, room, user));
+                    await Task.WhenAll(tasks.ToArray());
+                }
+                catch (Exception ex)
+                {
+                    //logger
+                }
+            });
         }
 
         private async Task<IEnumerable<Room>> GetConflicts(Guid userId, DateTime start, DateTime end)
@@ -143,6 +153,7 @@ namespace Lingua.Services
 
         public async Task<Room> Update(UpdateRoomOptions options, Guid userId)
         {
+            var user = await _userRepository.Get(userId);
             var room = await _roomRepository.Get(options.RoomId);
             room.Topic = options.Topic;
             if (options.StartDate.HasValue)
@@ -158,38 +169,10 @@ namespace Lingua.Services
             }
 
             await _roomRepository.Update(room);
-
-            SendUpdateEmail(room, userId, "Room has been updated.");
+            Notify(RoomUpdateType.Updated, user, room);
+            // SendUpdateEmail(room, userId, "Room has been updated.");
 
             return room;
-        }
-
-        private async void SendUpdateEmail(Room room, Guid userId, string message)
-        {
-            var recipients = room.Participants.Where(u => u.Id != userId);
-
-            foreach (var recipient in recipients)
-            {
-                try
-                {
-                    _logger?.LogInformation($"Before room:{room?.Id} update message is sent to {recipient?.Email}");
-
-                    var body = await _templateProvider.GetRoomUpdateEmail(message, room, recipient);
-
-                    await _emailService.SendAsync(
-                        "Room update",
-                        body,
-                        true,
-                        recipient.Email
-                        ).ConfigureAwait(false);
-
-                    _logger?.LogInformation($"After room:{room?.Id} update message is sent to {recipient?.Email}");
-                }
-                catch (Exception ex)
-                {
-                    _logger?.LogError(ex, $"Room:{room?.Id} update message is failed to sent to {recipient?.Email}");
-                }
-            }
         }
 
         public async Task<Room> Remove(Guid roomId, Guid userId)
@@ -198,7 +181,8 @@ namespace Lingua.Services
             await _roomRepository.Remove(roomId);
             var room = await _roomRepository.Get(roomId);
 
-            SendUpdateEmail(room, userId, $"<b>{user.Fullname} deleted the room you have previously entered.</b> You can go ahead and create your own room for that time.");
+            Notify(RoomUpdateType.Removed, user, room);
+            //SendUpdateEmail(room, userId, $"<b>{user.Fullname} deleted the room you have previously entered.</b> You can go ahead and create your own room for that time.");
 
             return room;
         }
@@ -234,7 +218,8 @@ namespace Lingua.Services
             room.Participants.Add(user);
             await _roomRepository.Update(room);
 
-            SendUpdateEmail(room, userId, $"<b>{user.Fullname} entered the room.</b>");
+            Notify(RoomUpdateType.Entered, user, room);
+            //SendUpdateEmail(room, userId, $"<b>{user.Fullname} entered the room.</b>");
 
             return room;
         }
@@ -247,7 +232,8 @@ namespace Lingua.Services
             room.Participants.RemoveAll(p => p.Id == user.Id);
             await _roomRepository.Update(room);
 
-            SendUpdateEmail(room, userId, $"<b>{user.Fullname} left the room.</b>");
+            Notify(RoomUpdateType.Left, user, room);
+            //SendUpdateEmail(room, userId, $"<b>{user.Fullname} left the room.</b>");
 
             return room;
         }
@@ -281,8 +267,8 @@ namespace Lingua.Services
                 await _userRepository.Update(user);
             }
 
+            Notify(RoomUpdateType.Joined, user, room);
             return room;
-
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿@namespace Lingua.EmailTemplates
-@model RoomUpdateModel;
+@model Lingua.EmailTemplates.RoomUpdateModel;
 @using Lingua.Shared;
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -11,7 +11,7 @@
 
     <p>Hi @Model.Recepient.Firstname 👋<p>
         <br />
-    <p>🆕 There is an update regarding your room: @Html.Raw(Model.Message)<p>
+    <p>🆕 There is an update regarding your room: @(new Microsoft.AspNetCore.Html.HtmlString(Model.Message))<p>
     <p>📅 Room details:<p>
         <ul>
             <li>Date: @(Utilities.ConvertToTimezone(Model.Room.StartDate, Model.Recepient.Timezone))</li>

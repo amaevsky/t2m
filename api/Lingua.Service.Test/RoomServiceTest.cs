@@ -28,7 +28,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -72,7 +72,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -115,7 +115,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -158,7 +158,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -201,7 +201,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -247,7 +247,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -291,7 +291,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -334,7 +334,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -377,7 +377,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -420,7 +420,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -465,7 +465,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -509,7 +509,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -552,7 +552,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -595,7 +595,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -638,7 +638,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
@@ -684,7 +684,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -733,7 +733,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -769,7 +769,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -818,7 +818,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -867,7 +867,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -916,7 +916,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -965,7 +965,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -1014,7 +1014,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -1066,7 +1066,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
@@ -1119,7 +1119,7 @@ namespace Lingua.Service.Test
             var userRepoMock = new Mock<IUserRepository>();
             var dateTimeMock = new Mock<IDateTimeProvider>();
 
-            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object);
 
             var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
             userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));

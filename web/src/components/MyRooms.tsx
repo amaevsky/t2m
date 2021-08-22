@@ -99,7 +99,7 @@ export class MyRooms extends React.Component<Props, State> {
 
   private async getData() {
     const [upcoming, past] = await Promise.all([roomsService.getUpcoming(), roomsService.getPast()]);
-    this.setState({ upcoming: [], past: [] });
+    this.setState({ upcoming, past });
   }
 
   private async leave(roomId: string) {

@@ -27,7 +27,6 @@ namespace Lingua.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
             services.AddControllers().AddNewtonsoftJson();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(opts =>
@@ -62,10 +61,12 @@ namespace Lingua.API
             services.AddSingleton<IMeetingClient, MeetingClient>();
             services.AddSingleton<IRoomRepository, RoomRepository>();
             services.AddSingleton<IEmailService, SmtpEmailService>();
-            services.AddScoped<IRoomService, RoomService>();
+            services.AddSingleton<IRoomUpdatesObserver, RoomUpdatesEmailNotificationService>();
+            services.AddSingleton<IRoomUpdatesObserver, RoomUpdatesSignalRService>();
+            services.AddSingleton<IRoomService, RoomService>();
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-            services.AddScoped<ITemplateProvider, TemplateProvider>();
-            services.AddScoped<IViewRenderService, ViewRenderService>();
+            services.AddSingleton<ITemplateProvider, TemplateProvider>();
+            services.AddSingleton<IViewRenderService, ViewRenderService>();
 
             services.AddOptions();
             services.Configure<ZoomClientOptions>(Configuration.GetSection("ZoomClientOptions"));
