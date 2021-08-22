@@ -16,7 +16,7 @@ export interface RoomCardAction {
 
 interface Props {
   room: Room;
-  primaryAction: RoomCardAction;
+  primaryAction?: RoomCardAction;
   secondaryActions?: RoomCardAction[];
 }
 
@@ -95,13 +95,15 @@ export class RoomCard extends React.Component<Props> {
             </span>
           </Col>
         </Row>
-        <Row>
-          <Tooltip title={primaryAction.tooltip}>
-            <Button disabled={primaryAction.disabled} onClick={() => primaryAction.action()} style={{ width: '100%', fontWeight: 600 }} type='default' size='large'>
-              {primaryAction.title}
-            </Button>
-          </Tooltip>
-        </Row>
+        {primaryAction &&
+          <Row>
+            <Tooltip title={primaryAction.tooltip}>
+              <Button disabled={primaryAction.disabled} onClick={() => primaryAction.action()} style={{ width: '100%', fontWeight: 600 }} type='default' size='large'>
+                {primaryAction.title}
+              </Button>
+            </Tooltip>
+          </Row>
+        }
       </Tile>
     );
   }

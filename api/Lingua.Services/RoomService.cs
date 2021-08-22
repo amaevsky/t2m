@@ -88,6 +88,20 @@ namespace Lingua.Services
             return rooms.ToList();
         }
 
+        public async Task<List<Room>> Past(Guid userId)
+        {
+            var user = await _userRepository.Get(userId);
+            var rooms = await _roomRepository.Get(r =>
+                            r.Participants.Any(p => p.Id == userId)
+                            && !(
+                                (r.EndDate > _dateTime.UtcNow && r.Participants.Count > 1)
+                                || r.StartDate > _dateTime.UtcNow
+                               )
+                            );
+
+            return rooms.ToList();
+        }
+
         public async Task<Room> Create(CreateRoomOptions options, Guid userId)
         {
             var user = await _userRepository.Get(userId);

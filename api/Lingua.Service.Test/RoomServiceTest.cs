@@ -104,7 +104,7 @@ namespace Lingua.Service.Test
         }
 
         [TestMethod]
-        public void Available_DoNotReturnRoom_IfRoomHasOtherTargetLanguage()
+        public void Available_ReturnRoom_IfRoomHasOtherTargetLanguage()
         {
             //arrange
 
@@ -235,8 +235,6 @@ namespace Lingua.Service.Test
 
 
 
-
-
         [TestMethod]
         public void Upcoming_ReturnRoom_IfUserIsHost()
         {
@@ -282,7 +280,7 @@ namespace Lingua.Service.Test
         }
 
         [TestMethod]
-        public void Available_DoNotReturnRoom_IfUserJoinedRoom()
+        public void Upcoming_ReturnRoom_IfUserIsParticipant()
         {
             //arrange
 
@@ -325,7 +323,7 @@ namespace Lingua.Service.Test
         }
 
         [TestMethod]
-        public void Available_DoNotReturnRoom_IfUserIsNotParticipant()
+        public void Upcoming_DoNotReturnRoom_IfUserIsNotParticipant()
         {
             //arrange
 
@@ -368,7 +366,7 @@ namespace Lingua.Service.Test
         }
 
         [TestMethod]
-        public void Available_DoNotReturnRoom_IfNobodyJoinedAndRoomStarted()
+        public void Upcoming_DoNotReturnRoom_IfNobodyJoinedAndRoomStarted()
         {
             //arrange
 
@@ -411,7 +409,7 @@ namespace Lingua.Service.Test
         }
 
         [TestMethod]
-        public void Available_ReturnRoom_IfRoomStartedButItIsFull()
+        public void Upcoming_ReturnRoom_IfRoomStartedButItIsFull()
         {
             //arrange
 
@@ -451,6 +449,224 @@ namespace Lingua.Service.Test
 
             //assert
             Assert.AreEqual(1, upcoming.Count);
+        }
+
+
+
+        [TestMethod]
+        public void Past_ReturnRoom_IfUserIsHost()
+        {
+            //arrange
+
+            var zoomAuthMock = new Mock<IAuthClient>();
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
+            var roomRepoMock = new Mock<IRoomRepository>();
+            var userRepoMock = new Mock<IUserRepository>();
+            var dateTimeMock = new Mock<IDateTimeProvider>();
+
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+
+            var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
+            var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
+            userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
+
+            dateTimeMock.SetupGet(m => m.UtcNow).Returns(new DateTime(2020, 1, 1, 12, 0, 0));
+            var rooms = new List<Room>
+            {
+                new Room {
+                    HostUserId = user.Id,
+                    StartDate = new DateTime(2020, 1, 1, 10, 30, 0),
+                    EndDate = new DateTime(2020, 1, 1, 11, 0, 0),
+                    DurationInMinutes = 30,
+                    Language = "English",
+                    MaxParticipants = 2,
+                    Participants = new List<User>{  user }
+                }
+            };
+
+            roomRepoMock.Setup(r => r.Get(It.IsAny<Expression<Func<Room, bool>>>()))
+                .Returns((Expression<Func<Room, bool>> filter) => Task.FromResult(rooms.Where(filter.Compile())));
+
+            //act
+
+            var upcoming = service.Past(user.Id).Result;
+
+            //assert
+            Assert.AreEqual(1, upcoming.Count);
+
+        }
+
+        [TestMethod]
+        public void Past_DoNotReturnRoom_IfUserIsParticipant()
+        {
+            //arrange
+
+            var zoomAuthMock = new Mock<IAuthClient>();
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
+            var roomRepoMock = new Mock<IRoomRepository>();
+            var userRepoMock = new Mock<IUserRepository>();
+            var dateTimeMock = new Mock<IDateTimeProvider>();
+
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+
+            var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
+            var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
+            userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
+
+            dateTimeMock.SetupGet(m => m.UtcNow).Returns(new DateTime(2020, 1, 1, 12, 0, 0));
+            var rooms = new List<Room>
+            {
+                new Room {
+                    HostUserId = host.Id,
+                    StartDate = new DateTime(2020, 1, 1, 10, 30, 0),
+                    EndDate = new DateTime(2020, 1, 1, 11, 0, 0),
+                    DurationInMinutes = 30,
+                    Language = "English",
+                    MaxParticipants = 2,
+                    Participants = new List<User>{  host, user }
+                }
+            };
+
+            roomRepoMock.Setup(r => r.Get(It.IsAny<Expression<Func<Room, bool>>>()))
+                .Returns((Expression<Func<Room, bool>> filter) => Task.FromResult(rooms.Where(filter.Compile())));
+
+            //act
+
+            var upcoming = service.Past(user.Id).Result;
+
+            //assert
+            Assert.AreEqual(1, upcoming.Count);
+        }
+
+        [TestMethod]
+        public void Past_DoNotReturnRoom_IfUserIsNotParticipant()
+        {
+            //arrange
+
+            var zoomAuthMock = new Mock<IAuthClient>();
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
+            var roomRepoMock = new Mock<IRoomRepository>();
+            var userRepoMock = new Mock<IUserRepository>();
+            var dateTimeMock = new Mock<IDateTimeProvider>();
+
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+
+            var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
+            var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
+            userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
+
+            dateTimeMock.SetupGet(m => m.UtcNow).Returns(new DateTime(2020, 1, 1, 12, 0, 0));
+            var rooms = new List<Room>
+            {
+                new Room {
+                    HostUserId = host.Id,
+                    StartDate = new DateTime(2020, 1, 1, 10, 30, 0),
+                    EndDate = new DateTime(2020, 1, 1, 11, 0, 0),
+                    DurationInMinutes = 30,
+                    Language = "English",
+                    MaxParticipants = 2,
+                    Participants = new List<User>{  host }
+                }
+            };
+
+            roomRepoMock.Setup(r => r.Get(It.IsAny<Expression<Func<Room, bool>>>()))
+                .Returns((Expression<Func<Room, bool>> filter) => Task.FromResult(rooms.Where(filter.Compile())));
+
+            //act
+
+            var upcoming = service.Past(user.Id).Result;
+
+            //assert
+            Assert.AreEqual(0, upcoming.Count);
+        }
+
+        [TestMethod]
+        public void Past_ReturnRoom_IfNobodyJoinedAndRoomStarted()
+        {
+            //arrange
+
+            var zoomAuthMock = new Mock<IAuthClient>();
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
+            var roomRepoMock = new Mock<IRoomRepository>();
+            var userRepoMock = new Mock<IUserRepository>();
+            var dateTimeMock = new Mock<IDateTimeProvider>();
+
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+
+            var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
+            var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
+            userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
+
+            dateTimeMock.SetupGet(m => m.UtcNow).Returns(new DateTime(2020, 1, 1, 12, 0, 0));
+            var rooms = new List<Room>
+            {
+                new Room {
+                    HostUserId = user.Id,
+                    StartDate = new DateTime(2020, 1, 1, 11, 50, 0),
+                    EndDate = new DateTime(2020, 1, 1, 12, 20, 0),
+                    DurationInMinutes = 30,
+                    Language = "English",
+                    MaxParticipants = 2,
+                    Participants = new List<User>{  user }
+                }
+            };
+
+            roomRepoMock.Setup(r => r.Get(It.IsAny<Expression<Func<Room, bool>>>()))
+                .Returns((Expression<Func<Room, bool>> filter) => Task.FromResult(rooms.Where(filter.Compile())));
+
+            //act
+
+            var upcoming = service.Past(user.Id).Result;
+
+            //assert
+            Assert.AreEqual(1, upcoming.Count);
+        }
+
+        [TestMethod]
+        public void Past_DoNotReturnRoom_IfRoomStartedButItIsFull()
+        {
+            //arrange
+
+            var zoomAuthMock = new Mock<IAuthClient>();
+            var zoomMettingsMock = new Mock<IMeetingClient>();
+
+            var roomRepoMock = new Mock<IRoomRepository>();
+            var userRepoMock = new Mock<IUserRepository>();
+            var dateTimeMock = new Mock<IDateTimeProvider>();
+
+            var service = new RoomService(roomRepoMock.Object, userRepoMock.Object, zoomMettingsMock.Object, dateTimeMock.Object, Mock.Of<IEmailService>(), Mock.Of<ITemplateProvider>());
+
+            var host = new User { Firstname = "Host", Lastname = "Host", TargetLanguage = "English" };
+            var user = new User { Firstname = "John", Lastname = "Doe", TargetLanguage = "English" };
+            userRepoMock.Setup(m => m.Get(It.IsAny<Guid>())).Returns(Task.FromResult(user));
+
+            dateTimeMock.SetupGet(m => m.UtcNow).Returns(new DateTime(2020, 1, 1, 12, 0, 0));
+            var rooms = new List<Room>
+            {
+                new Room {
+                    HostUserId = host.Id,
+                    StartDate = new DateTime(2020, 1, 1, 11, 50, 0),
+                    EndDate = new DateTime(2020, 1, 1, 12, 20, 0),
+                    DurationInMinutes = 30,
+                    Language = "English",
+                    MaxParticipants = 2,
+                    Participants = new List<User>{  host, user }
+                }
+            };
+
+            roomRepoMock.Setup(r => r.Get(It.IsAny<Expression<Func<Room, bool>>>()))
+                .Returns((Expression<Func<Room, bool>> filter) => Task.FromResult(rooms.Where(filter.Compile())));
+
+            //act
+
+            var upcoming = service.Past(user.Id).Result;
+
+            //assert
+            Assert.AreEqual(0, upcoming.Count);
         }
 
 

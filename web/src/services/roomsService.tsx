@@ -51,6 +51,10 @@ class RoomsService {
     return mapRooms((await http.get<Room[]>(`${baseUrl}/me/upcoming`)).data || []);
   }
 
+  async getPast(): Promise<Room[]> {
+    return mapRooms((await http.get<Room[]>(`${baseUrl}/me/past`)).data || []);
+  }
+
   async enter(roomId: string) {
     const resp = await http.get(`${baseUrl}/enter/${roomId}`);
     if (!resp.errors) {

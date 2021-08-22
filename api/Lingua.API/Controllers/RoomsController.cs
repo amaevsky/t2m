@@ -47,6 +47,16 @@ namespace Lingua.API.Controllers
             return Ok(_mapper.Map<List<RoomViewModel>>(rooms));
         }
 
+        [HttpGet]
+        [Route("me/past")]
+        public async Task<IActionResult> Past()
+        {
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var rooms = await _roomService.Past(userId);
+
+            return Ok(_mapper.Map<List<RoomViewModel>>(rooms));
+        }
+
 
         [HttpPost]
         [Route("")]

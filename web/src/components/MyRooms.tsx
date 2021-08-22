@@ -1,4 +1,4 @@
-import { Col, Row } from "antd";
+import { Col, Row, Space, Typography } from "antd";
 import React from "react";
 import { mapRooms, Room, roomsService } from "../services/roomsService";
 import { userService } from "../services/userService";
@@ -8,8 +8,11 @@ import { RoomCard, RoomCardAction } from "./RoomCard";
 import { Link } from "react-router-dom";
 import { routes } from "./App";
 
+const { Title } = Typography;
+
 interface State {
-  myRooms: Room[];
+  upcoming: Room[];
+  past: Room[];
 }
 
 interface Props {
@@ -21,7 +24,8 @@ export class MyRooms extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      myRooms: []
+      upcoming: [],
+      past: []
     };
   }
 
@@ -39,21 +43,21 @@ export class MyRooms extends React.Component<Props, State> {
     connection.on("OnAdd", (room: Room, by: string) => {
       [room] = mapRooms([room]);
       if (by === user?.id) {
-        this.setState(prev => ({ myRooms: [...prev.myRooms, room] }));
+        this.setState(prev => ({ upcoming: [...prev.upcoming, room] }));
       }
     });
 
     connection.on("OnChange", (room: Room, by: string) => {
       [room] = mapRooms([room]);
       if (isMy(room)) {
-        this.setState(prev => ({ myRooms: [...replace(prev.myRooms, room)] }));
+        this.setState(prev => ({ upcoming: [...replace(prev.upcoming, room)] }));
       }
     });
 
     connection.on("OnRemove", (room: Room, by: string) => {
       [room] = mapRooms([room]);
       if (isMy(room)) {
-        this.setState(prev => ({ myRooms: [...prev.myRooms.filter(r => r.id !== room.id)] }));
+        this.setState(prev => ({ upcoming: [...prev.upcoming.filter(r => r.id !== room.id)] }));
       }
     });
 
@@ -62,11 +66,11 @@ export class MyRooms extends React.Component<Props, State> {
       if (isMy(room)) {
         if (by === user?.id) {
           this.setState(prev => ({
-            myRooms: [...prev.myRooms, room]
+            upcoming: [...prev.upcoming, room]
           }));
         }
         else {
-          this.setState(prev => ({ myRooms: [...replace(prev.myRooms, room)] }));
+          this.setState(prev => ({ upcoming: [...replace(prev.upcoming, room)] }));
         }
       }
     });
@@ -74,11 +78,11 @@ export class MyRooms extends React.Component<Props, State> {
     connection.on("OnLeave", (room: Room, by: string) => {
       [room] = mapRooms([room]);
       if (isMy(room)) {
-        this.setState(prev => ({ myRooms: [...replace(prev.myRooms, room)] }));
+        this.setState(prev => ({ upcoming: [...replace(prev.upcoming, room)] }));
       } else {
         if (by === user?.id) {
           this.setState(prev => ({
-            myRooms: [...prev.myRooms.filter(r => r.id !== room.id)]
+            upcoming: [...prev.upcoming.filter(r => r.id !== room.id)]
           }));
         }
       }
@@ -94,8 +98,8 @@ export class MyRooms extends React.Component<Props, State> {
   }
 
   private async getData() {
-    const upcoming = await roomsService.getUpcoming();
-    this.setState({ myRooms: upcoming });
+    const [upcoming, past] = await Promise.all([roomsService.getUpcoming(), roomsService.getPast()]);
+    this.setState({ upcoming: [], past: [] });
   }
 
   private async leave(roomId: string) {
@@ -117,8 +121,8 @@ export class MyRooms extends React.Component<Props, State> {
   }
 
   render() {
-    const { myRooms } = this.state;
-    const upcomingCards = myRooms
+    const { upcoming, past } = this.state;
+    const upcomingCards = upcoming
       .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
       .map(r => {
         const secondary = [];
@@ -149,21 +153,47 @@ export class MyRooms extends React.Component<Props, State> {
         )
       });
 
+    const pastCards = past.map(r =>
+      <Col xl={4} md={6} sm={8} xs={12}>
+        <RoomCard room={r} />
+      </Col >
+    );
+
     return (
       <>
-        {myRooms.length ?
-          <Row gutter={[16, 16]}>
-            {upcomingCards}
-          </Row>
-          :
-          <Row style={{ flex: 1 }} align='middle' justify='center'>
-            <Col style={{ fontSize: 14 }}>
-              <Row style={{ fontSize: 26 }} justify='center'><p>🤷‍♀️</p></Row>
-              <Row justify='center'> Currently you don’t have any upcoming rooms.</Row>
-              <Row justify='center'>Go&nbsp;<Link className="primary-color" to={routes.app.findRoom}><b>here</b></Link>&nbsp;and enter any room or create your own.</Row>
-            </Col>
-          </Row>
-        }
+        <Space size='large' direction='vertical'>
+          <div>
+            <Title level={5}>Upcoming</Title>
+            {upcoming.length ?
+              <Row gutter={[16, 16]}>
+                {upcomingCards}
+              </Row>
+              :
+              <Row style={{ height: 240 }} align='middle' justify='center'>
+                <Col style={{ fontSize: 14 }}>
+                  <Row style={{ fontSize: 26 }} justify='center'><p>🤷‍♀️</p></Row>
+                  <Row justify='center'> Currently you don’t have any upcoming rooms.</Row>
+                  <Row justify='center'>Go&nbsp;<Link className="primary-color" to={routes.app.findRoom}><b>here</b></Link>&nbsp;and enter any room or create your own.</Row>
+                </Col>
+              </Row>
+            }
+          </div>
+          <div>
+            <Title level={5}>Past</Title>
+            {past.length ?
+              <Row gutter={[16, 16]}>
+                {pastCards}
+              </Row>
+              :
+              <Row style={{ height: 240 }} align='middle' justify='center'>
+                <Col style={{ fontSize: 14 }}>
+                  <Row style={{ fontSize: 26 }} justify='center'><p>🤦‍♀️</p></Row>
+                  <Row justify='center'> Currently you don’t have any past rooms.</Row>
+                </Col>
+              </Row>
+            }
+          </div>
+        </Space>
       </>
     )
   }

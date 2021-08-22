@@ -13,6 +13,7 @@ namespace Lingua.Shared
         Task<Room> Leave(Guid roomId, Guid userId);
         Task<Room> Remove(Guid roomId, Guid userId);
         Task<List<Room>> Upcoming(Guid userId);
+        Task<List<Room>> Past(Guid userId);
         Task<Room> Update(UpdateRoomOptions options, Guid userId);
     }
 }

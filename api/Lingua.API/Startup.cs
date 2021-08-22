@@ -83,7 +83,6 @@ namespace Lingua.API
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Lingua.API v1"));
             // }
 
-            app.UseMiddleware<ExceptionMiddleware>();
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -95,6 +94,7 @@ namespace Lingua.API
             app.UseMiddleware<LogUserNameMiddleware>();
             app.UseSerilogRequestLogging();
 
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
