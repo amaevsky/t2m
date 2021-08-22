@@ -88,7 +88,7 @@ export const UserProfileEdit = (props: { initialSetup?: boolean, afterSave?: () 
         label="Date of birth"
         name="dateOfBirth"
         rules={[
-          { required: true, message: 'Please select your date of birth.' },
+          { required: true, message: 'Please select your date of birth. Format' },
           {
             validator: (_, value: moment.Moment) => {
               return value.clone().add(14, 'year') > moment()
@@ -98,7 +98,7 @@ export const UserProfileEdit = (props: { initialSetup?: boolean, afterSave?: () 
           }
         ]}
       >
-        <DatePicker format={DateFormat} style={{ width: '100%' }} />
+        <DatePicker placeholder={moment(new Date(1995, 1, 1)).format(DateFormat)} showToday={false} format={DateFormat} style={{ width: '100%' }} />
       </Form.Item>
 
       <Form.Item
