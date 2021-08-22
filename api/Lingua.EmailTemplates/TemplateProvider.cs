@@ -12,6 +12,15 @@ namespace Lingua.EmailTemplates
             _viewRenderService = viewRenderService;
         }
 
+        public Task<string> GetCalendarEventEmail(User recepient)
+        {
+            return _viewRenderService.RenderToStringAsync("CalendarEvent",
+                new BaseModel
+                {
+                    Recepient = recepient
+                });
+        }
+
         public Task<string> GetRoomUpdateEmail(string message, Room room, User recepient)
         {
             return _viewRenderService.RenderToStringAsync("RoomUpdate",

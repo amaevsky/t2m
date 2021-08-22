@@ -39,7 +39,7 @@ namespace Lingua.Services
             }
         }
 
-        public async Task SendAsync(string subject, string body, bool isHtml = true, params string[] recipients)
+        public async Task SendAsync(EmailMessage emailMessage, params string[] recipients)
         {
             var fromAddress = new MailAddress(_settings.Email, _settings.DisplayName);
 
@@ -49,12 +49,15 @@ namespace Lingua.Services
 
                 using (var message = new MailMessage(fromAddress, toAddress)
                 {
-                    Subject = subject,
-                    Body = body,
-                    IsBodyHtml = isHtml,
-
+                    Subject = emailMessage.Subject,
+                    Body = emailMessage.Body,
+                    IsBodyHtml = emailMessage.IsHtml
                 })
                 {
+                    foreach (var attach in emailMessage.Attachments)
+                    {
+                        message.Attachments.Add(attach);
+                    }
                     await _client.SendMailAsync(message);
                 }
             }

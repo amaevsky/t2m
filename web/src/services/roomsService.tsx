@@ -84,6 +84,16 @@ class RoomsService {
       });
     }
   }
+
+  async sendCalendarEvent(roomId: string) {
+    const resp = await http.get(`${baseUrl}/send_calendar_event/${roomId}`);
+    if (!resp.errors) {
+      notification.success({
+        placement: 'bottomRight',
+        message: 'An email with calendar event is sent.'
+      });
+    }
+  }
 }
 
 export interface RoomCreateOptions {

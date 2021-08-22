@@ -145,6 +145,7 @@ export class MyRooms extends React.Component<Props, State> {
         } else {
           secondary.push({ action: () => this.leave(r.id), title: 'Leave' });
         }
+        secondary.push({ action: () => roomsService.sendCalendarEvent(r.id), title: 'Add to calendar' })
 
         return (
           <Col xl={4} md={6} sm={8} xs={12}>

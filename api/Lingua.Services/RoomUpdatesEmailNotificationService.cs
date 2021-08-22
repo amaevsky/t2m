@@ -24,27 +24,30 @@ namespace Lingua.Services
 
         public Task OnUpdate(RoomUpdateType updateType, Room room, User user)
         {
+            User[] others(Room room, Guid userId) => room.Participants.Where(p => p.Id != userId).ToArray();
+
             switch (updateType)
             {
-                case RoomUpdateType.Created: break;
+                case RoomUpdateType.Created:
+                    break;
                 case RoomUpdateType.Updated:
-                    return SendUpdateEmail(room, user.Id, "Room has been updated.");
+                    break;
+                //return SendUpdateEmail(room, user.Id, "Room has been updated.");
                 case RoomUpdateType.Entered:
-                    return SendUpdateEmail(room, user.Id, $"<b>{user.Fullname} entered the room.</b>");
+                    return SendUpdateEmail(room, $"<b>{user.Fullname} entered the room.</b>", others(room, user.Id));
                 case RoomUpdateType.Left:
-                    return SendUpdateEmail(room, user.Id, $"<b>{user.Fullname} left the room.</b>");
+                    return SendUpdateEmail(room, $"<b>{user.Fullname} left the room.</b>", others(room, user.Id));
                 case RoomUpdateType.Removed:
-                    return SendUpdateEmail(room, user.Id, $"<b>{user.Fullname} deleted the room you have previously entered.</b> You can go ahead and create your own room for that time.");
-                case RoomUpdateType.Joined: break;
+                    return SendUpdateEmail(room, $"<b>{user.Fullname} deleted the room you have previously entered.</b> You can go ahead and create your own room for that time.", others(room, user.Id));
+                case RoomUpdateType.Joined:
+                    break;
             }
 
             return Task.CompletedTask;
         }
 
-        private async Task SendUpdateEmail(Room room, Guid userId, string message)
+        private async Task SendUpdateEmail(Room room, string message, params User[] recipients)
         {
-            var recipients = room.Participants.Where(u => u.Id != userId);
-
             foreach (var recipient in recipients)
             {
                 try
@@ -52,13 +55,14 @@ namespace Lingua.Services
                     _logger?.LogInformation($"Before room:{room?.Id} update message is sent to {recipient?.Email}");
 
                     var body = await _templateProvider.GetRoomUpdateEmail(message, room, recipient);
+                    var email = new EmailMessage
+                    {
+                        Subject = "Room update",
+                        Body = body,
+                        IsHtml = true,
+                    };
 
-                    await _emailService.SendAsync(
-                        "Room update",
-                        body,
-                        true,
-                        recipient.Email
-                        ).ConfigureAwait(false);
+                    await _emailService.SendAsync(email, recipient.Email).ConfigureAwait(false);
 
                     _logger?.LogInformation($"After room:{room?.Id} update message is sent to {recipient?.Email}");
                 }

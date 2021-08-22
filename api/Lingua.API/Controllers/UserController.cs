@@ -56,7 +56,13 @@ namespace Lingua.API.Controllers
             if (!isReady)
             {
                 var body = await _templateProvider.GetWelcomeLetterEmail(user);
-                _emailService.SendAsync("Welcome!", body, true, user.Email).ConfigureAwait(false);
+                _emailService.SendAsync(
+                    new EmailMessage
+                    {
+                        Subject = "Welcome!",
+                        Body = body,
+                        IsHtml = true
+                    }, user.Email).ConfigureAwait(false);
             }
 
             return Ok();

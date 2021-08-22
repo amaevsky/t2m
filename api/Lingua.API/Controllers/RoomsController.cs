@@ -1,9 +1,14 @@
 ﻿using AutoMapper;
+using Ical.Net;
+using Ical.Net.CalendarComponents;
+using Ical.Net.DataTypes;
+using Ical.Net.Serialization;
 using Lingua.API.ViewModels;
 using Lingua.Shared;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -16,11 +21,21 @@ namespace Lingua.API.Controllers
     {
         private readonly IRoomService _roomService;
         private readonly IMapper _mapper;
+        private readonly IEmailService _emailService;
+        private readonly ITemplateProvider _templateProvider;
+        private readonly IRoomRepository _roomRepository;
 
-        public RoomsController(IRoomService roomService, IMapper mapper)
+        public RoomsController(IRoomService roomService,
+                               IMapper mapper,
+                               IEmailService emailService,
+                               ITemplateProvider templateProvider,
+                               IRoomRepository roomRepository)
         {
             _roomService = roomService;
             _mapper = mapper;
+            _emailService = emailService;
+            _templateProvider = templateProvider;
+            _roomRepository = roomRepository;
         }
 
         [HttpGet]
@@ -113,6 +128,57 @@ namespace Lingua.API.Controllers
             var room = await _roomService.Join(roomId, userId);
 
             return Ok(room.JoinUrl);
+        }
+
+        [HttpGet]
+        [Route("send_calendar_event/{roomId}")]
+        public async Task<IActionResult> SendCalendarEvent(Guid roomId)
+        {
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var room = await _roomRepository.Get(roomId);
+            var user = room.Participants.Find(p => p.Id == userId);
+
+            var body = await _templateProvider.GetCalendarEventEmail(user);
+            var message = new EmailMessage
+            {
+                Subject = "Calendar event",
+                Body = body,
+                IsHtml = true
+            };
+            message.Attachments.Add(CreateICSAttachment(room));
+
+            await _emailService.SendAsync(message, user.Email);
+
+            return Ok();
+        }
+
+        private System.Net.Mail.Attachment CreateICSAttachment(Room room, bool isCancel = false)
+        {
+            var e = new CalendarEvent
+            {
+                Summary = "Talk2Me Room",
+                Start = new CalDateTime(room.StartDate),
+                End = new CalDateTime(room.EndDate),
+                Uid = room.Id.ToString()
+            };
+
+            var calendar = new Calendar();
+            calendar.Method = "PUBLISH";
+            calendar.Events.Add(e);
+
+            if (isCancel)
+            {
+                calendar.Method = "CANCEL";
+                e.Status = "CANCELLED";
+                e.Sequence = 1;
+            }
+
+            var serializer = new CalendarSerializer();
+            var serializedCalendar = serializer.SerializeToString(calendar);
+            var bytes = System.Text.Encoding.UTF8.GetBytes(serializedCalendar);
+            MemoryStream stream = new MemoryStream(bytes);
+
+            return new System.Net.Mail.Attachment(stream, "room.ics");
         }
     }
 }

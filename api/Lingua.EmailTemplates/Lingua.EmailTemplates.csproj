@@ -6,12 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\CalendarEvent.cshtml" />
     <Content Remove="Views\RoomUpdate.cshtml" />
     <Content Remove="Views\WelcomeLetter.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Views\RoomUpdate.cshtml" />
+    <EmbeddedResource Include="Views\CalendarEvent.cshtml" />
     <EmbeddedResource Include="Views\WelcomeLetter.cshtml" />
   </ItemGroup>
 
