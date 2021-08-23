@@ -166,7 +166,7 @@ export class MyRooms extends React.Component<Props, State> {
       <>
         <Space size='large' direction='vertical'>
           <div>
-            <Title level={5}>Upcoming</Title>
+            <Title level={5}>My rooms - Upcoming</Title>
             {upcoming.length ?
               <Row gutter={[16, 16]}>
                 {upcomingCards}
@@ -186,7 +186,7 @@ export class MyRooms extends React.Component<Props, State> {
             }
           </div>
           <div>
-            <Title level={5}>Past</Title>
+            <Title level={5}>My rooms - Past</Title>
             {past.length ?
               <Row gutter={[16, 16]}>
                 {pastCards}

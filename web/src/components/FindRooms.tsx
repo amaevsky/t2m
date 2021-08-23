@@ -1,4 +1,4 @@
-import { Col, Divider, Row, Select, Spin } from "antd";
+import { Col, Divider, Row, Select, Spin, Typography } from "antd";
 import React from "react";
 import { mapRooms, Room, RoomSearchOptions, roomsService } from "../services/roomsService";
 import { userService } from "../services/userService";
@@ -8,6 +8,8 @@ import { connection } from "../realtime/roomsHub";
 import { configService } from "../services/configService";
 import { RoomCard } from "./RoomCard";
 import { TimeRange } from "./TimeRange";
+
+const { Title } = Typography
 
 interface State {
   availableRooms: Room[];
@@ -125,6 +127,8 @@ export class FindRooms extends React.Component<Props, State> {
 
     return (
       <>
+        <Title level={5}>Find a room</Title>
+
         <Row style={{ padding: '8px 0', overflow: 'auto' }} gutter={16} wrap={false}>
           <Col>
             <Select maxTagCount={1} mode="tags" style={{ width: '150px' }} placeholder="Levels..." onChange={(values) => this.levelsChanged(values as string[])}>
