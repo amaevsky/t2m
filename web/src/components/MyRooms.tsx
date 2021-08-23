@@ -1,4 +1,4 @@
-import { Col, Row, Space, Typography } from "antd";
+import { Col, Row, Space, Spin, Typography } from "antd";
 import React from "react";
 import { mapRooms, Room, roomsService } from "../services/roomsService";
 import { userService } from "../services/userService";
@@ -13,6 +13,7 @@ const { Title } = Typography;
 interface State {
   upcoming: Room[];
   past: Room[];
+  loading: boolean;
 }
 
 interface Props {
@@ -25,7 +26,8 @@ export class MyRooms extends React.Component<Props, State> {
 
     this.state = {
       upcoming: [],
-      past: []
+      past: [],
+      loading: true
     };
   }
 
@@ -99,7 +101,7 @@ export class MyRooms extends React.Component<Props, State> {
 
   private async getData() {
     const [upcoming, past] = await Promise.all([roomsService.getUpcoming(), roomsService.getPast()]);
-    this.setState({ upcoming, past });
+    this.setState({ upcoming, past, loading: false });
   }
 
   private async leave(roomId: string) {
@@ -121,7 +123,7 @@ export class MyRooms extends React.Component<Props, State> {
   }
 
   render() {
-    const { upcoming, past } = this.state;
+    const { upcoming, past, loading } = this.state;
     const upcomingCards = upcoming
       .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
       .map(r => {
@@ -171,11 +173,15 @@ export class MyRooms extends React.Component<Props, State> {
               </Row>
               :
               <Row style={{ height: 240 }} align='middle' justify='center'>
-                <Col style={{ fontSize: 14 }}>
-                  <Row style={{ fontSize: 26 }} justify='center'><p>🤷‍♀️</p></Row>
-                  <Row justify='center'> Currently you don’t have any upcoming rooms.</Row>
-                  <Row justify='center'>Go&nbsp;<Link className="primary-color" to={routes.app.findRoom}><b>here</b></Link>&nbsp;and enter any room or create your own.</Row>
-                </Col>
+                {loading ?
+                  <Spin size='large'></Spin>
+                  :
+                  <Col style={{ fontSize: 14 }}>
+                    <Row style={{ fontSize: 26 }} justify='center'><p>🤷‍♀️</p></Row>
+                    <Row justify='center'> Currently you don’t have any upcoming rooms.</Row>
+                    <Row justify='center'>Go&nbsp;<Link className="primary-color" to={routes.app.findRoom}><b>here</b></Link>&nbsp;and enter any room or create your own.</Row>
+                  </Col>
+                }
               </Row>
             }
           </div>
@@ -187,11 +193,16 @@ export class MyRooms extends React.Component<Props, State> {
               </Row>
               :
               <Row style={{ height: 240 }} align='middle' justify='center'>
-                <Col style={{ fontSize: 14 }}>
-                  <Row style={{ fontSize: 26 }} justify='center'><p>🤦‍♀️</p></Row>
-                  <Row justify='center'> Currently you don’t have any past rooms.</Row>
-                </Col>
+                {loading ?
+                  <Spin size='large'></Spin>
+                  :
+                  <Col style={{ fontSize: 14 }}>
+                    <Row style={{ fontSize: 26 }} justify='center'><p>🤦‍♀️</p></Row>
+                    <Row justify='center'> Currently you don’t have any past rooms.</Row>
+                  </Col>
+                }
               </Row>
+
             }
           </div>
         </Space>

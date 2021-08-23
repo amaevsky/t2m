@@ -1,4 +1,4 @@
-import { Col, Divider, Row, Select } from "antd";
+import { Col, Divider, Row, Select, Spin } from "antd";
 import React from "react";
 import { mapRooms, Room, RoomSearchOptions, roomsService } from "../services/roomsService";
 import { userService } from "../services/userService";
@@ -11,9 +11,10 @@ import { TimeRange } from "./TimeRange";
 
 interface State {
   availableRooms: Room[];
-  filter: RoomSearchOptions,
-  timeFrom?: Date
-  timeTo?: Date
+  filter: RoomSearchOptions;
+  loading: boolean;
+  timeFrom?: Date;
+  timeTo?: Date;
 }
 
 interface Props {
@@ -26,7 +27,8 @@ export class FindRooms extends React.Component<Props, State> {
 
     this.state = {
       availableRooms: [],
-      filter: {}
+      filter: {},
+      loading: true
     };
   }
 
@@ -101,7 +103,7 @@ export class FindRooms extends React.Component<Props, State> {
   private async getData() {
     const rooms = await roomsService.getAvailable(this.state.filter);
     //const rooms = Array(20).fill((await roomsService.getAvailable(this.state.filter))[0]);
-    this.setState({ availableRooms: rooms });
+    this.setState({ availableRooms: rooms, loading: false });
   }
 
   private async enter(roomId: string) {
@@ -109,7 +111,7 @@ export class FindRooms extends React.Component<Props, State> {
   }
 
   render() {
-    const { filter } = this.state;
+    const { filter, loading } = this.state;
     const filtredRooms = this.filter(filter)
       .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
     const roomsCards = filtredRooms.map(r => {
@@ -147,11 +149,15 @@ export class FindRooms extends React.Component<Props, State> {
           </Row>
           :
           <Row style={{ flex: 1 }} align='middle' justify='center'>
-            <Col style={{ fontSize: 14 }}>
-              <Row style={{ fontSize: 26 }} justify='center'><p>🙈🙉🙊</p></Row>
-              <Row justify='center'>Seems like there are no available rooms.</Row>
-              <Row justify='center'>Change the filter or create your own room.</Row>
-            </Col>
+            {loading ?
+              <Spin size='large'></Spin>
+              :
+              <Col style={{ fontSize: 14 }}>
+                <Row style={{ fontSize: 26 }} justify='center'><p>🙈🙉🙊</p></Row>
+                <Row justify='center'>Seems like there are no available rooms.</Row>
+                <Row justify='center'>Change the filter or create your own room.</Row>
+              </Col>
+            }
           </Row>
         }
       </>

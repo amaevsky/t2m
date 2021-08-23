@@ -27,34 +27,46 @@ export class RoomCard extends React.Component<Props> {
 
     const { room, secondaryActions, primaryAction } = this.props;
     const partner = room.participants.find(p => userService.user?.id !== p.id);
+    const you = room.participants.find(p => userService.user?.id === p.id);
+
+    const avatars = [];
+    let levels = '';
+    let names = '';
+    if (!you && partner) {
+
+      avatars.push(<Avatar size='large' src={partner.avatarUrl}></Avatar>);
+      names = partner.firstname;
+      levels = partner.languageLevel;
+    } else if (you && partner) {
+      avatars.push(
+        <Avatar size='default' src={you.avatarUrl}></Avatar>,
+        <Avatar size='default' src={partner.avatarUrl}></Avatar>
+      );
+      names = `You & ${partner.firstname}`;
+      levels = `${partner.languageLevel} & ${partner.languageLevel}`;
+    } else if (you) {
+      avatars.push(
+        <Avatar size='default' src={you.avatarUrl}></Avatar>,
+        <Avatar size='default' icon={<UserOutlined />}></Avatar>
+      );
+      names = 'You & <???>';
+      levels = `${you.languageLevel} & <?>`;
+    }
 
     return (
       <Tile style={{ padding: 16 }}>
         <Row justify='space-between'>
           <Col>
             <Row gutter={8}>
-              {partner &&
-                <>
-                  <Col>
-                    <Avatar size='large' src={partner.avatarUrl}></Avatar>
-                  </Col>
-                  <Col>
-                    <b>{partner.firstname} {partner.lastname[0]}.</b>
-                    <div style={{ fontSize: 11 }}>{room.language} {partner.languageLevel}</div>
-                  </Col>
-                </>
-              }
-              {!partner &&
-                <>
-                  <Col>
-                    <Avatar size='large' icon={<UserOutlined />}></Avatar>
-                  </Col>
-                  <Col>
-                    <b>{'<roommate>'}</b>
-                    <div style={{ fontSize: 11 }}>{room.language}</div>
-                  </Col>
-                </>
-              }
+              <Col>
+                <Avatar.Group>
+                  {avatars}
+                </Avatar.Group>
+              </Col>
+              <Col>
+                <b>{names}</b>
+                <div style={{ fontSize: 11 }}>{room.language} {levels}</div>
+              </Col>
             </Row>
           </Col>
           {secondaryActions &&
