@@ -90,7 +90,7 @@ class RoomsService {
     if (!resp.errors) {
       notification.success({
         placement: 'bottomRight',
-        message: 'An email with calendar event is sent.'
+        message: 'We have just sent you an email with calendar event.'
       });
     }
   }
