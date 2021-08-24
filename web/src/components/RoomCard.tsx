@@ -43,7 +43,7 @@ export class RoomCard extends React.Component<Props> {
         <Avatar size='default' src={partner.avatarUrl}></Avatar>
       );
       names = `You & ${partner.firstname}`;
-      levels = `${partner.languageLevel} & ${partner.languageLevel}`;
+      levels = `${you.languageLevel} & ${partner.languageLevel}`;
     } else if (you) {
       avatars.push(
         <Avatar size='default' src={you.avatarUrl}></Avatar>,
