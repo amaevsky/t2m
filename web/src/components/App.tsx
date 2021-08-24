@@ -13,6 +13,7 @@ import { Terms } from './Terms';
 import { Privacy } from './Privacy';
 import { Landing } from './Landing';
 import { ZoomDocumentation } from './ZoomDocumentation';
+import useHeight from '../utilities/useHeight';
 
 export const routes = {
   help: {
@@ -50,12 +51,14 @@ export default class App extends React.Component<any> {
 }
 
 export const HelpPages = () => {
+  const height = useHeight();
+
   return (
     <>
       <Affix offsetTop={0}>
         <Header empty={true} />
       </Affix>
-      <div style={{ padding: '16px 26px', minHeight: 'calc(100vh - 156px)' }}>
+      <div style={{ padding: '16px 26px', minHeight: `calc(${height} - 156px)` }}>
         <div className='help-container'>
           <Switch>
             <Route path={routes.help.contactUs} component={ContactUs} />
@@ -71,12 +74,14 @@ export const HelpPages = () => {
 }
 
 export const AppPages = () => {
+  const height = useHeight();
+
   return (
     <>
       <Affix offsetTop={0}>
         <Header />
       </Affix>
-      <div style={{ display: 'flex', flexDirection:'column', padding: '16px 26px', minHeight: 'calc(100vh - 158px)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', padding: '16px 26px', minHeight: `calc(${height} - 156px)` }}>
         <Switch>
           <PrivateRoute path={routes.app.myRooms} component={MyRooms} />
           <PrivateRoute path={routes.app.findRoom} component={FindRooms} />
@@ -101,9 +106,11 @@ export const Footer = () => {
 }
 
 export const LoginPages = () => {
+  const height = useHeight();
+
   return (
     <>
-      <div style={{ display: 'flex', padding: '16px 26px', minHeight: 'calc(100vh - 78px)' }}>
+      <div style={{ display: 'flex', padding: '16px 26px', minHeight: `calc(${height} - 78px)` }}>
         <Switch>
           <Route path={routes.login.redirect} component={LoginRedirect} />
           <Route path={routes.login.login} component={Login} />
