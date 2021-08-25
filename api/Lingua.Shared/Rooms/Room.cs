@@ -9,6 +9,7 @@ namespace Lingua.Shared
         public Room()
         {
             Participants = new List<User>();
+            PendingParticipants = new List<User>();
         }
 
         public string Topic { get; set; }
@@ -20,6 +21,7 @@ namespace Lingua.Shared
         public string JoinUrl { get; set; }
         public int MaxParticipants { get; set; }
         public List<User> Participants { get; set; }
+        public List<User> PendingParticipants { get; set; }
 
         public User Host => Participants.Find(p => p.Id == HostUserId);
     }

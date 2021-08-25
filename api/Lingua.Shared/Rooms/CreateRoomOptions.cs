@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Lingua.Shared
 {
@@ -8,6 +9,7 @@ namespace Lingua.Shared
         public DateTime StartDate { get; set; }
         public int DurationInMinutes { get; set; }
         public string Language { get; set; }
+        public List<Guid> Participants { get; set; }
     }
 
 }

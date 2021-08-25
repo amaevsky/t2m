@@ -120,6 +120,12 @@ namespace Lingua.Services
 
             room.Participants.Add(user);
 
+            if (options.Participants?.Any() == true)
+            {
+                var pending = await _userRepository.Get(u => options.Participants.Contains(u.Id));
+                room.PendingParticipants.AddRange(pending);
+            }
+
             await _roomRepository.Create(room);
             Notify(RoomUpdateType.Created, user, room);
 
