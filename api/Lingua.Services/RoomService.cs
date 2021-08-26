@@ -222,6 +222,7 @@ namespace Lingua.Services
             }
 
             room.Participants.Add(user);
+            room.Updated = _dateTime.UtcNow;
             await _roomRepository.Update(room);
 
             Notify(RoomUpdateType.Entered, user, room);
@@ -275,6 +276,15 @@ namespace Lingua.Services
 
             Notify(RoomUpdateType.Joined, user, room);
             return room;
+        }
+
+        public async Task<List<Room>> Last()
+        {
+            var all = await _roomRepository.Get();
+            return all.Where(r => r.Participants.Count() == r.MaxParticipants)
+                        .OrderByDescending(r => r.Updated)
+                        .Take(8)
+                        .ToList();
         }
     }
 }

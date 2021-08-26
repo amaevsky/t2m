@@ -68,6 +68,14 @@ namespace Lingua.API.Controllers
             return Ok(_mapper.Map<List<RoomViewModel>>(rooms));
         }
 
+        [HttpGet]
+        [Route("last")]
+        public async Task<IActionResult> Last()
+        {
+            var rooms = await _roomService.Last();
+            return Ok(_mapper.Map<List<RoomViewModel>>(rooms));
+        }
+
 
         [HttpPost]
         [Route("")]

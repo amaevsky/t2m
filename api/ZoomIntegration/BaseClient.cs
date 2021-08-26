@@ -45,13 +45,15 @@ namespace Lingua.ZoomIntegration
             {
                 await action(tokens.AccessToken, null);
             }
+            else
+            {
+                var newTokens = await authClient.RefreshAccessToken(tokens.RefreshToken);
+                tokens.AccessToken = newTokens.AccessToken;
+                tokens.RefreshToken = newTokens.RefreshToken;
+                tokens.ExpiresAt = newTokens.ExpiresAt;
 
-            var newTokens = await authClient.RefreshAccessToken(tokens.RefreshToken);
-            tokens.AccessToken = newTokens.AccessToken;
-            tokens.RefreshToken = newTokens.RefreshToken;
-            tokens.ExpiresAt = newTokens.ExpiresAt;
-
-            await action(tokens.AccessToken, tokens);
+                await action(tokens.AccessToken, tokens);
+            }
         }
     }
 }

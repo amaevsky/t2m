@@ -9,10 +9,10 @@ import { Room, RoomCreateOptions, roomsService } from '../services/roomsService'
 import { CalendarOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { IHasBreakpoint, withBreakpoint } from '../utilities/withBreakpoints';
 import { routes } from './App';
+import { CreateRoomButton } from './CreateRoomButton';
 
 interface State {
   isEditProfileOpen: boolean;
-  isAddRoomOpen: boolean
 }
 
 interface Props extends IHasBreakpoint, RouteComponentProps {
@@ -23,7 +23,7 @@ class HeaderComponent extends React.Component<Props, State> {
 
   constructor(props: any) {
     super(props);
-    this.state = { isEditProfileOpen: false, isAddRoomOpen: false }
+    this.state = { isEditProfileOpen: false }
   }
 
   render() {
@@ -58,22 +58,9 @@ class HeaderComponent extends React.Component<Props, State> {
 
     const createBtn =
       md ?
-        <Button
-          type='primary'
-          size='middle'
-          onClick={() => this.setState({ isAddRoomOpen: true })}
-        >
-          Create a room
-        </Button>
+        <CreateRoomButton type='button' />
         :
-        <Button
-          type='primary'
-          size='middle'
-          shape='circle'
-          onClick={() => this.setState({ isAddRoomOpen: true })}
-        >
-          <PlusOutlined />
-        </Button >
+        <CreateRoomButton type='icon' />
 
     return (
       <>
@@ -117,27 +104,9 @@ class HeaderComponent extends React.Component<Props, State> {
           <UserProfileEdit afterSave={() => this.setState({ isEditProfileOpen: false })} />
         </Modal>
 
-        <Modal
-          title="Create new room"
-          destroyOnClose={true}
-          visible={this.state.isAddRoomOpen}
-          footer={null}
-          onCancel={() => this.setState({ isAddRoomOpen: false })}>
-          <RoomEdit
-            room={{}}
-            onEdit={(room) => this.createRoom(room)}
-            submitBtnText="Create" />
-        </Modal>
+
       </>
     );
-  }
-
-  private async createRoom(room: Room) {
-    const options: RoomCreateOptions = { ...room }
-    var resp = await roomsService.create(options);
-    if (!resp.errors) {
-      this.setState({ isAddRoomOpen: false });
-    }
   }
 
   async logout(): Promise<void> {

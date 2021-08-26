@@ -17,41 +17,62 @@ export interface RoomCardAction {
 
 interface Props {
   room: Room;
+  type: 'full' | 'shortcut';
   primaryAction?: RoomCardAction;
   secondaryActions?: RoomCardAction[];
+}
+
+type CardUser = {
+  name: string,
+  avatar: React.ReactElement,
+  level: string;
 }
 
 export class RoomCard extends React.Component<Props> {
 
   render() {
+    const getUsers = (room: Room): CardUser[] => {
+      const { participants } = room;
+      const partner = participants.find(p => userService.user?.id !== p.id);
+      const you = participants.find(p => userService.user?.id === p.id);
 
-    const { room, secondaryActions, primaryAction } = this.props;
-    const partner = room.participants.find(p => userService.user?.id !== p.id);
-    const you = room.participants.find(p => userService.user?.id === p.id);
+      const users: CardUser[] = [];
 
-    const avatars = [];
-    let levels = '';
-    let names = '';
-    if (!you && partner) {
-
-      avatars.push(<Avatar size='large' src={partner.avatarUrl}></Avatar>);
-      names = partner.firstname;
-      levels = partner.languageLevel;
-    } else if (you && partner) {
-      avatars.push(
-        <Avatar size='default' src={you.avatarUrl}></Avatar>,
-        <Avatar size='default' src={partner.avatarUrl}></Avatar>
-      );
-      names = `You & ${partner.firstname}`;
-      levels = `${you.languageLevel} & ${partner.languageLevel}`;
-    } else if (you) {
-      avatars.push(
-        <Avatar size='default' src={you.avatarUrl}></Avatar>,
-        <Avatar size='default' icon={<UserOutlined />}></Avatar>
-      );
-      names = 'You & <???>';
-      levels = `${you.languageLevel} & <?>`;
+      if (you) {
+        users.push({
+          name: 'You',
+          level: you.languageLevel,
+          avatar: <Avatar size='default' src={you.avatarUrl}></Avatar>
+        });
+        if (partner) {
+          users.push({
+            name: partner.firstname,
+            level: partner.languageLevel,
+            avatar: <Avatar size='default' src={partner.avatarUrl}></Avatar>
+          });
+        }
+        else {
+          users.push({
+            name: '<???>',
+            level: '<?>',
+            avatar: <Avatar size='default' icon={<UserOutlined />}></Avatar>
+          });
+        }
+      } else {
+        participants.forEach(p => users.push({
+          name: p.firstname,
+          level: p.languageLevel,
+          avatar: <Avatar size={participants.length == 1 ? 'large' : 'default'} src={p.avatarUrl}></Avatar>
+        }))
+      }
+      return users;
     }
+
+    const { room, secondaryActions, primaryAction, type } = this.props;
+    const users = getUsers(room);
+    const avatars = users.map(u => u.avatar);
+    let levels = users.map(u => u.level).join(' & ');
+    let names = users.map(u => u.name).join(' & ');
 
     return (
       <Tile style={{ padding: 16 }}>
@@ -95,28 +116,34 @@ export class RoomCard extends React.Component<Props> {
             <div>{moment(room.startDate).format(DateFormat_DayOfWeek)}</div>
           </Space>
         </Row>
-        <Row className='primary-color' style={{ fontSize: 12, fontWeight: 600 }}>
-          <Space>
-            <ClockCircleOutlined />
-            <div>{moment(room.startDate).format(TimeFormat)} - {moment(room.endDate).format(TimeFormat)}</div>
-          </Space>
-        </Row>
-        <Row style={{ margin: '10px 0', height: 40 }}>
-          <Col>
-            <span className="room-topic">
-              {room.topic || '<no topic>'}
-            </span>
-          </Col>
-        </Row>
-        {primaryAction &&
-          <Row>
-            <Tooltip title={primaryAction.tooltip}>
-              <Button disabled={primaryAction.disabled} onClick={() => primaryAction.action()} style={{ width: '100%', fontWeight: 600 }} type='default' size='large'>
-                {primaryAction.title}
-              </Button>
-            </Tooltip>
-          </Row>
+        { type !== 'shortcut' &&
+          <>
+            <Row className='primary-color' style={{ fontSize: 12, fontWeight: 600 }}>
+              <Space>
+                <ClockCircleOutlined />
+                <div>{moment(room.startDate).format(TimeFormat)} - {moment(room.endDate).format(TimeFormat)}</div>
+              </Space>
+            </Row>
+            <Row style={{ margin: '10px 0', height: 40 }}>
+              <Col>
+                <span className="room-topic">
+                  {room.topic || '<no topic>'}
+                </span>
+              </Col>
+            </Row>
+
+            {primaryAction &&
+              <Row>
+                <Tooltip title={primaryAction.tooltip}>
+                  <Button disabled={primaryAction.disabled} onClick={() => primaryAction.action()} style={{ width: '100%', fontWeight: 600 }} type='default' size='large'>
+                    {primaryAction.title}
+                  </Button>
+                </Tooltip>
+              </Row>
+            }
+          </>
         }
+
       </Tile>
     );
   }
