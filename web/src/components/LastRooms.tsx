@@ -48,7 +48,7 @@ export class LastRooms extends React.Component<Props, State> {
 
     return (
       <>
-        {roomsCards?.length &&
+        {!!roomsCards?.length &&
           <>
             <Title level={5}>Recently entered</Title>
             <Row className={ isDesktop ? 'scrollable' : '' } id='last-row' wrap={false} style={{ overflow: 'auto', marginLeft: '-8px' }}>
