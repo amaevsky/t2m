@@ -153,15 +153,20 @@ export class FindRooms extends React.Component<Props, State> {
 
             <Divider></Divider>
 
-
-            <Row gutter={[16, 16]}>
-              <Col xl={4} md={6} sm={8} xs={12}>
-                <CreateRoomButton type='tile' />
-              </Col>
-              {!!roomsCards?.length &&
-                roomsCards
-              }
-            </Row>
+            {loading ?
+              <Row style={{ height: 240 }} align='middle' justify='center'>
+                <Spin size='large'></Spin>
+              </Row>
+              :
+              <Row gutter={[16, 16]}>
+                <Col xl={4} md={6} sm={8} xs={12}>
+                  <CreateRoomButton type='tile' />
+                </Col>
+                {!!roomsCards.length &&
+                  roomsCards
+                }
+              </Row>
+            }
           </div>
         </Space>
       </>

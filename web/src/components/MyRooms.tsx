@@ -166,14 +166,20 @@ export class MyRooms extends React.Component<Props, State> {
         <Space size='large' direction='vertical'>
           <div>
             <Title level={5}>My rooms - Upcoming</Title>
-            <Row gutter={[16, 16]}>
-              <Col xl={4} md={6} sm={8} xs={12}>
-                <CreateRoomButton type='tile' />
-              </Col>
-              {!!upcoming.length &&
-                upcomingCards
-              }
-            </Row>
+            {loading ?
+              <Row style={{ height: 240 }} align='middle' justify='center'>
+                <Spin size='large'></Spin>
+              </Row>
+              :
+              <Row gutter={[16, 16]}>
+                <Col xl={4} md={6} sm={8} xs={12}>
+                  <CreateRoomButton type='tile' />
+                </Col>
+                {!!upcoming.length &&
+                  upcomingCards
+                }
+              </Row>
+            }
           </div>
           <div>
             <Title level={5}>My rooms - Past</Title>
