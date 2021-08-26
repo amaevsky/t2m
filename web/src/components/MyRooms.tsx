@@ -151,14 +151,14 @@ export class MyRooms extends React.Component<Props, State> {
 
         return (
           <Col xl={4} md={6} sm={8} xs={12}>
-            <RoomCard room={r} primaryAction={primary} secondaryActions={secondary} />
+            <RoomCard room={r} type='full' primaryAction={primary} secondaryActions={secondary} />
           </Col >
         )
       });
 
     const pastCards = past.map(r =>
       <Col xl={4} md={6} sm={8} xs={12}>
-        <RoomCard room={r} />
+        <RoomCard type='full' room={r} />
       </Col >
     );
 

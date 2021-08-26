@@ -1,4 +1,4 @@
-import { Col, Divider, Row, Select, Spin, Typography } from "antd";
+import { Col, Divider, Row, Select, Space, Spin, Typography } from "antd";
 import React from "react";
 import { mapRooms, Room, RoomSearchOptions, roomsService } from "../services/roomsService";
 import { userService } from "../services/userService";
@@ -8,6 +8,7 @@ import { connection } from "../realtime/roomsHub";
 import { configService } from "../services/configService";
 import { RoomCard } from "./RoomCard";
 import { TimeRange } from "./TimeRange";
+import { LastRooms } from "./LastRooms";
 
 const { Title } = Typography
 
@@ -104,7 +105,6 @@ export class FindRooms extends React.Component<Props, State> {
 
   private async getData() {
     const rooms = await roomsService.getAvailable(this.state.filter);
-    //const rooms = Array(20).fill((await roomsService.getAvailable(this.state.filter))[0]);
     this.setState({ availableRooms: rooms, loading: false });
   }
 
@@ -120,50 +120,55 @@ export class FindRooms extends React.Component<Props, State> {
       const action = { action: () => this.enter(r.id), title: 'Enter the room' };
       return (
         <Col xl={4} md={6} sm={8} xs={12}>
-          <RoomCard room={r} primaryAction={action} />
+          <RoomCard room={r} type='full' primaryAction={action} />
         </Col >
       )
     });
 
     return (
       <>
-        <Title level={5}>Find a room</Title>
+        <Space size='large' direction='vertical'>
+          <LastRooms />
+          <div>
+            <Title level={5}>Find a room</Title>
 
-        <Row style={{ padding: '8px 0', overflow: 'auto' }} gutter={16} wrap={false}>
-          <Col>
-            <Select maxTagCount={1} mode="tags" style={{ width: '150px' }} placeholder="Levels..." onChange={(values) => this.levelsChanged(values as string[])}>
-              {configService.config.languageLevels.map(l => <Option key={l.code} value={l.code}>{l.code}</Option>)}
-            </Select>
-          </Col>
-          <Col>
-            <Select maxTagCount={1} mode="tags" style={{ width: '150px' }} placeholder="Days of week..." onChange={(values) => this.daysChanged(values as string[])}>
-              {Object.keys(configService.config.days).map(d => <Option key={d}>{d}</Option>)}
-            </Select>
-          </Col>
-          <Col>
-            <TimeRange onChange={(value) => this.timeRangeChanged(value)} />
-          </Col>
-        </Row>
-
-        <Divider></Divider>
-
-        {roomsCards?.length ?
-          <Row gutter={[16, 16]}>
-            {roomsCards}
-          </Row>
-          :
-          <Row style={{ flex: 1 }} align='middle' justify='center'>
-            {loading ?
-              <Spin size='large'></Spin>
-              :
-              <Col style={{ fontSize: 14 }}>
-                <Row style={{ fontSize: 26 }} justify='center'><p>🙈🙉🙊</p></Row>
-                <Row justify='center'>Seems like there are no available rooms.</Row>
-                <Row justify='center'>Change the filter or create your own room.</Row>
+            <Row style={{ padding: '8px 0', overflow: 'auto' }} gutter={16} wrap={false}>
+              <Col>
+                <Select maxTagCount={1} mode="tags" style={{ width: '150px' }} placeholder="Levels..." onChange={(values) => this.levelsChanged(values as string[])}>
+                  {configService.config.languageLevels.map(l => <Option key={l.code} value={l.code}>{l.code}</Option>)}
+                </Select>
               </Col>
+              <Col>
+                <Select maxTagCount={1} mode="tags" style={{ width: '150px' }} placeholder="Days of week..." onChange={(values) => this.daysChanged(values as string[])}>
+                  {Object.keys(configService.config.days).map(d => <Option key={d}>{d}</Option>)}
+                </Select>
+              </Col>
+              <Col>
+                <TimeRange onChange={(value) => this.timeRangeChanged(value)} />
+              </Col>
+            </Row>
+
+            <Divider></Divider>
+
+            {roomsCards?.length ?
+              <Row gutter={[16, 16]}>
+                {roomsCards}
+              </Row>
+              :
+              <Row style={{ height: 240 }} align='middle' justify='center'>
+                {loading ?
+                  <Spin size='large'></Spin>
+                  :
+                  <Col style={{ fontSize: 14 }}>
+                    <Row style={{ fontSize: 26 }} justify='center'><p>🙈🙉🙊</p></Row>
+                    <Row justify='center'>Seems like there are no available rooms.</Row>
+                    <Row justify='center'>Change the filter or create your own room.</Row>
+                  </Col>
+                }
+              </Row>
             }
-          </Row>
-        }
+          </div>
+        </Space>
       </>
     )
   }

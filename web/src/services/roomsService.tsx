@@ -36,6 +36,10 @@ class RoomsService {
     return mapRooms((await http.get<Room[]>(`${baseUrl}${query ? `?${query}` : ''}`)).data || []);
   }
 
+  async getLast(): Promise<Room[]> {
+    return mapRooms((await http.get<Room[]>(`${baseUrl}/last`)).data || []);
+  }
+
   private buildSearchQuery(options: RoomSearchOptions): string {
     const { levels, days, timeFrom, timeTo } = options;
     const params = [];
