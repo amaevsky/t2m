@@ -40,6 +40,22 @@ body {
   background: @primary-color;
 }
 
+.create-btn {
+  display: flex;
+  flex-direction: column;
+  min-height: 225px;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  background: #bdc6ff;
+  cursor: pointer;
+  height: 100%;
+
+  &:hover {
+    background: @primary-color;
+  }
+}
+
 header,
 footer {
   line-height: 78px;
@@ -53,11 +69,13 @@ footer {
   height: 0.5em;
   border-radius: 0.5em;
 }
+
 .scrollable::-webkit-scrollbar-track {
- box-shadow: inset 0 0 3px rgba(0,0,0,0.00);
- border-radius: 0.5em;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.00);
+  border-radius: 0.5em;
 }
+
 .scrollable::-webkit-scrollbar-thumb {
-  background-color: rgba(0,0,0,.1);
+  background-color: rgba(0, 0, 0, .1);
   border-radius: 0.5em;
 }

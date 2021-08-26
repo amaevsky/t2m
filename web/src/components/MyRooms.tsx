@@ -5,8 +5,7 @@ import { userService } from "../services/userService";
 
 import { connection } from "../realtime/roomsHub";
 import { RoomCard, RoomCardAction } from "./RoomCard";
-import { Link } from "react-router-dom";
-import { routes } from "./App";
+import { CreateRoomButton } from "./CreateRoomButton";
 
 const { Title } = Typography;
 
@@ -167,23 +166,14 @@ export class MyRooms extends React.Component<Props, State> {
         <Space size='large' direction='vertical'>
           <div>
             <Title level={5}>My rooms - Upcoming</Title>
-            {upcoming.length ?
-              <Row gutter={[16, 16]}>
-                {upcomingCards}
-              </Row>
-              :
-              <Row style={{ height: 240 }} align='middle' justify='center'>
-                {loading ?
-                  <Spin size='large'></Spin>
-                  :
-                  <Col style={{ fontSize: 14 }}>
-                    <Row style={{ fontSize: 26 }} justify='center'><p>🤷‍♀️</p></Row>
-                    <Row justify='center'> Currently you don’t have any upcoming rooms.</Row>
-                    <Row justify='center'>Go&nbsp;<Link className="primary-color" to={routes.app.findRoom}><b>here</b></Link>&nbsp;and enter any room or create your own.</Row>
-                  </Col>
-                }
-              </Row>
-            }
+            <Row gutter={[16, 16]}>
+              <Col xl={4} md={6} sm={8} xs={12}>
+                <CreateRoomButton type='tile' />
+              </Col>
+              {!!upcoming.length &&
+                upcomingCards
+              }
+            </Row>
           </div>
           <div>
             <Title level={5}>My rooms - Past</Title>
@@ -197,7 +187,7 @@ export class MyRooms extends React.Component<Props, State> {
                   <Spin size='large'></Spin>
                   :
                   <Col style={{ fontSize: 14 }}>
-                    <Row style={{ fontSize: 26 }} justify='center'><p>🤦‍♀️</p></Row>
+                    <Row style={{ fontSize: 26 }} justify='center'><p>🤷‍♀️</p></Row>
                     <Row justify='center'> Currently you don’t have any past rooms.</Row>
                   </Col>
                 }

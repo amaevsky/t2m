@@ -9,6 +9,9 @@ import { configService } from "../services/configService";
 import { RoomCard } from "./RoomCard";
 import { TimeRange } from "./TimeRange";
 import { LastRooms } from "./LastRooms";
+import { Tile } from "./Tile";
+import { PlusOutlined } from "@ant-design/icons";
+import { CreateRoomButton } from "./CreateRoomButton";
 
 const { Title } = Typography
 
@@ -150,23 +153,15 @@ export class FindRooms extends React.Component<Props, State> {
 
             <Divider></Divider>
 
-            {roomsCards?.length ?
-              <Row gutter={[16, 16]}>
-                {roomsCards}
-              </Row>
-              :
-              <Row style={{ height: 240 }} align='middle' justify='center'>
-                {loading ?
-                  <Spin size='large'></Spin>
-                  :
-                  <Col style={{ fontSize: 14 }}>
-                    <Row style={{ fontSize: 26 }} justify='center'><p>🙈🙉🙊</p></Row>
-                    <Row justify='center'>Seems like there are no available rooms.</Row>
-                    <Row justify='center'>Change the filter or create your own room.</Row>
-                  </Col>
-                }
-              </Row>
-            }
+
+            <Row gutter={[16, 16]}>
+              <Col xl={4} md={6} sm={8} xs={12}>
+                <CreateRoomButton type='tile' />
+              </Col>
+              {!!roomsCards?.length &&
+                roomsCards
+              }
+            </Row>
           </div>
         </Space>
       </>
