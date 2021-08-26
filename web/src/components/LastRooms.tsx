@@ -1,5 +1,6 @@
 import { Col, Row, Typography } from "antd";
 import React from "react";
+import { isDesktop } from "react-device-detect";
 import { Room, roomsService } from "../services/roomsService";
 
 import { RoomCard } from "./RoomCard";
@@ -50,7 +51,7 @@ export class LastRooms extends React.Component<Props, State> {
         {roomsCards?.length &&
           <>
             <Title level={5}>Recently entered</Title>
-            <Row id='last-row' wrap={false} style={{ overflowX: 'auto', marginLeft: '-8px' }}>
+            <Row className={ isDesktop ? 'scrollable' : '' } id='last-row' wrap={false} style={{ overflow: 'auto', marginLeft: '-8px' }}>
               {roomsCards}
             </Row>
           </>
