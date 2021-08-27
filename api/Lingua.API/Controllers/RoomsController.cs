@@ -59,6 +59,16 @@ namespace Lingua.API.Controllers
         }
 
         [HttpGet]
+        [Route("me/requested")]
+        public async Task<IActionResult> Requested()
+        {
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var rooms = await _roomService.Requested(userId);
+
+            return Ok(_mapper.Map<List<RoomViewModel>>(rooms));
+        }
+
+        [HttpGet]
         [Route("me/past")]
         public async Task<IActionResult> Past()
         {
@@ -124,6 +134,26 @@ namespace Lingua.API.Controllers
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var room = await _roomService.Leave(roomId, userId);
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("accept/{roomId}")]
+        public async Task<IActionResult> Accept(Guid roomId)
+        {
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var room = await _roomService.Accept(roomId, userId);
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("decline/{roomId}")]
+        public async Task<IActionResult> Decline(Guid roomId)
+        {
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var room = await _roomService.Decline(roomId, userId);
 
             return Ok();
         }

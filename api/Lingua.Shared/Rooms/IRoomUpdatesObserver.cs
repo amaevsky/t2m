@@ -13,6 +13,8 @@ namespace Lingua.Shared
         Created,
         Updated,
         Entered,
+        Accepted,
+        Declined,
         Left,
         Removed,
         Joined
