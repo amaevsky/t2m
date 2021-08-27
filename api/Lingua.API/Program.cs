@@ -18,6 +18,7 @@ namespace Lingua.API
                 .UseSerilog((context, services, configuration) => configuration
                     .ReadFrom.Configuration(context.Configuration)
                     .ReadFrom.Services(services)
+                    .Filter.ByExcluding(ev => ev.Level < LogEventLevel.Warning && ev.Properties.TryGetValue("RequestPath", out var path) ? path.ToString().Contains("roomsHub") : false )
                     .MinimumLevel.Debug()
                     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
