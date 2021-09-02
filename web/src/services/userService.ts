@@ -1,9 +1,11 @@
 import { notification } from 'antd';
 import { http } from '../utilities/http';
+import { setAmplitudeUserId } from './amplitude';
 
 const baseUrl = `user`;
 
 class UserService {
+
   public user?: User | null;
 
   public get isAuthenticated(): boolean {
@@ -16,6 +18,12 @@ class UserService {
 
   async initialize() {
     this.user = (await http.get<User>(`${baseUrl}/me`)).data || null;
+
+    if(this.isAccountReady) { setAmplitudeUserId(this.user?.id || '') }
+  }
+
+  async getConnections(): Promise<User[]> {
+    return (await http.get<User[]>(`${baseUrl}/me/connections`)).data || [];
   }
 
   async update(user: User, silent: boolean = false) {
@@ -41,6 +49,16 @@ export interface User {
   targetLanguage: string;
   languageLevel: string;
   timezone: string;
+}
+
+export interface RoomParticipant extends User {
+  Status: RoomPartcipantStatus
+}
+
+export enum RoomPartcipantStatus {
+  Accepted,
+  Requested,
+  Declined
 }
 
 export const userService = new UserService();

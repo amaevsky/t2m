@@ -3,20 +3,22 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, Modal, Space } from "antd";
 import { RoomEdit } from './RoomEdit';
 import { Room, RoomCreateOptions, roomsService } from '../services/roomsService';
+import { User, userService } from '../services/userService';
 
 interface Props {
   type: 'button' | 'icon' | 'tile';
 }
 
 interface State {
-  isAddRoomOpen: boolean
+  isAddRoomOpen: boolean;
+  connections?: User[];
 }
 
 export class CreateRoomButton extends React.Component<Props, State> {
 
   constructor(props: any) {
     super(props);
-    this.state = { isAddRoomOpen: false }
+    this.state = { isAddRoomOpen: false, connections: [] }
   }
 
   private async createRoom(room: Room) {
@@ -27,14 +29,21 @@ export class CreateRoomButton extends React.Component<Props, State> {
     }
   }
 
+  private async openModal() {
+    this.setState({ isAddRoomOpen: true });
+    const connections = await userService.getConnections();
+    this.setState({ connections });
+  }
+
   render() {
     const { type } = this.props;
+    const { connections } = this.state;
 
     let button =
       <Button
         type='primary'
         size='middle'
-        onClick={() => this.setState({ isAddRoomOpen: true })}
+        onClick={() => this.openModal()}
       >
         Create a room
       </Button>;
@@ -45,7 +54,7 @@ export class CreateRoomButton extends React.Component<Props, State> {
           type='primary'
           size='middle'
           shape='circle'
-          onClick={() => this.setState({ isAddRoomOpen: true })}
+          onClick={() => this.openModal()}
         >
           <PlusOutlined />
         </Button >
@@ -55,7 +64,7 @@ export class CreateRoomButton extends React.Component<Props, State> {
       button =
         <div
           className="tile create-btn"
-          onClick={() => this.setState({ isAddRoomOpen: true })}
+          onClick={() => this.openModal()}
         >
           <Space direction='vertical' align='center'>
             <PlusOutlined style={{ fontSize: 35 }} />
@@ -76,7 +85,9 @@ export class CreateRoomButton extends React.Component<Props, State> {
           <RoomEdit
             room={{}}
             onEdit={(room) => this.createRoom(room)}
-            submitBtnText="Create" />
+            submitBtnText="Create"
+            connections={connections || []}
+          />
         </Modal>
       </>
     );

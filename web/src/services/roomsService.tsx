@@ -1,6 +1,6 @@
 import { notification } from 'antd';
 import { http, HttpResponse } from '../utilities/http';
-import { User } from './userService';
+import { RoomParticipant } from './userService';
 import { routes } from '../components/App';
 
 const baseUrl = `rooms`;
@@ -55,6 +55,10 @@ class RoomsService {
     return mapRooms((await http.get<Room[]>(`${baseUrl}/me/upcoming`)).data || []);
   }
 
+  async getRequests(): Promise<Room[]> {
+    return mapRooms((await http.get<Room[]>(`${baseUrl}/me/requests`)).data || []);
+  }
+
   async getPast(): Promise<Room[]> {
     return mapRooms((await http.get<Room[]>(`${baseUrl}/me/past`)).data || []);
   }
@@ -75,6 +79,26 @@ class RoomsService {
       notification.success({
         placement: 'bottomRight',
         message: 'You successfully left the room.'
+      });
+    }
+  }
+
+  async accept(roomId: string) {
+    const resp = await http.get(`${baseUrl}/accept/${roomId}`);
+    if (!resp.errors) {
+      notification.success({
+        placement: 'bottomRight',
+        message: 'You successfully accepted the room request.'
+      });
+    }
+  }
+
+  async decline(roomId: string) {
+    const resp = await http.get(`${baseUrl}/decline/${roomId}`);
+    if (!resp.errors) {
+      notification.success({
+        placement: 'bottomRight',
+        message: 'You successfully declined the room request.'
       });
     }
   }
@@ -104,7 +128,8 @@ export interface RoomCreateOptions {
   startDate: Date,
   durationInMinutes: number;
   language: string,
-  topic?: string
+  topic?: string,
+  participants: RoomParticipant[]
 }
 
 export interface RoomSearchOptions {
@@ -121,7 +146,7 @@ export interface Room {
   durationInMinutes: number;
   language: string;
   topic?: string;
-  participants: User[],
+  participants: RoomParticipant[],
   maxParticipants: number;
   hostUserId: string;
   joinUrl: string;

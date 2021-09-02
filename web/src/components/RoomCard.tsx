@@ -18,7 +18,7 @@ export interface RoomCardAction {
 interface Props {
   room: Room;
   type: 'full' | 'shortcut';
-  primaryAction?: RoomCardAction;
+  primaryActions?: RoomCardAction[];
   secondaryActions?: RoomCardAction[];
 }
 
@@ -68,7 +68,7 @@ export class RoomCard extends React.Component<Props> {
       return users;
     }
 
-    const { room, secondaryActions, primaryAction, type } = this.props;
+    const { room, secondaryActions, primaryActions, type } = this.props;
     const users = getUsers(room);
     const avatars = users.map(u => u.avatar);
     let levels = users.map(u => u.level).join(' & ');
@@ -116,7 +116,7 @@ export class RoomCard extends React.Component<Props> {
             <div>{moment(room.startDate).format(DateFormat_DayOfWeek)}</div>
           </Space>
         </Row>
-        { type !== 'shortcut' &&
+        {type !== 'shortcut' &&
           <>
             <Row className='primary-color' style={{ fontSize: 12, fontWeight: 600 }}>
               <Space>
@@ -132,13 +132,19 @@ export class RoomCard extends React.Component<Props> {
               </Col>
             </Row>
 
-            {primaryAction &&
-              <Row>
-                <Tooltip title={primaryAction.tooltip}>
-                  <Button disabled={primaryAction.disabled} onClick={() => primaryAction.action()} style={{ width: '100%', fontWeight: 600 }} type='default' size='large'>
-                    {primaryAction.title}
-                  </Button>
-                </Tooltip>
+            {!!primaryActions?.length &&
+              <Row gutter={8}>
+                {
+                  primaryActions.map(a =>
+                    <Col span={primaryActions.length == 1 ? 24 : 12}>
+                      <Tooltip title={a.tooltip}>
+                        <Button disabled={a.disabled} onClick={() => a.action()} style={{ width: '100%', fontWeight: 600 }} type='default' size='large'>
+                          {a.title}
+                        </Button>
+                      </Tooltip>
+                    </Col>
+                  )
+                }
               </Row>
             }
           </>

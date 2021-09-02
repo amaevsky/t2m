@@ -59,7 +59,7 @@ namespace Lingua.API.Controllers
         }
 
         [HttpGet]
-        [Route("me/requested")]
+        [Route("me/requests")]
         public async Task<IActionResult> Requested()
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);

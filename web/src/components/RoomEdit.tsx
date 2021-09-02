@@ -3,14 +3,16 @@ import Form from 'antd/lib/form';
 import React from 'react';
 import { Room } from '../services/roomsService';
 import { configService } from '../services/configService';
-import { userService } from '../services/userService';
+import { User, userService } from '../services/userService';
 
 import moment from 'moment';
 import { DateTimeFormat, is12Hours, TimeFormat } from '../utilities/date';
+import { connection } from '../realtime/roomsHub';
 interface Props {
   room: Partial<Room>,
   onEdit: (room: Room) => void
-  submitBtnText: string
+  submitBtnText: string;
+  connections: User[];
 }
 
 interface State {
@@ -22,13 +24,15 @@ export class RoomEdit extends React.Component<Props, State> {
   edit(values: any) {
     const room = {
       ...values,
-      startDate: (values.startDate as moment.Moment).seconds(0).milliseconds(0)
+      startDate: (values.startDate as moment.Moment).seconds(0).milliseconds(0),
+      participants: values.roommate ? [values.roommate] : []
     } as Room;
     this.props.onEdit(room);
   }
 
   render() {
     const user = userService.user;
+    const { connections } = this.props;
     const timeStep = 10;
     const startDate = moment().add('minute', timeStep - (moment().minutes() % timeStep));
 
@@ -91,6 +95,19 @@ export class RoomEdit extends React.Component<Props, State> {
           rules={[{ max: 50, type: 'string' }]}
         >
           <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Roommate"
+          name="roommate"
+        >
+          <Select showSearch>
+            {
+              connections.map(c =>
+                <Select.Option value={c.id}>{c.firstname} {c.lastname}</Select.Option>
+              )
+            }
+          </Select>
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

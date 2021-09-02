@@ -6,6 +6,7 @@ import { userService } from "../services/userService";
 import { connection } from "../realtime/roomsHub";
 import { RoomCard, RoomCardAction } from "./RoomCard";
 import { CreateRoomButton } from "./CreateRoomButton";
+import { RoomRequests } from "./RoomRequests";
 
 const { Title } = Typography;
 
@@ -150,7 +151,7 @@ export class MyRooms extends React.Component<Props, State> {
 
         return (
           <Col xl={4} md={6} sm={8} xs={12}>
-            <RoomCard room={r} type='full' primaryAction={primary} secondaryActions={secondary} />
+            <RoomCard room={r} type='full' primaryActions={[primary]} secondaryActions={secondary} />
           </Col >
         )
       });
@@ -164,6 +165,7 @@ export class MyRooms extends React.Component<Props, State> {
     return (
       <>
         <Space size='large' direction='vertical'>
+          <RoomRequests />
           <div>
             <Title level={5}>My rooms - Upcoming</Title>
             {loading ?
