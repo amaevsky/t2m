@@ -2,6 +2,7 @@ import { notification } from 'antd';
 import { http, HttpResponse } from '../utilities/http';
 import { User } from './userService';
 import { routes } from '../components/App';
+import { sendAmplitudeData } from './amplitude';
 
 const baseUrl = `rooms`;
 
@@ -14,16 +15,23 @@ export const mapRooms = (rooms: Room[]): Room[] => {
 }
 class RoomsService {
   async join(roomId: string): Promise<string> {
-    return (await http.get<string>(`${baseUrl}/join/${roomId}`)).data || '';
+    const resp = await http.get<string>(`${baseUrl}/join/${roomId}`);
+    if (!resp.errors) {
+      sendAmplitudeData('Room_Joined', { roomId });
+    }
+
+    return resp.data || '';
   }
 
   async create(options: RoomCreateOptions): Promise<HttpResponse> {
-    const resp = await http.post(baseUrl, options);
+    const resp = await http.post<Room>(baseUrl, options);
     if (!resp.errors) {
       notification.success({
         placement: 'bottomRight',
         message: <span>The room was successfully created. You can find it on <a className="primary-color" href={routes.app.myRooms}>My rooms</a> page.</span>
       });
+
+      sendAmplitudeData('Room_Created', { roomId: resp.data?.id });
     }
     return resp;
   }
@@ -66,6 +74,8 @@ class RoomsService {
         placement: 'bottomRight',
         message: <span>You successfully entered the room. You can find it on <a className="primary-color" href={routes.app.myRooms}>My rooms</a> page.</span>
       });
+
+      sendAmplitudeData('Room_Entered', { roomId });
     }
   }
 
@@ -76,6 +86,8 @@ class RoomsService {
         placement: 'bottomRight',
         message: 'You successfully left the room.'
       });
+
+      sendAmplitudeData('Room_Left', { roomId });
     }
   }
 
@@ -86,6 +98,8 @@ class RoomsService {
         placement: 'bottomRight',
         message: 'The room was successfully removed.'
       });
+
+      sendAmplitudeData('Room_Removed', { roomId });
     }
   }
 
