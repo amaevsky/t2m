@@ -40,7 +40,7 @@ export class LastRooms extends React.Component<Props, State> {
     const { rooms } = this.state;
     const roomsCards = rooms.map(r => {
       return (
-        <Col style={{minWidth: 220, padding: '0 8px 8px 8px'}}>
+        <Col style={{ minWidth: 220, flexShrink: 0, padding: '0 8px 8px 8px' }}>
           <RoomCard room={r} type='shortcut' />
         </Col >
       )
@@ -51,7 +51,7 @@ export class LastRooms extends React.Component<Props, State> {
         {!!roomsCards?.length &&
           <>
             <Title level={5}>Recently entered</Title>
-            <Row className={ isDesktop ? 'scrollable' : '' } id='last-row' wrap={false} style={{ overflow: 'auto', marginLeft: '-8px' }}>
+            <Row className={isDesktop ? 'scrollable' : ''} id='last-row' wrap={false} style={{ overflow: 'auto', marginLeft: '-8px' }}>
               {roomsCards}
             </Row>
           </>

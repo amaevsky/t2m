@@ -1,6 +1,6 @@
 import { notification } from 'antd';
 import { http } from '../utilities/http';
-import { setAmplitudeUserId } from './amplitude';
+import { sendAmplitudeData, setAmplitudeUserId, setAmplitudeUserProperties } from './amplitude';
 
 const baseUrl = `user`;
 
@@ -19,21 +19,29 @@ class UserService {
   async initialize() {
     this.user = (await http.get<User>(`${baseUrl}/me`)).data || null;
 
-    if(this.isAccountReady) { setAmplitudeUserId(this.user?.id || '') }
+    if (this.isAuthenticated) {
+      setAmplitudeUserId(this.user?.id || '');
+      setAmplitudeUserProperties({ email: this.user?.email })
+    }
   }
 
   async getConnections(): Promise<User[]> {
     return (await http.get<User[]>(`${baseUrl}/me/connections`)).data || [];
   }
 
-  async update(user: User, silent: boolean = false) {
+
+  async update(user: User, initialSetup: boolean = false) {
     const resp = await http.put<User>(`${baseUrl}`, user);
     this.user = user;
-    if (!resp.errors && !silent) {
-      notification.success({
-        placement: 'bottomRight',
-        message: 'The changes were successfully saved.'
-      });
+    if (!resp.errors) {
+      if (!initialSetup) {
+        notification.success({
+          placement: 'bottomRight',
+          message: 'The changes were successfully saved.'
+        });
+      }
+
+      sendAmplitudeData('User_AccountSetUp')
     }
   }
 }

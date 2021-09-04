@@ -3,7 +3,7 @@ import { http } from '../utilities/http';
 const baseUrl = `config`;
 
 interface LanguageLevel {
-    code: string,
+  code: string,
   description: string
 }
 class ConfigService {
@@ -11,6 +11,7 @@ class ConfigService {
   config: {
     languages: string[];
     zoomAuthUrl: string;
+    amplitudeApiKey: string;
     languageLevels: LanguageLevel[]
     days: { [key: string]: number }
   }
@@ -19,6 +20,7 @@ class ConfigService {
     this.config = {
       languages: [],
       zoomAuthUrl: '',
+      amplitudeApiKey: '',
       languageLevels: [],
       days: {
         Sun: 0,
@@ -34,17 +36,19 @@ class ConfigService {
   }
 
   async initialize() {
-    const [languages, zoomAuthUrl, languageLevels] = await Promise.all([
+    const [languages, zoomAuthUrl, languageLevels, amplitudeApiKey] = await Promise.all([
       this.getLanguages(),
       this.getZoomAuthUrl(),
-      this.getLanguageLevels()
+      this.getLanguageLevels(),
+      this.getAmplitudeApiKey()
     ]);
 
     this.config = {
       ...this.config,
       languages,
       zoomAuthUrl,
-      languageLevels
+      languageLevels,
+      amplitudeApiKey
     };
   }
 
@@ -54,6 +58,10 @@ class ConfigService {
 
   private async getZoomAuthUrl(): Promise<string> {
     return (await http.get<string>(`${baseUrl}/zoom`)).data || '';
+  }
+
+  private async getAmplitudeApiKey(): Promise<string> {
+    return (await http.get<string>(`${baseUrl}/amplitude`)).data || '';
   }
 
   private async getLanguageLevels(): Promise<LanguageLevel[]> {

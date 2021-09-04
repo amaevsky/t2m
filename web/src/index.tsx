@@ -7,24 +7,25 @@ import './styles/index.less';
 import { configService } from './services/configService';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { userService } from './services/userService';
+import { initAmplitude } from './services/amplitude';
 
-Promise.all([
-  configService.initialize(),
-  userService.initialize()
-]).then(() =>
-  ReactDOM.render(
-    <React.StrictMode>
+configService.initialize()
+  .then(() => initAmplitude(configService.config.amplitudeApiKey))
+  .then(() => userService.initialize())
+  .then(() =>
+    ReactDOM.render(
+      <React.StrictMode>
 
-      <Router>
-        <Switch>
-          <Route path="/" component={App} />
-        </Switch>
+        <Router>
+          <Switch>
+            <Route path="/" component={App} />
+          </Switch>
 
-      </Router>
-    </React.StrictMode>,
-    document.getElementById('root')
-  )
-);
+        </Router>
+      </React.StrictMode>,
+      document.getElementById('root')
+    )
+  );
 
 
 
