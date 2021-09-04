@@ -36,7 +36,7 @@ class UserService {
         });
       }
 
-      sendAmplitudeData('User_AccountSetUp')
+      sendAmplitudeData('Account Setup')
     }
   }
 }

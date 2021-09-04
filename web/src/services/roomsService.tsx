@@ -17,7 +17,7 @@ class RoomsService {
   async join(roomId: string): Promise<string> {
     const resp = await http.get<string>(`${baseUrl}/join/${roomId}`);
     if (!resp.errors) {
-      sendAmplitudeData('Room_Joined', { roomId });
+      sendAmplitudeData('Room Joined', { roomId });
     }
 
     return resp.data || '';
@@ -31,7 +31,7 @@ class RoomsService {
         message: <span>The room was successfully created. You can find it on <a className="primary-color" href={routes.app.myRooms}>My rooms</a> page.</span>
       });
 
-      sendAmplitudeData('Room_Created', { roomId: resp.data?.id });
+      sendAmplitudeData('Room Created', { roomId: resp.data?.id });
     }
     return resp;
   }
@@ -75,7 +75,7 @@ class RoomsService {
         message: <span>You successfully entered the room. You can find it on <a className="primary-color" href={routes.app.myRooms}>My rooms</a> page.</span>
       });
 
-      sendAmplitudeData('Room_Entered', { roomId });
+      sendAmplitudeData('Room Entered', { roomId });
     }
   }
 
@@ -87,7 +87,7 @@ class RoomsService {
         message: 'You successfully left the room.'
       });
 
-      sendAmplitudeData('Room_Left', { roomId });
+      sendAmplitudeData('Room Left', { roomId });
     }
   }
 
@@ -99,7 +99,7 @@ class RoomsService {
         message: 'The room was successfully removed.'
       });
 
-      sendAmplitudeData('Room_Removed', { roomId });
+      sendAmplitudeData('Room Removed', { roomId });
     }
   }
 
