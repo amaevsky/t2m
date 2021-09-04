@@ -22,8 +22,6 @@ class UserService {
       setAmplitudeUserId(this.user?.id || '');
       setAmplitudeUserProperties({ email: this.user?.email })
     }
-
-    sendAmplitudeData('User_StartSession');
   }
 
 
