@@ -10,10 +10,12 @@ namespace Lingua.API.Controllers
     public class ConfigController : ControllerBase
     {
         private readonly ZoomClientOptions _zoomClientOptions;
+        private readonly AmplitudeOptions _amplitudeOptions;
 
-        public ConfigController(IOptions<ZoomClientOptions> zoomClientOptions)
+        public ConfigController(IOptions<ZoomClientOptions> zoomClientOptions, IOptions<AmplitudeOptions> amplitudeOptions)
         {
             _zoomClientOptions = zoomClientOptions.Value;
+            _amplitudeOptions = amplitudeOptions.Value;
         }
 
         [HttpGet]
@@ -21,6 +23,13 @@ namespace Lingua.API.Controllers
         public IActionResult ZoomOAuthUrl()
         {
             return Ok(_zoomClientOptions.OAuthUrl);
+        }
+
+        [HttpGet]
+        [Route("amplitude")]
+        public IActionResult AmplitudeApiKey()
+        {
+            return Ok(_amplitudeOptions.ApiKey);
         }
 
         [HttpGet]

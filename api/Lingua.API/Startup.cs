@@ -70,6 +70,7 @@ namespace Lingua.API
 
             services.AddOptions();
             services.Configure<ZoomClientOptions>(Configuration.GetSection("ZoomClientOptions"));
+            services.Configure<AmplitudeOptions>(Configuration.GetSection("AmplitudeOptions"));
             services.Configure<MongoOptions>(Configuration.GetSection("MongoOptions"));
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
         }
