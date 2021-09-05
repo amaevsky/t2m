@@ -1,12 +1,13 @@
 import React from "react";
-import { Col, Row, Space, Typography } from "antd";
-import { Room, roomsService } from "../services/roomsService";
+import { Col, Row, Typography } from "antd";
+import { RoomRequest, roomsService } from "../services/roomsService";
 import { RoomCard, RoomCardAction } from "./RoomCard";
+import { userService } from "../services/userService";
 
 const { Title } = Typography;
 
 interface State {
-  requests: Room[];
+  requests: RoomRequest[];
   loading: boolean;
 }
 
@@ -33,31 +34,37 @@ export class RoomRequests extends React.Component<Props, State> {
     this.setState({ requests, loading: false });
   }
 
-  private async accept(roomId: string) {
-    await roomsService.accept(roomId);
+  private async acceptRequest(request: RoomRequest) {
+    await roomsService.acceptRequest(request.room.id, request.id);
   }
 
-  private async decline(roomId: string) {
-    await roomsService.decline(roomId);
+  private async declineRequest(request: RoomRequest) {
+    await roomsService.declineRequest(request.room.id, request.id);
   }
 
   render() {
     const { requests } = this.state;
     const requestsCards = requests
       .map(r => {
-        const primary: RoomCardAction[] = [{
-          action: () => this.accept(r.id),
+
+        const primary: RoomCardAction[] = r.to.id === userService.user?.id ? [{
+          action: () => this.acceptRequest(r),
           title: 'Accept',
         },
         {
-          action: () => this.decline(r.id),
+          action: () => this.declineRequest(r),
           title: 'Decline'
         }
+        ] : [
+          {
+            action: () => this.declineRequest(r),
+            title: 'Cancel'
+          }
         ];
 
         return (
           <Col xl={4} md={6} sm={8} xs={12}>
-            <RoomCard room={r} type='full' primaryActions={primary} />
+            <RoomCard room={r.room} type='full' primaryActions={primary} />
           </Col >
         )
       });

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Lingua.Shared
 {
@@ -9,6 +8,7 @@ namespace Lingua.Shared
         public Room()
         {
             Participants = new List<RoomParticipant>();
+            Requests = new List<RoomRequest>();
         }
 
         public string Topic { get; set; }
@@ -20,37 +20,8 @@ namespace Lingua.Shared
         public string JoinUrl { get; set; }
         public int MaxParticipants { get; set; }
         public List<RoomParticipant> Participants { get; set; }
+        public List<RoomRequest> Requests { get; set; }
 
         public RoomParticipant Host => Participants.Find(p => p.Id == HostUserId);
-    }
-
-    public class RoomParticipant : User
-    {
-        public RoomParticipant()
-        {
-        }
-
-        public RoomParticipant(User user)
-        {
-            Id = user.Id;
-            Lastname = user.Lastname;
-            Firstname = user.Firstname;
-            Email = user.Email;
-            Country = user.Country;
-            DateOfBirth = user.DateOfBirth;
-            TargetLanguage = user.TargetLanguage;
-            LanguageLevel = user.LanguageLevel;
-            AvatarUrl = user.AvatarUrl;
-            Timezone = user.Timezone;
-        }
-
-        public ParticipantStatus Status { get; set; }
-    }
-
-    public enum ParticipantStatus
-    {
-        Accepted,
-        Requested,
-        Declined
     }
 }

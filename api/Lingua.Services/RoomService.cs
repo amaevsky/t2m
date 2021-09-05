@@ -35,6 +35,7 @@ namespace Lingua.Services
             var rooms = (await _roomRepository.Get(r =>
                                     r.StartDate > _dateTime.UtcNow
                                     && r.Language == user.TargetLanguage
+                                    && !r.Requests.OfType<EnterRoomRequest>().Any()
                                     && !r.Participants.Any(p => p.Id == userId)))
                 .Where(r => r.Participants.Count < r.MaxParticipants);
 
@@ -72,7 +73,8 @@ namespace Lingua.Services
         {
             var user = await _userRepository.Get(userId);
             var rooms = await _roomRepository.Get(r =>
-                            r.Participants.Any(p => p.Id == userId && p.Status == ParticipantStatus.Accepted)
+                            r.Participants.Any(p => p.Id == userId)
+                            && !r.Requests.OfType<EnterRoomRequest>().Any(r => r.From.Id == userId && r.Status == RoomRequestStatus.Requested)
                             && (
                                 (r.EndDate > _dateTime.UtcNow && r.Participants.Count > 1)
                                 || r.StartDate > _dateTime.UtcNow
@@ -82,11 +84,11 @@ namespace Lingua.Services
             return rooms.ToList();
         }
 
-        public async Task<List<Room>> Requested(Guid userId)
+        public async Task<List<Room>> GetRequests(Guid userId)
         {
             var user = await _userRepository.Get(userId);
             var rooms = await _roomRepository.Get(r =>
-                            r.Participants.Any(p => p.Id == userId && p.Status == ParticipantStatus.Requested)
+                            r.Requests.Any(r => (r.To.Id == userId || r.From.Id == userId) && r.Status == RoomRequestStatus.Requested)
                             && r.StartDate > _dateTime.UtcNow);
 
             return rooms.ToList();
@@ -134,9 +136,9 @@ namespace Lingua.Services
             if (options.Participants?.Any() == true)
             {
                 var usrs = await _userRepository.Get(u => options.Participants.Contains(u.Id));
-                var roommates = usrs.Select(usr => new RoomParticipant(usr) { Status = ParticipantStatus.Requested });
+                var requests = usrs.Select(usr => new EnterRoomRequest { From = user, To = usr, Status = RoomRequestStatus.Requested });
 
-                room.Participants.AddRange(roommates);
+                room.Requests.AddRange(requests);
             }
 
             await _roomRepository.Create(room);
@@ -166,7 +168,7 @@ namespace Lingua.Services
             return (await _roomRepository.Get(r =>
                                 r.StartDate < end
                                 && start < r.EndDate
-                                && r.Participants.Any(p => p.Id == userId && p.Status == ParticipantStatus.Accepted)))
+                                && r.Participants.Any(p => p.Id == userId)))
                             .Where(r => r.StartDate > _dateTime.UtcNow || r.Participants.Count == r.MaxParticipants);
         }
 
@@ -189,7 +191,7 @@ namespace Lingua.Services
 
             await _roomRepository.Update(room);
             Notify(RoomUpdateType.Updated, user, room);
-            
+
             return room;
         }
 
@@ -200,7 +202,7 @@ namespace Lingua.Services
             var room = await _roomRepository.Get(roomId);
 
             Notify(RoomUpdateType.Removed, user, room);
-            
+
             return room;
         }
 
@@ -237,11 +239,11 @@ namespace Lingua.Services
             await _roomRepository.Update(room);
 
             Notify(RoomUpdateType.Entered, user, room);
-            
+
             return room;
         }
 
-        public async Task<Room> Accept(Guid roomId, Guid userId)
+        public async Task<Room> AcceptRequest(Guid roomId, Guid requestId, Guid userId)
         {
             var user = await _userRepository.Get(userId);
             var room = await _roomRepository.Get(roomId);
@@ -261,26 +263,38 @@ namespace Lingua.Services
                 throw new ValidationException(ValidationExceptionType.Rooms_Enter_Conflict);
             }
 
-            var participant = room.Participants.First(p => p.Id == userId);
-            participant.Status = ParticipantStatus.Accepted;
-            room.Updated = _dateTime.UtcNow;
-            await _roomRepository.Update(room);
+            var request = room.Requests.First(r => r.Id == requestId);
+            request.Status = RoomRequestStatus.Accepted;
+            request.Updated = _dateTime.UtcNow;
 
-            Notify(RoomUpdateType.Accepted, user, room);
+            if (request is EnterRoomRequest)
+            {
+                room.Participants.Add(new RoomParticipant(request.To));
+                room.Updated = _dateTime.UtcNow;
+
+                Notify(RoomUpdateType.Accepted, user, room);
+            }
+
+            await _roomRepository.Update(room);
 
             return room;
         }
 
-        public async Task<Room> Decline(Guid roomId, Guid userId)
+        public async Task<Room> DeclineRequest(Guid roomId, Guid requestId, Guid userId)
         {
             var user = await _userRepository.Get(userId);
             var room = await _roomRepository.Get(roomId);
 
-            var participant = room.Participants.First(p => p.Id == userId);
-            participant.Status = ParticipantStatus.Declined;
+            var request = room.Requests.First(r => r.Id == requestId);
+            request.Status = RoomRequestStatus.Declined;
+            request.Updated = _dateTime.UtcNow;
+
             await _roomRepository.Update(room);
 
-            Notify(RoomUpdateType.Declined, user, room);
+            if (request is EnterRoomRequest)
+            {
+                Notify(RoomUpdateType.Declined, user, room);
+            }
 
             return room;
         }

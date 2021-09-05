@@ -1,21 +1,25 @@
 import { notification } from 'antd';
 import { http, HttpResponse } from '../utilities/http';
-import { RoomParticipant } from './userService';
+import { User } from './userService';
 import { routes } from '../components/App';
 import { sendAmplitudeData } from './amplitude';
+import { request } from 'https';
 
 const baseUrl = `rooms`;
 
 export const mapRooms = (rooms: Room[]): Room[] => {
-  return rooms.map(r => ({
-    ...r,
-    startDate: new Date(r.startDate),
-    endDate: new Date(r.endDate)
-  }));
+  return rooms.map(r => mapRoom(r));
 }
+
+const mapRoom = (room: Room): Room => ({
+  ...room,
+  startDate: new Date(room.startDate),
+  endDate: new Date(room.endDate)
+});
+
 class RoomsService {
   async join(roomId: string): Promise<string> {
-    const resp = await http.get<string>(`${baseUrl}/join/${roomId}`);
+    const resp = await http.get<string>(`${baseUrl}/${roomId}/join`);
     if (!resp.errors) {
       sendAmplitudeData('Room_Joined', { roomId });
     }
@@ -63,8 +67,10 @@ class RoomsService {
     return mapRooms((await http.get<Room[]>(`${baseUrl}/me/upcoming`)).data || []);
   }
 
-  async getRequests(): Promise<Room[]> {
-    return mapRooms((await http.get<Room[]>(`${baseUrl}/me/requests`)).data || []);
+  async getRequests(): Promise<RoomRequest[]> {
+    const resp = await http.get<RoomRequest[]>(`${baseUrl}/me/requests`);
+    const requests = resp.data || [];
+    return requests.map(r => ({ ...r, room: mapRoom(r.room) }));
   }
 
   async getPast(): Promise<Room[]> {
@@ -72,7 +78,7 @@ class RoomsService {
   }
 
   async enter(roomId: string) {
-    const resp = await http.get(`${baseUrl}/enter/${roomId}`);
+    const resp = await http.get(`${baseUrl}/${roomId}/enter`);
     if (!resp.errors) {
       notification.success({
         placement: 'bottomRight',
@@ -84,7 +90,7 @@ class RoomsService {
   }
 
   async leave(roomId: string) {
-    const resp = await http.get(`${baseUrl}/leave/${roomId}`);
+    const resp = await http.get(`${baseUrl}/${roomId}/leave`);
     if (!resp.errors) {
       notification.success({
         placement: 'bottomRight',
@@ -95,8 +101,8 @@ class RoomsService {
     }
   }
 
-  async accept(roomId: string) {
-    const resp = await http.get(`${baseUrl}/accept/${roomId}`);
+  async acceptRequest(roomId: string, requestId: string) {
+    const resp = await http.get(`${baseUrl}/${roomId}/requests/${requestId}/accept`);
     if (!resp.errors) {
       notification.success({
         placement: 'bottomRight',
@@ -105,8 +111,8 @@ class RoomsService {
     }
   }
 
-  async decline(roomId: string) {
-    const resp = await http.get(`${baseUrl}/decline/${roomId}`);
+  async declineRequest(roomId: string, requestId: string) {
+    const resp = await http.get(`${baseUrl}/${roomId}/requests/${requestId}/decline`);
     if (!resp.errors) {
       notification.success({
         placement: 'bottomRight',
@@ -128,7 +134,7 @@ class RoomsService {
   }
 
   async sendCalendarEvent(roomId: string) {
-    const resp = await http.get(`${baseUrl}/send_calendar_event/${roomId}`);
+    const resp = await http.get(`${baseUrl}/${roomId}/send_calendar_event`);
     if (!resp.errors) {
       notification.success({
         placement: 'bottomRight',
@@ -164,6 +170,25 @@ export interface Room {
   maxParticipants: number;
   hostUserId: string;
   joinUrl: string;
+}
+
+
+export interface RoomParticipant extends User {
+
+}
+
+export interface RoomRequest {
+  id: string;
+  to: User;
+  from: User;
+  status: RoomRequestStatus;
+  room: Room;
+}
+
+export enum RoomRequestStatus {
+  Requested,
+  Accepted,
+  Declined
 }
 
 export const roomsService = new RoomsService();

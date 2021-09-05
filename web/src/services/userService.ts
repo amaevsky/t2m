@@ -59,14 +59,4 @@ export interface User {
   timezone: string;
 }
 
-export interface RoomParticipant extends User {
-  Status: RoomPartcipantStatus
-}
-
-export enum RoomPartcipantStatus {
-  Accepted,
-  Requested,
-  Declined
-}
-
 export const userService = new UserService();
