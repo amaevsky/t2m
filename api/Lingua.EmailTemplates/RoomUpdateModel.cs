@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace Lingua.EmailTemplates
 {
-    public class RoomUpdateModel : BaseModel
+    public class RoomUpdateModel : RoomModel
+    {
+        public string Message { get; set; }
+    }
+
+    public class RoomModel : BaseModel
     {
         public Room Room { get; set; }
-        public string Message { get; set; }
     }
 }

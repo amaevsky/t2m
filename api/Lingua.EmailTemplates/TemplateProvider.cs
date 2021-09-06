@@ -21,6 +21,16 @@ namespace Lingua.EmailTemplates
                 });
         }
 
+        public Task<string> GetRoomReminderEmail(Room room, User recepient)
+        {
+            return _viewRenderService.RenderToStringAsync("RoomReminder",
+                new RoomModel
+                {
+                    Room = room,
+                    Recepient = recepient
+                });
+        }
+
         public Task<string> GetRoomUpdateEmail(string message, Room room, User recepient)
         {
             return _viewRenderService.RenderToStringAsync("RoomUpdate",

@@ -57,7 +57,7 @@ namespace Lingua.Services
                     var body = await _templateProvider.GetRoomUpdateEmail(message, room, recipient);
                     var email = new EmailMessage
                     {
-                        Subject = "Room update",
+                        Subject = "Room Update",
                         Body = body,
                         IsHtml = true,
                     };

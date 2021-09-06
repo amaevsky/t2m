@@ -35,7 +35,7 @@ namespace Lingua.Services
                                     r.StartDate > _dateTime.UtcNow
                                     && r.Language == user.TargetLanguage
                                     && !r.Participants.Any(p => p.Id == userId)))
-                .Where(r => r.Participants.Count < r.MaxParticipants);
+                .Where(r => !r.IsFull);
 
             if (options != null)
             {
@@ -148,7 +148,7 @@ namespace Lingua.Services
                                 r.StartDate < end
                                 && start < r.EndDate
                                 && r.Participants.Any(p => p.Id == userId)))
-                            .Where(r => r.StartDate > _dateTime.UtcNow || r.Participants.Count == r.MaxParticipants);
+                            .Where(r => r.StartDate > _dateTime.UtcNow || r.IsFull);
         }
 
         public async Task<Room> Update(UpdateRoomOptions options, Guid userId)
@@ -275,7 +275,7 @@ namespace Lingua.Services
         public async Task<List<Room>> Last()
         {
             var all = await _roomRepository.Get();
-            return all.Where(r => r.Participants.Count() == r.MaxParticipants)
+            return all.Where(r => r.IsFull)
                         .OrderByDescending(r => r.Updated)
                         .Take(8)
                         .ToList();

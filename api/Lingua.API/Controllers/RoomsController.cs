@@ -149,7 +149,7 @@ namespace Lingua.API.Controllers
             var body = await _templateProvider.GetCalendarEventEmail(user);
             var message = new EmailMessage
             {
-                Subject = "Calendar event",
+                Subject = "Calendar Event",
                 Body = body,
                 IsHtml = true
             };

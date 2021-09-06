@@ -1,9 +1,11 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Lingua.Shared
 {
+    [BsonIgnoreExtraElements]
     public class Room : AuditableEntity
     {
         public Room()
@@ -22,5 +24,6 @@ namespace Lingua.Shared
         public List<User> Participants { get; set; }
 
         public User Host => Participants.Find(p => p.Id == HostUserId);
+        public bool IsFull => Participants.Count == MaxParticipants;
     }
 }

@@ -1,8 +1,9 @@
+using Lingua.Services;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
-using System;
 
 namespace Lingua.API
 {
@@ -18,7 +19,7 @@ namespace Lingua.API
                 .UseSerilog((context, services, configuration) => configuration
                     .ReadFrom.Configuration(context.Configuration)
                     .ReadFrom.Services(services)
-                    .Filter.ByExcluding(ev => ev.Level < LogEventLevel.Warning && ev.Properties.TryGetValue("RequestPath", out var path) ? path.ToString().Contains("roomsHub") : false )
+                    .Filter.ByExcluding(ev => ev.Level < LogEventLevel.Warning && ev.Properties.TryGetValue("RequestPath", out var path) ? path.ToString().Contains("roomsHub") : false)
                     .MinimumLevel.Debug()
                     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
@@ -27,6 +28,10 @@ namespace Lingua.API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureServices(services =>
+                {
+                    services.AddHostedService<RoomsRemindersWorker>();
                 });
     }
 }
