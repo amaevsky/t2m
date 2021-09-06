@@ -28,7 +28,7 @@ export const UserProfileEdit = (props: { initialSetup?: boolean, afterSave?: () 
         label="First name"
         name="firstname"
         rules={[
-          { required: true, message: 'Please specify firstname.' },
+          { required: true, message: 'Please specify first name.' },
           { max: 50, type: 'string' }
         ]}
       >
@@ -39,7 +39,7 @@ export const UserProfileEdit = (props: { initialSetup?: boolean, afterSave?: () 
         label="Last name"
         name="lastname"
         rules={[
-          { required: true, message: 'Please specify Lastname.' },
+          { required: true, message: 'Please specify last name.' },
           { max: 50, type: 'string' }
         ]}
       >
@@ -88,10 +88,10 @@ export const UserProfileEdit = (props: { initialSetup?: boolean, afterSave?: () 
         label="Date of birth"
         name="dateOfBirth"
         rules={[
-          { required: true, message: 'Please select your date of birth. Format' },
+          { required: true, message: 'Please select your date of birth.' },
           {
             validator: (_, value: moment.Moment) => {
-              return value.clone().add(14, 'year') > moment()
+              return value && value.clone().add(14, 'year') > moment()
                 ? Promise.reject('You have to be at least 14 years old.')
                 : Promise.resolve();
             }
