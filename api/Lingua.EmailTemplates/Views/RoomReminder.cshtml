@@ -15,7 +15,7 @@
     <p>⚠ If you have an emergency and couldn’t make it, please go to <a href="https://t2m.app/rooms/my">My rooms page</a> and cancel the room right now, so we can inform your partner about it.</p>
     <p>📅 Room details:<p>
         <ul>
-            <li>Date: @(Utilities.ConvertToTimezone(Model.Room.StartDate, Model.Recepient.Timezone).ToString("DD-MMM-YYYY HH:mm"))</li>
+            <li>Date: @(Utilities.ConvertToTimezone(Model.Room.StartDate, Model.Recepient.Timezone).ToString("dd-MMM-yyyy HH:mm"))</li>
             <li>Language: @Model.Room.Language</li>
             <li>Topic:@(Model.Room.Topic ?? "<no topic>")</li>
         </ul>
