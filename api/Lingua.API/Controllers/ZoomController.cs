@@ -1,5 +1,7 @@
-﻿using Lingua.Shared;
+﻿using Lingua.Services.Rooms.Commands;
+using Lingua.Shared;
 using Lingua.ZoomIntegration;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -24,19 +26,19 @@ namespace Lingua.API.Controllers
     [Route("api/[controller]")]
     public class ZoomController : ControllerBase
     {
-        private readonly IRoomService _roomService;
         private readonly IRoomRepository _roomRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IMediator _mediator;
         private readonly ZoomClientOptions _zoomClientOptions;
 
         public ZoomController(IRoomRepository roomRepository,
-                              IRoomService roomService,
                               IUserRepository userRepository,
-                              IOptions<ZoomClientOptions> zoomClientOptions)
+                              IOptions<ZoomClientOptions> zoomClientOptions,
+                              IMediator mediator)
         {
             _roomRepository = roomRepository;
-            _roomService = roomService;
             _userRepository = userRepository;
+            _mediator = mediator;
             _zoomClientOptions = zoomClientOptions.Value;
         }
 
@@ -64,11 +66,11 @@ namespace Lingua.API.Controllers
                 {
                     if (room.HostUserId == user.Id)
                     {
-                        await _roomService.Remove(room.Id, user.Id);
+                        await _mediator.Send(new RemoveRoomCommand { RoomId = room.Id, UserId = user.Id });
                     }
                     else
                     {
-                        await _roomService.Leave(room.Id, user.Id);
+                        await _mediator.Send(new LeaveRoomCommand { RoomId = room.Id, UserId = user.Id });
                     }
                 }
 

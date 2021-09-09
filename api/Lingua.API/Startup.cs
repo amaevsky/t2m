@@ -1,9 +1,10 @@
-using Lingua.API.Realtime;
 using Lingua.Data.Mongo;
 using Lingua.EmailTemplates;
 using Lingua.Services;
+using Lingua.Services.Rooms.Commands;
 using Lingua.Shared;
 using Lingua.ZoomIntegration;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
-namespace Lingua.API
+namespace Lingua.API.Realtime
 {
     public class Startup
     {
@@ -53,6 +54,7 @@ namespace Lingua.API
 
             services.AddSignalR();
             services.AddAutoMapper(typeof(Startup));
+            services.AddMediatR(typeof(RoomUpdatesSignalRService), typeof(CreateRoomCommand));
 
 
             services.AddSingleton<IAuthClient, AuthClient>();
@@ -61,9 +63,6 @@ namespace Lingua.API
             services.AddSingleton<IMeetingClient, MeetingClient>();
             services.AddSingleton<IRoomRepository, RoomRepository>();
             services.AddSingleton<IEmailService, SmtpEmailService>();
-            services.AddSingleton<IRoomUpdatesObserver, RoomUpdatesEmailNotificationService>();
-            services.AddSingleton<IRoomUpdatesObserver, RoomUpdatesSignalRService>();
-            services.AddSingleton<IRoomService, RoomService>();
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
             services.AddSingleton<ITemplateProvider, TemplateProvider>();
             services.AddSingleton<IViewRenderService, ViewRenderService>();
