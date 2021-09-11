@@ -4,9 +4,10 @@ import React from 'react';
 import { Room } from '../services/roomsService';
 
 import moment from 'moment';
-import { userService } from '../services/userService';
+import { User, userService } from '../services/userService';
 import { Tile } from './Tile';
 import { DateFormat_DayOfWeek, TimeFormat } from '../utilities/date';
+import { AvatarSize } from 'antd/lib/avatar/SizeContext';
 
 export interface RoomCardAction {
   title: string;
@@ -38,17 +39,28 @@ export class RoomCard extends React.Component<Props> {
 
       const users: CardUser[] = [];
 
+      const CreateAvatar = (size: any, user: User) =>
+        <Tooltip title={
+          <>
+            <b>{user.firstname} {user.lastname}</b>
+            <div style={{ fontSize: 11 }}>{user.targetLanguage} {user.languageLevel}</div>
+          </>
+        }>
+          <Avatar size={size} src={user.avatarUrl}></Avatar>
+        </Tooltip>
+        ;
+
       if (you) {
         users.push({
           name: 'You',
           level: you.languageLevel,
-          avatar: <Avatar size='default' src={you.avatarUrl}></Avatar>
+          avatar: CreateAvatar('default', you)
         });
         if (partner) {
           users.push({
             name: partner.firstname,
             level: partner.languageLevel,
-            avatar: <Avatar size='default' src={partner.avatarUrl}></Avatar>
+            avatar: CreateAvatar('default', partner)
           });
         }
         else {
@@ -62,7 +74,7 @@ export class RoomCard extends React.Component<Props> {
         participants.forEach(p => users.push({
           name: p.firstname,
           level: p.languageLevel,
-          avatar: <Avatar size={participants.length == 1 ? 'large' : 'default'} src={p.avatarUrl}></Avatar>
+          avatar: CreateAvatar(participants.length == 1 ? 'large' : 'default', p)
         }))
       }
       return users;
@@ -71,7 +83,6 @@ export class RoomCard extends React.Component<Props> {
     const { room, secondaryActions, primaryAction, type } = this.props;
     const users = getUsers(room);
     const avatars = users.map(u => u.avatar);
-    let levels = users.map(u => u.level).join(' & ');
     let names = users.map(u => u.name).join(' & ');
 
     return (
@@ -86,7 +97,7 @@ export class RoomCard extends React.Component<Props> {
               </Col>
               <Col>
                 <b>{names}</b>
-                <div style={{ fontSize: 11 }}>{room.language} {levels}</div>
+                <div style={{ fontSize: 11 }}>{room.language} {room.languageLevel}</div>
               </Col>
             </Row>
           </Col>
@@ -116,7 +127,7 @@ export class RoomCard extends React.Component<Props> {
             <div>{moment(room.startDate).format(DateFormat_DayOfWeek)}</div>
           </Space>
         </Row>
-        { type !== 'shortcut' &&
+        {type !== 'shortcut' &&
           <>
             <Row className='primary-color' style={{ fontSize: 12, fontWeight: 600 }}>
               <Space>

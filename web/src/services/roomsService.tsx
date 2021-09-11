@@ -134,6 +134,7 @@ export interface Room {
   endDate: Date;
   durationInMinutes: number;
   language: string;
+  languageLevel: string;
   topic?: string;
   participants: User[],
   maxParticipants: number;

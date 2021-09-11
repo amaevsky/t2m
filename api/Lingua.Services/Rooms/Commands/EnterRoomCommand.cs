@@ -60,7 +60,7 @@ namespace Lingua.Services.Rooms.Commands
             room.Updated = _dateTime.UtcNow;
             await _roomRepository.Update(room);
 
-            _mediator.Publish(new RoomEnteredEvent { Room = room, User = user }).ConfigureAwait(false);
+            _mediator.Publish(new RoomEnteredEvent { Room = room, UserId = command.UserId }).ConfigureAwait(false);
 
             return room;
         }

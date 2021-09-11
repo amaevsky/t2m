@@ -32,7 +32,7 @@ namespace Lingua.Services.Rooms.Commands
         public async Task<Unit> Handle(SendCalendarEventCommand command, CancellationToken cancellationToken)
         {
             var room = await _roomRepository.Get(command.RoomId);
-            var user = room.Participants.Find(p => p.Id == command.UserId);
+            var user = room.User(command.UserId);
 
             var body = await _templateProvider.GetCalendarEventEmail(user);
             var message = new EmailMessage

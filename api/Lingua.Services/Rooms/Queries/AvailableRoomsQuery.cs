@@ -48,7 +48,7 @@ namespace Lingua.Services.Rooms.Queries
         {
             if (options?.Levels?.Any() == true)
             {
-                rooms = rooms.Where(r => options.Levels.Contains(r.Host.LanguageLevel));
+                rooms = rooms.Where(r => options.Levels.Contains(r.LanguageLevel));
             }
 
             if (options?.Days?.Any() == true)

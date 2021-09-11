@@ -14,25 +14,22 @@ namespace Lingua.Services.Rooms.Commands
     public class LeaveRoomCommandHandler : IRequestHandler<LeaveRoomCommand, Room>
     {
         private readonly IRoomRepository _roomRepository;
-        private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
 
-        public LeaveRoomCommandHandler(IRoomRepository roomRepository, IUserRepository userRepository, IMediator mediator)
+        public LeaveRoomCommandHandler(IRoomRepository roomRepository, IMediator mediator)
         {
             _roomRepository = roomRepository;
-            _userRepository = userRepository;
             _mediator = mediator;
         }
 
         public async Task<Room> Handle(LeaveRoomCommand command, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.Get(command.UserId);
             var room = await _roomRepository.Get(command.RoomId);
 
-            room.Participants.RemoveAll(p => p.Id == user.Id);
+            room.Participants.RemoveAll(p => p.Id == command.UserId);
             await _roomRepository.Update(room);
 
-            _mediator.Publish(new RoomLeftEvent { Room = room, User = user }).ConfigureAwait(false);
+            _mediator.Publish(new RoomLeftEvent { Room = room, UserId = command.UserId }).ConfigureAwait(false);
 
             return room;
         }

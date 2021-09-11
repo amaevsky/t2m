@@ -43,6 +43,7 @@ namespace Lingua.Services.Rooms.Commands
             {
                 HostUserId = command.UserId,
                 Language = command.Options.Language,
+                LanguageLevel = user.LanguageLevel,
                 StartDate = start,
                 EndDate = end,
                 DurationInMinutes = command.Options.DurationInMinutes,
@@ -54,7 +55,7 @@ namespace Lingua.Services.Rooms.Commands
 
             await _roomRepository.Create(room);
 
-            _mediator.Publish(new RoomCreatedEvent { Room = room, User = user }).ConfigureAwait(false);
+            _mediator.Publish(new RoomCreatedEvent { Room = room, UserId = command.UserId }).ConfigureAwait(false);
 
             return room;
         }

@@ -14,19 +14,16 @@ namespace Lingua.Services.Rooms.Commands
     public class UpdateRoomCommandHandler : IRequestHandler<UpdateRoomCommand, Room>
     {
         private readonly IRoomRepository _roomRepository;
-        private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
 
-        public UpdateRoomCommandHandler(IRoomRepository roomRepository, IUserRepository userRepository, IMediator mediator)
+        public UpdateRoomCommandHandler(IRoomRepository roomRepository, IMediator mediator)
         {
             _roomRepository = roomRepository;
-            _userRepository = userRepository;
             _mediator = mediator;
         }
 
         public async Task<Room> Handle(UpdateRoomCommand command, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.Get(command.UserId);
             var options = command.Options;
             var room = await _roomRepository.Get(options.RoomId);
             room.Topic = options.Topic;
@@ -43,7 +40,7 @@ namespace Lingua.Services.Rooms.Commands
             }
 
             await _roomRepository.Update(room);
-            _mediator.Publish(new RoomUpdatedEvent { Room = room, User = user }).ConfigureAwait(false);
+            _mediator.Publish(new RoomUpdatedEvent { Room = room, UserId = command.UserId }).ConfigureAwait(false);
 
             return room;
         }

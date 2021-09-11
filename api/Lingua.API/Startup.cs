@@ -1,3 +1,4 @@
+using Lingua.API.Realtime;
 using Lingua.Data.Mongo;
 using Lingua.EmailTemplates;
 using Lingua.Services;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
-namespace Lingua.API.Realtime
+namespace Lingua.API
 {
     public class Startup
     {
@@ -53,7 +54,7 @@ namespace Lingua.API.Realtime
             });
 
             services.AddSignalR();
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(AutoMapperProfile), typeof(Data.Mongo.AutoMapperProfile));
             services.AddMediatR(typeof(RoomUpdatesSignalRService), typeof(CreateRoomCommand));
 
 
@@ -95,6 +96,7 @@ namespace Lingua.API.Realtime
             app.UseMiddleware<LogUserNameMiddleware>();
             app.UseSerilogRequestLogging();
 
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseEndpoints(endpoints =>

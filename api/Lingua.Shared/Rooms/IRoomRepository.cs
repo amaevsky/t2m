@@ -11,7 +11,7 @@ namespace Lingua.Shared
         Task Update(Room updated);
         Task Remove(Guid roomId);
         Task<Room> Get(Guid roomId);
-        Task<IEnumerable<Room>> Get(Expression<Func<Room, bool>> filter = null);
+        Task<IEnumerable<Room>> Get(Expression<Func<RoomDTO, bool>> filter = null);
     }
 
 }

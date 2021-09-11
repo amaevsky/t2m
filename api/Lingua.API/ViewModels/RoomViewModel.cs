@@ -11,6 +11,7 @@ namespace Lingua.API.ViewModels
         public DateTime EndDate { get; set; }
         public int DurationInMinutes { get; set; }
         public string Language { get; set; }
+        public string LanguageLevel { get; set; }
         public Guid HostUserId { get; set; }
         public int MaxParticipants { get; set; }
         public List<RoomUserViewModel> Participants { get; set; }

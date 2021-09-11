@@ -35,7 +35,7 @@ namespace Lingua.Services.Rooms.Commands
                 return room;
             }
 
-            var user = await _userRepository.Get(command.UserId);
+            var user = room.User(command.UserId);
             var accessTokens = user.ZoomProperties?.AccessTokens;
 
             var request = new CreateMeetingRequest
@@ -56,7 +56,7 @@ namespace Lingua.Services.Rooms.Commands
                 await _userRepository.Update(user);
             }
 
-            _mediator.Publish(new RoomJoinedEvent { Room = room, User = user }).ConfigureAwait(false);
+            _mediator.Publish(new RoomJoinedEvent { Room = room, UserId = command.UserId }).ConfigureAwait(false);
             return room;
         }
     }

@@ -31,21 +31,21 @@ namespace Lingua.Services
         public Task Handle(RoomEnteredEvent @event, CancellationToken cancellationToken)
         {
             var room = @event.Room;
-            var user = @event.User;
+            var user = room.User(@event.UserId);
             return SendUpdateEmail(room, $"<b>{user.Fullname} entered the room.</b>", Others(room, user.Id));
         }
 
         public Task Handle(RoomLeftEvent @event, CancellationToken cancellationToken)
         {
             var room = @event.Room;
-            var user = @event.User;
+            var user = room.User(@event.UserId);
             return SendUpdateEmail(room, $"<b>{user.Fullname} left the room.</b>", Others(room, user.Id));
         }
 
         public Task Handle(RoomRemovedEvent @event, CancellationToken cancellationToken)
         {
             var room = @event.Room;
-            var user = @event.User;
+            var user = room.User(@event.UserId);
             return SendUpdateEmail(room, $"<b>{user.Fullname} deleted the room you have previously entered.</b> You can go ahead and create your own room for that time.", Others(room, user.Id));
         }
 
