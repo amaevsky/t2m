@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 
 let base = 'https://api.t2m.app';
 if (process.env.NODE_ENV === 'development') {
-  base = 'https://localhost:44361';
+  base = 'https://localhost:5001';
 } else if (process.env.REACT_APP_ENV === 'staging') {
   base = 'https://staging-api.t2m.app';
 }

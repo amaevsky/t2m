@@ -5,9 +5,9 @@ namespace Lingua.Shared
 {
     public interface ITemplateProvider
     {
-        Task<string> GetRoomUpdateEmail(string message, Room room, User recepient);
-        Task<string> GetRoomReminderEmail(Room room, User recepient);
-        Task<string> GetWelcomeLetterEmail(User recepient);
-        Task<string> GetCalendarEventEmail(User recepient);
+        Task<string> GetRoomUpdateEmail(string message, Room room, User recipient);
+        Task<string> GetRoomReminderEmail(Room room, User recipient);
+        Task<string> GetWelcomeLetterEmail(User recipient);
+        Task<string> GetCalendarEventEmail(User recipient);
     }
 }
