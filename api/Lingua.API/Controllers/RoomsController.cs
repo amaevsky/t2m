@@ -91,7 +91,7 @@ namespace Lingua.API.Controllers
         public async Task<IActionResult> Remove(Guid roomId)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            await _mediator.Send(new CreateRoomCommand { RoomId = roomId, UserId = userId });
+            await _mediator.Send(new RemoveRoomCommand { RoomId = roomId, UserId = userId });
 
             return Ok();
         }
