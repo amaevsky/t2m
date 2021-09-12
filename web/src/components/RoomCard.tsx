@@ -7,7 +7,6 @@ import moment from 'moment';
 import { User, userService } from '../services/userService';
 import { Tile } from './Tile';
 import { DateFormat_DayOfWeek, TimeFormat } from '../utilities/date';
-import { AvatarSize } from 'antd/lib/avatar/SizeContext';
 
 export interface RoomCardAction {
   title: string;
@@ -83,6 +82,7 @@ export class RoomCard extends React.Component<Props> {
     const { room, secondaryActions, primaryAction, type } = this.props;
     const users = getUsers(room);
     const avatars = users.map(u => u.avatar);
+    let levels = users.map(u => u.level).join(' & ');
     let names = users.map(u => u.name).join(' & ');
 
     return (
@@ -97,7 +97,7 @@ export class RoomCard extends React.Component<Props> {
               </Col>
               <Col>
                 <b>{names}</b>
-                <div style={{ fontSize: 11 }}>{room.language} {room.languageLevel}</div>
+                <div style={{ fontSize: 11 }}>{room.language} {levels}</div>
               </Col>
             </Row>
           </Col>

@@ -43,7 +43,6 @@ namespace Lingua.Services.Rooms.Commands
             {
                 HostUserId = command.UserId,
                 Language = command.Options.Language,
-                LanguageLevel = user.LanguageLevel,
                 StartDate = start,
                 EndDate = end,
                 DurationInMinutes = command.Options.DurationInMinutes,
