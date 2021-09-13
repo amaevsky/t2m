@@ -1,4 +1,5 @@
-﻿using Lingua.Shared;
+﻿using System;
+using Lingua.Shared;
 using System.Threading.Tasks;
 
 namespace Lingua.EmailTemplates
@@ -17,6 +18,18 @@ namespace Lingua.EmailTemplates
             return _viewRenderService.RenderToStringAsync("CalendarEvent",
                 new BaseModel
                 {
+                    Recepient = recipient
+                });
+        }
+
+        public Task<string> GetUnreadRoomMessageEmail(Room room, Guid messageId, User recipient)
+        {
+            var message = room.Messages.Find(m => m.Id == messageId);
+            return _viewRenderService.RenderToStringAsync("UnreadRoomMessage",
+                new UnreadRoomMessageModel()
+                {
+                    Author = room.User(message.AuthorId),
+                    Room = room,
                     Recepient = recipient
                 });
         }

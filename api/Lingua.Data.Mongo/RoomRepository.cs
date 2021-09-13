@@ -13,7 +13,7 @@ namespace Lingua.Data.Mongo
     public class RoomRepository : IRoomRepository
     {
         private readonly IMongoCollection<User> _users;
-        private readonly IMongoCollection<RoomDTO> _rooms;
+        private readonly IMongoCollection<RoomDto> _rooms;
         private readonly IMapper _mapper;
 
         public RoomRepository(IOptions<MongoOptions> options, IMapper mapper)
@@ -21,14 +21,14 @@ namespace Lingua.Data.Mongo
             var client = new MongoClient(options.Value.ConnectionString);
             var database = client.GetDatabase(options.Value.Database);
 
-            _rooms = database.GetCollection<RoomDTO>("rooms");
+            _rooms = database.GetCollection<RoomDto>("rooms");
             _users = database.GetCollection<User>("users");
             _mapper = mapper;
         }
 
         public async Task<Room> Create(Room room)
         {
-            var dto = _mapper.Map<RoomDTO>(room);
+            var dto = _mapper.Map<RoomDto>(room);
             await _rooms.InsertOneAsync(dto);
             return room;
         }
@@ -48,11 +48,11 @@ namespace Lingua.Data.Mongo
             return Task.FromResult(room);
         }
 
-        public Task<IEnumerable<Room>> Get(Expression<Func<RoomDTO, bool>> filter = null)
+        public Task<IEnumerable<Room>> Get(Expression<Func<RoomDto, bool>> filter = null)
         {
             if (filter == null) filter = room => true;
-            Expression<Func<RoomDTO, bool>> withoutRemoved = (RoomDTO r) => !r.IsRemoved;
-            var final = Builders<RoomDTO>.Filter.And(filter, withoutRemoved);
+            Expression<Func<RoomDto, bool>> withoutRemoved = (RoomDto r) => !r.IsRemoved;
+            var final = Builders<RoomDto>.Filter.And(filter, withoutRemoved);
 
             var dtos = _rooms.Find(final).ToEnumerable();
             var rooms = new List<Room>();
@@ -75,12 +75,12 @@ namespace Lingua.Data.Mongo
         public async Task Remove(Guid roomId)
         {
             await _rooms.UpdateOneAsync(r => r.Id == roomId,
-                Builders<RoomDTO>.Update.Set(r => r.IsRemoved, true));
+                Builders<RoomDto>.Update.Set(r => r.IsRemoved, true));
         }
 
         public async Task Update(Room updated)
         {
-            var dto = _mapper.Map<RoomDTO>(updated);
+            var dto = _mapper.Map<RoomDto>(updated);
             await _rooms.ReplaceOneAsync(r => r.Id == dto.Id, dto);
         }
     }

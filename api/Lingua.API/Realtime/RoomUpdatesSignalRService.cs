@@ -14,7 +14,8 @@ namespace Lingua.API
         INotificationHandler<RoomLeftEvent>,
         INotificationHandler<RoomRemovedEvent>,
         INotificationHandler<RoomCreatedEvent>,
-        INotificationHandler<RoomUpdatedEvent>
+        INotificationHandler<RoomUpdatedEvent>,
+        INotificationHandler<RoomMessageSentEvent>
     {
         private readonly IHubContext<RoomsHub, IRoomsRealtimeClient> _roomsHub;
         private readonly IMapper _mapper;
@@ -53,6 +54,12 @@ namespace Lingua.API
         {
             var vm = _mapper.Map<RoomViewModel>(@event.Room);
             return _roomsHub.Clients.All.OnEnter(vm, @event.UserId);
+        }
+
+        public Task Handle(RoomMessageSentEvent @event, CancellationToken cancellationToken)
+        {
+            var vm = _mapper.Map<RoomViewModel>(@event.Room);
+            return _roomsHub.Clients.All.OnMessage(vm, @event.MessageId, @event.UserId);
         }
     }
 }

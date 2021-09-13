@@ -9,16 +9,16 @@ namespace Lingua.Data.Mongo
     {
         public AutoMapperProfile()
         {
-            CreateMap<RoomDTO, Room>()
+            CreateMap<RoomDto, Room>()
                 .ForMember(r => r.Participants, opt => opt.Ignore());
-            CreateMap<Room, RoomDTO>()
+            CreateMap<Room, RoomDto>()
                 .ForMember(dto => dto.Participants, opt => opt.MapFrom<UserValueResolver>());
         }
     }
 
-    public class UserValueResolver : IValueResolver<Room, RoomDTO, List<ObjectId>>
+    public class UserValueResolver : IValueResolver<Room, RoomDto, List<ObjectId>>
     {
-        public List<ObjectId> Resolve(Room source, RoomDTO destination, List<ObjectId> member, ResolutionContext context)
+        public List<ObjectId> Resolve(Room source, RoomDto destination, List<ObjectId> member, ResolutionContext context)
         {
             return source.Participants.Select(p => new ObjectId(p.Id)).ToList();
         }

@@ -16,6 +16,7 @@
     <EmbeddedResource Include="Views\RoomReminder.cshtml" />
     <EmbeddedResource Include="Views\RoomUpdate.cshtml" />
     <EmbeddedResource Include="Views\CalendarEvent.cshtml" />
+    <EmbeddedResource Include="Views\UnreadRoomMessage.cshtml" />
     <EmbeddedResource Include="Views\WelcomeLetter.cshtml" />
   </ItemGroup>
 

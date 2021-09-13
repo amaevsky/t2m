@@ -15,4 +15,9 @@ namespace Lingua.EmailTemplates
     {
         public Room Room { get; set; }
     }
+
+    public class UnreadRoomMessageModel : RoomModel
+    {
+        public User Author { get; set; }
+    }
 }
