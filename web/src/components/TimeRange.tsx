@@ -4,8 +4,10 @@ import moment from 'moment';
 import { TimeFormat } from '../utilities/date';
 
 interface Props {
-  onChange: (value?: { from: Date, to: Date }) => void
+  onChange: (value?: TimeRangeValue) => void
 }
+
+export type TimeRangeValue = { from: Date, to: Date }
 
 interface State {
   from: Date,
