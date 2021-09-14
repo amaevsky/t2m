@@ -33,7 +33,7 @@ namespace Lingua.Services.Rooms.Events
         public Task Handle(RoomMessageSentEvent @event, CancellationToken cancellationToken)
         {
             var room = @event.Room;
-            var user = room.User(@event.UserId);
+            var user = room.User(@event.User.Id);
             return SendUpdateEmail(room, @event.MessageId, Others(room, user.Id));
         }
 

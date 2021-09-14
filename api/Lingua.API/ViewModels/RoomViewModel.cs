@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Lingua.Shared;
 
 namespace Lingua.API.ViewModels
 {
@@ -14,6 +15,7 @@ namespace Lingua.API.ViewModels
         public Guid HostUserId { get; set; }
         public int MaxParticipants { get; set; }
         public List<RoomUserViewModel> Participants { get; set; }
+        public List<Message> Messages { get; set; }
     }
 
     public class RoomUserViewModel

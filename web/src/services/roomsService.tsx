@@ -14,6 +14,18 @@ export const mapRooms = (rooms: Room[]): Room[] => {
   }));
 }
 class RoomsService {
+
+  async sendMessage(message: string, roomId: string): Promise<void> {
+    const config = { headers: { 'Content-Type': 'application/json' } };
+    const resp = await http.post<string>(`${baseUrl}/message/${roomId}`, JSON.stringify(message), config);
+    if (!resp.errors) {
+      notification.success({
+        placement: 'bottomRight',
+        message: 'Message sent'
+      });
+    }
+  }
+
   async join(roomId: string): Promise<string> {
     const resp = await http.get<string>(`${baseUrl}/join/${roomId}`);
     if (!resp.errors) {
@@ -139,6 +151,14 @@ export interface Room {
   maxParticipants: number;
   hostUserId: string;
   joinUrl: string;
+  messages: Message[];
+}
+
+export interface Message {
+  id: string;
+  created: Date;
+  content: string;
+  authorId: string;
 }
 
 export const roomsService = new RoomsService();

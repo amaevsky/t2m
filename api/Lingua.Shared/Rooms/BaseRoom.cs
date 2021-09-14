@@ -5,7 +5,7 @@ namespace Lingua.Shared
 {
     public class BaseRoom : AuditableEntity
     {
-        public BaseRoom()
+        protected BaseRoom()
         {
             Messages = new List<Message>();
         }
@@ -17,6 +17,6 @@ namespace Lingua.Shared
         public Guid HostUserId { get; set; }
         public string JoinUrl { get; set; }
         public int MaxParticipants { get; set; }
-        public List<Message> Messages { get; }
+        public List<Message> Messages { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace Lingua.Services.Rooms.Commands
             await _roomRepository.Remove(command.RoomId);
             var room = await _roomRepository.Get(command.RoomId);
 
-            _mediator.Publish(new RoomRemovedEvent { Room = room, UserId = command.UserId }).ConfigureAwait(false);
+            _mediator.Publish(new RoomRemovedEvent { Room = room, User = room.User(command.UserId) }).ConfigureAwait(false);
 
             return room;
         }

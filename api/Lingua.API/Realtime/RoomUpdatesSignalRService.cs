@@ -29,37 +29,37 @@ namespace Lingua.API
         public Task Handle(RoomUpdatedEvent @event, CancellationToken cancellationToken)
         {
             var vm = _mapper.Map<RoomViewModel>(@event.Room);
-            return _roomsHub.Clients.All.OnUpdate(vm, @event.UserId);
+            return _roomsHub.Clients.All.OnUpdate(vm, @event.User.Id);
         }
 
         public Task Handle(RoomCreatedEvent @event, CancellationToken cancellationToken)
         {
             var vm = _mapper.Map<RoomViewModel>(@event.Room);
-            return _roomsHub.Clients.All.OnAdd(vm, @event.UserId);
+            return _roomsHub.Clients.All.OnAdd(vm, @event.User.Id);
         }
 
         public Task Handle(RoomRemovedEvent @event, CancellationToken cancellationToken)
         {
             var vm = _mapper.Map<RoomViewModel>(@event.Room);
-            return _roomsHub.Clients.All.OnRemove(vm, @event.UserId);
+            return _roomsHub.Clients.All.OnRemove(vm, @event.User.Id);
         }
 
         public Task Handle(RoomLeftEvent @event, CancellationToken cancellationToken)
         {
             var vm = _mapper.Map<RoomViewModel>(@event.Room);
-            return _roomsHub.Clients.All.OnLeave(vm, @event.UserId);
+            return _roomsHub.Clients.All.OnLeave(vm, @event.User.Id);
         }
 
         public Task Handle(RoomEnteredEvent @event, CancellationToken cancellationToken)
         {
             var vm = _mapper.Map<RoomViewModel>(@event.Room);
-            return _roomsHub.Clients.All.OnEnter(vm, @event.UserId);
+            return _roomsHub.Clients.All.OnEnter(vm, @event.User.Id);
         }
 
         public Task Handle(RoomMessageSentEvent @event, CancellationToken cancellationToken)
         {
             var vm = _mapper.Map<RoomViewModel>(@event.Room);
-            return _roomsHub.Clients.All.OnMessage(vm, @event.MessageId, @event.UserId);
+            return _roomsHub.Clients.All.OnMessage(vm, @event.MessageId, @event.User.Id);
         }
     }
 }

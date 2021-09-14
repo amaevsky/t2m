@@ -88,6 +88,11 @@ export class MyRooms extends React.Component<Props, State> {
         }
       }
     });
+
+    connection.on("OnMessage", (room: Room, messageId: string, by: string) => {
+      [room] = mapRooms([room]);
+      this.setState(prev => ({ upcoming: [...replace(prev.upcoming, room)] }));
+    });
   }
 
   componentWillUnmount() {
@@ -96,6 +101,7 @@ export class MyRooms extends React.Component<Props, State> {
     connection.off("OnRemove");
     connection.off("OnLeave");
     connection.off("OnEnter");
+    connection.off("OnMessage");
   }
 
   private async getData() {
@@ -150,7 +156,7 @@ export class MyRooms extends React.Component<Props, State> {
 
         return (
           <Col xl={4} md={6} sm={8} xs={12}>
-            <RoomCard room={r} type='full' primaryAction={primary} secondaryActions={secondary} />
+            <RoomCard room={r} type='full' primaryAction={primary} secondaryActions={secondary} showMessages={true} />
           </Col >
         )
       });

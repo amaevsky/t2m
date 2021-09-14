@@ -28,8 +28,8 @@ class Http {
       .then((response) => ({ data: response.data }))
       .catch(this.handleError);
   }
-  post<T = any>(url: string, data?: any): Promise<HttpResponse<T>> {
-    return axios.post<T>(`${API_BASE_URL}/${url}`, data, { withCredentials: true })
+  post<T = any>(url: string, data?: any, config?: any): Promise<HttpResponse<T>> {
+    return axios.post<T>(`${API_BASE_URL}/${url}`, data, { ...config, withCredentials: true })
       .then((response) => ({ data: response.data }))
       .catch(this.handleError);
   }

@@ -54,7 +54,7 @@ namespace Lingua.Services.Rooms.Commands
 
             await _roomRepository.Create(room);
 
-            _mediator.Publish(new RoomCreatedEvent { Room = room, UserId = command.UserId }).ConfigureAwait(false);
+            _mediator.Publish(new RoomCreatedEvent { Room = room, User = user }).ConfigureAwait(false);
 
             return room;
         }

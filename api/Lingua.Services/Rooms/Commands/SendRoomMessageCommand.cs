@@ -36,7 +36,7 @@ namespace Lingua.Services.Rooms.Commands
             {
                 Room = room,
                 MessageId = message.Id,
-                UserId = command.UserId
+                User = room.User(command.UserId)
             }).ConfigureAwait(false);
 
             return room;

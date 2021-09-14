@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Lingua.Services.Rooms.Commands
 {
-    public class LeaveRoomCommand: BaseRoomCommand<Room>
+    public class LeaveRoomCommand : BaseRoomCommand<Room>
     {
-
     }
 
     public class LeaveRoomCommandHandler : IRequestHandler<LeaveRoomCommand, Room>
@@ -25,11 +24,13 @@ namespace Lingua.Services.Rooms.Commands
         public async Task<Room> Handle(LeaveRoomCommand command, CancellationToken cancellationToken)
         {
             var room = await _roomRepository.Get(command.RoomId);
-
+            var user = room.User(command.UserId);
             room.Participants.RemoveAll(p => p.Id == command.UserId);
+            room.Messages.Clear();
+
             await _roomRepository.Update(room);
 
-            _mediator.Publish(new RoomLeftEvent { Room = room, UserId = command.UserId }).ConfigureAwait(false);
+            _mediator.Publish(new RoomLeftEvent {Room = room, User = user}).ConfigureAwait(false);
 
             return room;
         }
