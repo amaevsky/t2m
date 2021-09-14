@@ -8,7 +8,7 @@ import { userService } from '../services/userService';
 import moment from 'moment';
 import { DateTimeFormat, is12Hours, TimeFormat } from '../utilities/date';
 interface Props {
-  room: Partial<Room>,
+  room?: Room,
   onEdit: (room: Room) => void
   submitBtnText: string
 }
@@ -28,15 +28,19 @@ export class RoomEdit extends React.Component<Props, State> {
   }
 
   render() {
+    const { room } = this.props;
     const user = userService.user;
     const timeStep = 10;
     const startDate = moment().add('minute', timeStep - (moment().minutes() % timeStep));
+    const initialValues = room
+      ? { ...room, startDate: moment(room.startDate) }
+      : { language: user?.targetLanguage, startDate };
 
     return (
       <Form
         labelCol={{ span: 5 }}
         wrapperCol={{ span: 19 }}
-        initialValues={{ language: user?.targetLanguage, startDate }}
+        initialValues={initialValues}
         onFinish={(values) => this.edit(values)}
       >
         <Form.Item

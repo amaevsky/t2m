@@ -48,6 +48,17 @@ class RoomsService {
     return resp;
   }
 
+  async update(roomId: string, options: RoomUpdateOptions): Promise<HttpResponse> {
+    const resp = await http.put<Room>(`${baseUrl}/${roomId}`, options);
+    if (!resp.errors) {
+      notification.success({
+        placement: 'bottomRight',
+        message: 'The room was successfully updated.'
+      });
+    }
+    return resp;
+  }
+
   async getAvailable(options?: RoomSearchOptions): Promise<Room[]> {
     let query = null;
     if (options) {
@@ -130,6 +141,12 @@ export interface RoomCreateOptions {
   startDate: Date,
   durationInMinutes: number;
   language: string,
+  topic?: string
+}
+
+export interface RoomUpdateOptions {
+  startDate: Date,
+  durationInMinutes: number;
   topic?: string
 }
 

@@ -13,7 +13,8 @@ namespace Lingua.Services
         INotificationHandler<RoomEnteredEvent>,
         INotificationHandler<RoomLeftEvent>,
         INotificationHandler<RoomRemovedEvent>,
-        INotificationHandler<RoomMessageSentEvent>
+        INotificationHandler<RoomMessageSentEvent>,
+        INotificationHandler<RoomUpdatedEvent>
     {
         private readonly IEmailService _emailService;
         private readonly ITemplateProvider _templateProvider;
@@ -34,6 +35,12 @@ namespace Lingua.Services
             var room = @event.Room;
             var user = room.User(@event.User.Id);
             return SendUpdateEmail(room, $"<b>{user.Fullname} entered the room.</b>", Others(room, user.Id));
+        }
+        public Task Handle(RoomUpdatedEvent @event, CancellationToken cancellationToken)
+        {
+            var room = @event.Room;
+            var user = room.User(@event.User.Id);
+            return SendUpdateEmail(room, $"<b>{user.Fullname} updated the room details.</b>", Others(room, user.Id));
         }
 
         public Task Handle(RoomLeftEvent @event, CancellationToken cancellationToken)

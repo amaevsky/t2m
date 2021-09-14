@@ -74,7 +74,6 @@ export class CreateRoomButton extends React.Component<Props, State> {
           footer={null}
           onCancel={() => this.setState({ isAddRoomOpen: false })}>
           <RoomEdit
-            room={{}}
             onEdit={(room) => this.createRoom(room)}
             submitBtnText="Create" />
         </Modal>

@@ -81,12 +81,12 @@ namespace Lingua.API.Controllers
         }
 
         [HttpPut]
-        [Route("")]
-        public async Task<IActionResult> Update(UpdateRoomOptions options)
+        [Route("{roomId}")]
+        public async Task<IActionResult> Update(Guid roomId, [FromBody] UpdateRoomOptions options)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)
                 .Value);
-            await _mediator.Send(new UpdateRoomCommand {Options = options, UserId = userId});
+            await _mediator.Send(new UpdateRoomCommand {Options = options, RoomId = roomId, UserId = userId});
 
             return Ok();
         }

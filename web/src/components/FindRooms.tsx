@@ -50,7 +50,7 @@ export class FindRooms extends React.Component<Props, State> {
       }
     });
 
-    connection.on("OnChange", (room: Room) => {
+    connection.on("OnUpdate", (room: Room) => {
       [room] = mapRooms([room]);
       if (!isMy(room)) {
         this.setState(prev => ({ rooms: [...replace(prev.rooms, room)] }));
@@ -94,7 +94,7 @@ export class FindRooms extends React.Component<Props, State> {
 
   componentWillUnmount() {
     connection.off("OnAdd");
-    connection.off("OnChange");
+    connection.off("OnUpdate");
     connection.off("OnRemove");
     connection.off("OnLeave");
     connection.off("OnEnter");

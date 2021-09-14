@@ -49,7 +49,7 @@ export class MyRooms extends React.Component<Props, State> {
       }
     });
 
-    connection.on("OnChange", (room: Room, by: string) => {
+    connection.on("OnUpdate", (room: Room, by: string) => {
       [room] = mapRooms([room]);
       if (isMy(room)) {
         this.setState(prev => ({ upcoming: [...replace(prev.upcoming, room)] }));
@@ -98,7 +98,7 @@ export class MyRooms extends React.Component<Props, State> {
 
   componentWillUnmount() {
     connection.off("OnAdd");
-    connection.off("OnChange");
+    connection.off("OnUpdate");
     connection.off("OnRemove");
     connection.off("OnLeave");
     connection.off("OnEnter");

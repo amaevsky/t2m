@@ -22,18 +22,12 @@ namespace Lingua.Shared
                     case ValidationExceptionType.Rooms_Enter_AlreadyStarted: return "Oops. Seems like the room is no longer available. Try another one.";
                     case ValidationExceptionType.Rooms_Enter_Conflict: return "Oops. You can’t enter that room. Seems like you already have another room booked for the same time.";
                     case ValidationExceptionType.Rooms_Enter_AlreadyFull: return "Oops. Seems like the room is no longer available. Try another one.";
+                    case ValidationExceptionType.Rooms_Update_Conflict_User: return "Oops. You can’t update a room for that time. Seems like you already have another one booked for the same time.";
+                    case ValidationExceptionType.Rooms_Update_Conflict_Roommate: return "Oops. You can’t update a room for that time. Seems like your roommate already has another one booked for the same time.";
                 }
 
                 return Message;
             }
-        }
-
-        public static class Types
-        {
-            public static class Rooms_Enter_AlreadyStarted { }
-            public static class Rooms_Enter_AlreadyFull { }
-            public static class Rooms_Enter_Conflict { }
-            public static class Rooms_Create_Conflict { }
         }
     }
 
@@ -42,7 +36,9 @@ namespace Lingua.Shared
         Rooms_Enter_AlreadyStarted,
         Rooms_Enter_AlreadyFull,
         Rooms_Enter_Conflict,
-        Rooms_Create_Conflict
+        Rooms_Create_Conflict,
+        Rooms_Update_Conflict_User,
+        Rooms_Update_Conflict_Roommate
     }
 
 }

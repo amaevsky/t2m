@@ -1,9 +1,10 @@
 import { Modal } from "antd";
 import { useState } from "react";
-import { Room, roomsService } from "../services/roomsService";
+import { Room, roomsService, RoomUpdateOptions } from "../services/roomsService";
 import { userService } from "../services/userService";
 
 import { RoomCard, RoomCardAction } from "./RoomCard";
+import { RoomEdit } from "./RoomEdit";
 import { RoomMessages } from "./RoomMessages";
 
 interface Props {
@@ -31,7 +32,15 @@ const join = async (roomId: string) => {
 export const UpcomingRoomCard = ({ room }: Props) => {
 
   const [messagesOpen, setMessagesOpen] = useState(false);
-  
+  const [editRoomOpen, setEditRoomOpen] = useState(false);
+
+  const update = async (roomId: string, options: RoomUpdateOptions) => {
+    var resp = await roomsService.update(roomId, options);
+    if (!resp.errors) {
+      setEditRoomOpen(false);
+    }
+  }
+
   const secondary = [];
   const isFull = room.participants.length > 1;
   const startable = new Date(room.startDate).getTime() - Date.now() < 1000 * 60 * 5;
@@ -47,16 +56,15 @@ export const UpcomingRoomCard = ({ room }: Props) => {
     primary.tooltip = 'Room can be joined 5 min before start.';
   }
 
+  secondary.push({ title: 'Edit', action: () => setEditRoomOpen(true) });
+  secondary.push({ action: () => roomsService.sendCalendarEvent(room.id), title: 'Add to calendar' });
+  secondary.push({ title: 'Messages', action: () => setMessagesOpen(true) });
+
   if (room.hostUserId === userService.user?.id) {
     secondary.push({ action: () => remove(room.id), title: 'Remove' });
   } else {
     secondary.push({ action: () => leave(room.id), title: 'Leave' });
   }
-  secondary.push({ action: () => roomsService.sendCalendarEvent(room.id), title: 'Add to calendar' });
-  secondary.push({
-    title: 'Messages',
-    action: () => setMessagesOpen(true)
-  });
 
   return (
     <>
@@ -72,6 +80,18 @@ export const UpcomingRoomCard = ({ room }: Props) => {
           onMessage={message => roomsService.sendMessage(message, room.id)}
           room={room}
         />
+      </Modal>
+
+      <Modal
+        title="Edit room"
+        destroyOnClose={true}
+        visible={editRoomOpen}
+        footer={null}
+        onCancel={() => setEditRoomOpen(false)}>
+        <RoomEdit
+          room={room}
+          onEdit={(r) => update(room.id, r)}
+          submitBtnText="Update" />
       </Modal>
 
     </>
