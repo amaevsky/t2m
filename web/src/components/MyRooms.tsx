@@ -4,8 +4,9 @@ import { mapRooms, Room, roomsService } from "../services/roomsService";
 import { userService } from "../services/userService";
 
 import { connection } from "../realtime/roomsHub";
-import { RoomCard, RoomCardAction } from "./RoomCard";
+import { RoomCard } from "./RoomCard";
 import { CreateRoomButton } from "./CreateRoomButton";
+import { UpcomingRoomCard } from "./UpcomingRoomCard";
 
 const { Title } = Typography;
 
@@ -109,57 +110,15 @@ export class MyRooms extends React.Component<Props, State> {
     this.setState({ upcoming, past, loading: false });
   }
 
-  private async leave(roomId: string) {
-    await roomsService.leave(roomId);
-  }
-
-  private async remove(roomId: string) {
-    await roomsService.remove(roomId);
-  }
-
-  private async join(roomId: string) {
-    const ref = window.open(undefined, '_blank') as any;
-    const link = await roomsService.join(roomId);
-    if (link) {
-      ref.location = link;
-    } else {
-      ref.close();
-    }
-  }
-
   render() {
     const { upcoming, past, loading } = this.state;
     const upcomingCards = upcoming
       .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
-      .map(r => {
-        const secondary = [];
-        const isFull = r.participants.length > 1;
-        const startable = new Date(r.startDate).getTime() - Date.now() < 1000 * 60 * 5;
-        const primary: RoomCardAction = {
-          action: () => this.join(r.id),
-          title: 'Join the room',
-          disabled: !(startable && isFull)
-        };
-
-        if (!isFull) {
-          primary.tooltip = 'Nobody has entered the room yet.';
-        } else if (!startable) {
-          primary.tooltip = 'Room can be joined 5 min before start.';
-        }
-
-        if (r.hostUserId === userService.user?.id) {
-          secondary.push({ action: () => this.remove(r.id), title: 'Remove' });
-        } else {
-          secondary.push({ action: () => this.leave(r.id), title: 'Leave' });
-        }
-        secondary.push({ action: () => roomsService.sendCalendarEvent(r.id), title: 'Add to calendar' })
-
-        return (
-          <Col xl={4} md={6} sm={8} xs={12}>
-            <RoomCard room={r} type='full' primaryAction={primary} secondaryActions={secondary} showMessages={true} />
-          </Col >
-        )
-      });
+      .map(r =>
+        <Col xl={4} md={6} sm={8} xs={12}>
+          <UpcomingRoomCard room={r} />
+        </Col>
+      );
 
     const pastCards = past.map(r =>
       <Col xl={4} md={6} sm={8} xs={12}>

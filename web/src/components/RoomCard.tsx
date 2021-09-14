@@ -15,17 +15,11 @@ export interface RoomCardAction {
   disabled?: boolean;
   tooltip?: string;
 }
-
-interface State {
-  isMessagesOpen: boolean;
-}
-
 interface Props {
   room: Room;
   type: 'full' | 'shortcut';
   primaryAction?: RoomCardAction;
   secondaryActions?: RoomCardAction[];
-  showMessages?: boolean;
 }
 
 type CardUser = {
@@ -34,13 +28,7 @@ type CardUser = {
   level: string;
 }
 
-export class RoomCard extends React.Component<Props, State> {
-
-  constructor(props: Props) {
-    super(props);
-
-    this.state = { isMessagesOpen: false };
-  }
+export class RoomCard extends React.Component<Props> {
 
   render() {
     const getUsers = (room: Room): CardUser[] => {
@@ -92,17 +80,7 @@ export class RoomCard extends React.Component<Props, State> {
     }
 
     const { room, primaryAction, type } = this.props;
-    let { secondaryActions, showMessages } = this.props;
-    const { isMessagesOpen: isCommentsModalOpen } = this.state;
-
-    if (showMessages) {
-      const openMesssages: RoomCardAction = {
-        title: 'Messages',
-        action: () => this.setState({ isMessagesOpen: true })
-      };
-
-      secondaryActions = [...secondaryActions ?? [], openMesssages];
-    }
+    let { secondaryActions } = this.props;
 
     const users = getUsers(room);
     const avatars = users.map(u => u.avatar);
@@ -181,18 +159,6 @@ export class RoomCard extends React.Component<Props, State> {
           }
 
         </Tile>
-
-        <Modal
-          title="Messages"
-          destroyOnClose={true}
-          visible={isCommentsModalOpen}
-          footer={null}
-          onCancel={() => this.setState({ isMessagesOpen: false })}>
-          <RoomMessages
-            onMessage={message => roomsService.sendMessage(message, room.id)}
-            room={room}
-          />
-        </Modal>
       </>
     );
   }
