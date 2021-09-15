@@ -31,7 +31,7 @@ const join = async (roomId: string) => {
 export const UpcomingRoomCard = ({ room }: Props) => {
 
   const [messagesOpen, setMessagesOpen] = useState(false);
-  
+
   const secondary = [];
   const isFull = room.participants.length > 1;
   const startable = new Date(room.startDate).getTime() - Date.now() < 1000 * 60 * 5;
@@ -53,10 +53,13 @@ export const UpcomingRoomCard = ({ room }: Props) => {
     secondary.push({ action: () => leave(room.id), title: 'Leave' });
   }
   secondary.push({ action: () => roomsService.sendCalendarEvent(room.id), title: 'Add to calendar' });
-  secondary.push({
-    title: 'Messages',
-    action: () => setMessagesOpen(true)
-  });
+
+  if (room.participants.length === room.maxParticipants) {
+    secondary.push({
+      title: 'Messages',
+      action: () => setMessagesOpen(true)
+    });
+  }
 
   return (
     <>
