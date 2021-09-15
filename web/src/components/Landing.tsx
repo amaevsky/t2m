@@ -46,6 +46,7 @@ export const Landing = (props: any) => {
       </Row >
 
       <Space direction='vertical' size={40}>
+        <div></div>
         <Row justify='center'>
           <Title level={3}>How it works</Title>
         </Row>
