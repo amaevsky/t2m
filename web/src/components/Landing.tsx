@@ -2,6 +2,7 @@ import { Col, Row, Button, Typography, Space } from "antd"
 import { Redirect } from "react-router-dom";
 import { userService } from "../services/userService";
 import { routes } from "./App";
+import { Tile } from "./Tile";
 const { Title } = Typography;
 
 export const Landing = (props: any) => {
@@ -37,6 +38,26 @@ export const Landing = (props: any) => {
           <img src='/landing.png' width='100%'></img>
         </Col>
       </Row >
+      <Row style={{padding: '32 0'}} gutter={[32, 32]} className='primary-back' justify='center'>
+          <Row justify='center'>
+            <Title style={{ color: '#fff' }} level={2}>How it works</Title>
+          </Row>
+          <Row gutter={[32, 32]} justify='center'>
+            <Col lg={5} md={6} xs={16} >
+              <Tile style={{ padding: 16 }}><img src="/Tutorial - Step1.png" width='100%' /></Tile>
+            </Col >
+            <Col lg={5} md={6} xs={16}>
+              <Tile style={{ padding: 16 }}><img src="/Tutorial - Step2.png" width='100%' /></Tile>
+            </Col>
+            <Col lg={5} md={6} xs={16}>
+              <Tile style={{ padding: 16 }}><img src="/Tutorial - Step3.png" width='100%' /></Tile>
+            </Col>
+          </Row>
+          <Row justify='center'>
+            <Button type='default' className='primary-color' size='large' style={{ width: 150 }}>Get started</Button>
+          </Row>
+      </Row>
+
     </>
   )
 }
