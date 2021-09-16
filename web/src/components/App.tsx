@@ -14,6 +14,7 @@ import { Privacy } from './Privacy';
 import { Landing } from './Landing';
 import { ZoomDocumentation } from './ZoomDocumentation';
 import useHeight from '../utilities/useHeight';
+import { WelcomeTutorial } from './WelcomeTutorial';
 
 export const routes = {
   help: {
@@ -26,6 +27,7 @@ export const routes = {
     redirect: '/redirect',
     login: '/login',
     accountSetup: '/account/setup',
+    welcomeTutorial: '/tutorial'
   },
   app: {
     myRooms: '/rooms/my',
@@ -115,6 +117,7 @@ export const LoginPages = () => {
           <Route path={routes.login.redirect} component={LoginRedirect} />
           <Route path={routes.login.login} component={Login} />
           <Route path={routes.login.accountSetup} component={AccountSetup} />
+          <Route path={routes.login.welcomeTutorial} component={WelcomeTutorial} />
         </Switch>
       </div>
       <Footer />

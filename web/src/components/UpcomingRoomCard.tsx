@@ -58,7 +58,9 @@ export const UpcomingRoomCard = ({ room }: Props) => {
 
   secondary.push({ title: 'Edit', action: () => setEditRoomOpen(true) });
   secondary.push({ action: () => roomsService.sendCalendarEvent(room.id), title: 'Add to calendar' });
-  secondary.push({ title: 'Messages', action: () => setMessagesOpen(true) });
+  if (room.participants.length === room.maxParticipants) {
+    secondary.push({ title: 'Messages', action: () => setMessagesOpen(true) });
+  }
 
   if (room.hostUserId === userService.user?.id) {
     secondary.push({ action: () => remove(room.id), title: 'Remove' });
