@@ -21,9 +21,9 @@ namespace Lingua.Services
         private readonly ILogger<RoomUpdatesEmailNotificationService> _logger;
 
         public RoomUpdatesEmailNotificationService(
-                            IEmailService emailService,
-                            ITemplateProvider templateProvider,
-                            ILogger<RoomUpdatesEmailNotificationService> logger = null)
+            IEmailService emailService,
+            ITemplateProvider templateProvider,
+            ILogger<RoomUpdatesEmailNotificationService> logger = null)
         {
             _emailService = emailService;
             _templateProvider = templateProvider;
@@ -34,39 +34,44 @@ namespace Lingua.Services
         {
             var room = @event.Room;
             var user = room.User(@event.User.Id);
-            return SendUpdateEmail(room, $"<b>{user.Fullname} entered the room.</b>", Others(room, user.Id));
+            return SendUpdateEmail(room, $"<b>{user.Fullname} entered the room.</b>", null, Others(room, user.Id));
         }
+
         public Task Handle(RoomUpdatedEvent @event, CancellationToken cancellationToken)
         {
             var room = @event.Room;
             var user = room.User(@event.User.Id);
-            return SendUpdateEmail(room, $"<b>{user.Fullname} updated the room details.</b>", Others(room, user.Id));
+            return SendUpdateEmail(room, $"<b>{user.Fullname} updated the room details.</b>", @event.PreviousVersion,
+                Others(room, user.Id));
         }
 
         public Task Handle(RoomLeftEvent @event, CancellationToken cancellationToken)
         {
             var room = @event.Room;
             var user = room.User(@event.User.Id);
-            return SendUpdateEmail(room, $"<b>{user.Fullname} left the room.</b>", Others(room, user.Id));
+            return SendUpdateEmail(room, $"<b>{user.Fullname} left the room.</b>", null, Others(room, user.Id));
         }
-        
+
         public Task Handle(RoomMessageSentEvent @event, CancellationToken cancellationToken)
         {
             var room = @event.Room;
             var user = room.User(@event.User.Id);
-            return SendUpdateEmail(room, $"<b>{user.Fullname} left the room.</b>", Others(room, user.Id));
+            return SendUpdateEmail(room, $"<b>{user.Fullname} left the room.</b>", null, Others(room, user.Id));
         }
 
         public Task Handle(RoomRemovedEvent @event, CancellationToken cancellationToken)
         {
             var room = @event.Room;
             var user = room.User(@event.User.Id);
-            return SendUpdateEmail(room, $"<b>{user.Fullname} deleted the room you have previously entered.</b> You can go ahead and create your own room for that time.", Others(room, user.Id));
+            return SendUpdateEmail(room,
+                $"<b>{user.Fullname} deleted the room you have previously entered.</b> You can go ahead and create your own room for that time.",
+                null,
+                Others(room, user.Id));
         }
 
         private User[] Others(Room room, Guid userId) => room.Participants.Where(p => p.Id != userId).ToArray();
 
-        private async Task SendUpdateEmail(Room room, string message, params User[] recipients)
+        private async Task SendUpdateEmail(Room room, string message, Room previousVersion, params User[] recipients)
         {
             foreach (var recipient in recipients)
             {
@@ -74,7 +79,7 @@ namespace Lingua.Services
                 {
                     _logger?.LogInformation($"Before room:{room?.Id} update message is sent to {recipient?.Email}");
 
-                    var body = await _templateProvider.GetRoomUpdateEmail(message, room, recipient);
+                    var body = await _templateProvider.GetRoomUpdateEmail(message, room, recipient, previousVersion);
                     var email = new EmailMessage
                     {
                         Subject = "Room Update",

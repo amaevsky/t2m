@@ -9,15 +9,46 @@
 </head>
 <body>
 
-    <p>Hi @Model.Recepient.Firstname 👋<p>
+    <p>Hi @Model.Recepient.Firstname 👋</p>
         <br />
-    <p>🆕 There is an update regarding your room: @(new Microsoft.AspNetCore.Html.HtmlString(Model.Message))<p>
-    <p>📅 Room details:<p>
-        <ul>
+    <p>🆕 There is an update regarding your room: @(new Microsoft.AspNetCore.Html.HtmlString(Model.Message))</p>
+    <p>📅 Room details:</p>
+<ul>
+    @if(Model.PreviousVersion == null)
+    {
             <li>Date: @(Utilities.ConvertToTimezone(Model.Room.StartDate, Model.Recepient.Timezone).ToString("dd-MMM-yyyy HH:mm"))</li>
             <li>Language: @Model.Room.Language</li>
             <li>Topic:@(Model.Room.Topic ?? "<no topic>")</li>
-        </ul>
+    }
+    else
+    {
+        <li>
+            Date: @(Utilities.ConvertToTimezone(Model.PreviousVersion.StartDate, Model.Recepient.Timezone).ToString("dd-MMM-yyyy HH:mm"))
+            @if (Model.PreviousVersion.StartDate != Model.Room.StartDate)
+            {
+                <b> | NOW: Date: @(Utilities.ConvertToTimezone(Model.Room.StartDate, Model.Recepient.Timezone).ToString("dd-MMM-yyyy HH:mm"))</b>
+            }
+        </li>
+        <li>
+            Duration: @(Model.PreviousVersion.DurationInMinutes) min
+            @if (Model.PreviousVersion.DurationInMinutes != Model.Room.DurationInMinutes)
+            {
+                <b> | NOW: @(Model.Room.DurationInMinutes) min</b>
+            }
+        </li>
+        <li>
+            Language: @Model.PreviousVersion.Language
+        </li>
+        <li>
+            Topic:@(Model.PreviousVersion.Topic ?? "<no topic>") 
+            @if(Model.PreviousVersion.Topic != Model.Room.Topic)
+            {
+                <b> | NOW: Topic:@(Model.Room.Topic ?? "<no topic>")</b>
+            }
+        </li>
+    }
+
+</ul>
     <p>⚠ Please don’t reply to this email - it's not monitored. If you want to contact us, please use this <a href="https://t2m.app/help/contact-us">link</a>.</p>
     <br />
     <p>

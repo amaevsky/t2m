@@ -30,6 +30,7 @@ namespace Lingua.Services.Rooms.Commands
         {
             var options = command.Options;
             var room = await _roomRepository.Get(command.RoomId);
+            var copy = (Room)room.Clone();
 
             var timeChanged = room.StartDate != options.StartDate ||
                               room.DurationInMinutes != options.DurationInMinutes;
@@ -81,7 +82,7 @@ namespace Lingua.Services.Rooms.Commands
             if (updated)
             {
                 await _roomRepository.Update(room);
-                _mediator.Publish(new RoomUpdatedEvent {Room = room, User = room.User(command.UserId)})
+                _mediator.Publish(new RoomUpdatedEvent {Room = room, PreviousVersion = copy, User = room.User(command.UserId)})
                     .ConfigureAwait(false);
             }
 

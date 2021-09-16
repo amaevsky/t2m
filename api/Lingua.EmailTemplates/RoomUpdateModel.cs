@@ -9,6 +9,7 @@ namespace Lingua.EmailTemplates
     public class RoomUpdateModel : RoomModel
     {
         public string Message { get; set; }
+        public Room PreviousVersion { get; set; }
     }
 
     public class RoomModel : BaseModel

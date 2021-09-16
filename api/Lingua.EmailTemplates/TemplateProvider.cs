@@ -44,13 +44,14 @@ namespace Lingua.EmailTemplates
                 });
         }
 
-        public Task<string> GetRoomUpdateEmail(string message, Room room, User recipient)
+        public Task<string> GetRoomUpdateEmail(string message, Room room, User recipient, Room previousVersion = null)
         {
             return _viewRenderService.RenderToStringAsync("RoomUpdate",
                 new RoomUpdateModel
                 {
                     Message = message,
                     Room = room,
+                    PreviousVersion = previousVersion,
                     Recepient = recipient
                 });
         }

@@ -9,5 +9,6 @@ namespace Lingua.Services.Rooms.Events
 {
     public class RoomUpdatedEvent : BaseRoomEvent
     {
+        public Room PreviousVersion { get; set; }
     }
 }

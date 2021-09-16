@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Lingua.Shared
 {
-    public class Room : BaseRoom
+    public class Room : BaseRoom, ICloneable
     {
         public Room()
         {
@@ -14,5 +14,9 @@ namespace Lingua.Shared
 
         public User User(Guid userId) => Participants.Find(p => p.Id == userId);
         public bool IsFull => Participants.Count == MaxParticipants;
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }
