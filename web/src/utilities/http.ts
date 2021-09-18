@@ -19,22 +19,22 @@ export interface HttpResponse<T = any> {
 
 class Http {
   get<T = any>(url: string): Promise<HttpResponse<T>> {
-    return axios.get<T>(`${API_BASE_URL}/${url}`, { withCredentials: true })
+    return axios.get<T>(`${API_BASE_URL}/${url}`, { headers: this.getDefaultHeaders() })
       .then((response) => ({ data: response.data }))
       .catch(this.handleError);
   }
   delete<T = any>(url: string): Promise<HttpResponse<T>> {
-    return axios.delete<T>(`${API_BASE_URL}/${url}`, { withCredentials: true })
+    return axios.delete<T>(`${API_BASE_URL}/${url}`, { headers: this.getDefaultHeaders() })
       .then((response) => ({ data: response.data }))
       .catch(this.handleError);
   }
   post<T = any>(url: string, data?: any, config?: any): Promise<HttpResponse<T>> {
-    return axios.post<T>(`${API_BASE_URL}/${url}`, data, { ...config, withCredentials: true })
+    return axios.post<T>(`${API_BASE_URL}/${url}`, data, { ...config, headers: { ...config?.headers || {},  ...this.getDefaultHeaders() } })
       .then((response) => ({ data: response.data }))
       .catch(this.handleError);
   }
   put<T = any>(url: string, data?: any): Promise<HttpResponse<T>> {
-    return axios.put<T>(`${API_BASE_URL}/${url}`, data, { withCredentials: true })
+    return axios.put<T>(`${API_BASE_URL}/${url}`, data, { headers: this.getDefaultHeaders() })
       .then((response) => ({ data: response.data }))
       .catch(this.handleError);
   }
@@ -52,6 +52,11 @@ class Http {
     }
 
     return { errors: [message] };
+  }
+
+  private getDefaultHeaders() {
+    const token = localStorage.getItem('token');
+    return token ?  { Authorization: `Bearer ${token}` } : {};
   }
 
 }
