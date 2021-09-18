@@ -15,13 +15,13 @@ export const WelcomeTutorial = () => {
         </Row>
         <Row gutter={[32, 32]} justify='center'>
           <Col lg={5} md={6} xs={16} >
-            <img src="/Tutorial - Step1.png" width='100%' />
+            <img src="Tutorial - Step1.png" width='100%' />
           </Col >
           <Col lg={5} md={6} xs={16}>
-            <img src="/Tutorial - Step2.png" width='100%' />
+            <img src="Tutorial - Step2.png" width='100%' />
           </Col>
           <Col lg={5} md={6} xs={16}>
-            <img src="/Tutorial - Step3.png" width='100%' />
+            <img src="Tutorial - Step3.png" width='100%' />
           </Col>
         </Row>
         <Row justify='center'>

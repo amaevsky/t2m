@@ -68,7 +68,7 @@ class HeaderComponent extends React.Component<Props, State> {
           <Row justify='space-between' align='middle'>
             <Col>
               <Link to={routes.default}>
-                <img height={45} src='/talk2me-unfilled.png' />
+                <img height={45} src='talk2me-unfilled.png' />
               </Link>
             </Col>
             {!this.props.empty &&

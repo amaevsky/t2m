@@ -26,7 +26,7 @@ export const Landing = (props: any) => {
             <Col span={18}>
               <Space direction='vertical' size={40}>
 
-                <img height='120' src='/talk2me-unfilled.png'></img>
+                <img height='120' src='talk2me-unfilled.png'></img>
 
                 <Title level={3}>Improve any language by speaking with people who have the same level of language. For Free.</Title>
 
@@ -41,7 +41,7 @@ export const Landing = (props: any) => {
           </Row>
         </Col>
         <Col md={10} xs={24}>
-          <img src='/landing.png' width='100%'></img>
+          <img src='landing.png' width='100%'></img>
         </Col>
       </Row >
 
@@ -52,13 +52,13 @@ export const Landing = (props: any) => {
         </Row>
         <Row gutter={[32, 32]} justify='center'>
           <Col lg={5} md={6} xs={16} >
-            <img src="/Tutorial - Step1.png" width='100%' />
+            <img src="Tutorial - Step1.png" width='100%' />
           </Col >
           <Col lg={5} md={6} xs={16}>
-            <img src="/Tutorial - Step2.png" width='100%' />
+            <img src="Tutorial - Step2.png" width='100%' />
           </Col>
           <Col lg={5} md={6} xs={16}>
-            <img src="/Tutorial - Step3.png" width='100%' />
+            <img src="Tutorial - Step3.png" width='100%' />
           </Col>
         </Row>
         <Row justify='center'>
