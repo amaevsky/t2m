@@ -1,7 +1,7 @@
 import { notification } from 'antd';
 import axios, { AxiosError } from 'axios';
 
-let base = 'https://api.t2m.app';
+let base = 'http://10.0.2.2:5000';
 if (process.env.NODE_ENV === 'development') {
   base = 'https://localhost:5001';
 } else if (process.env.REACT_APP_ENV === 'staging') {

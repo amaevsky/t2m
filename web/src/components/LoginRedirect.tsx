@@ -8,9 +8,7 @@ export class LoginRedirect extends React.Component<any> {
 
   async componentDidMount() {
     const code = new URLSearchParams(window.location.search).get('code') as string;
-    await authService.zoomLogin(code);
-    await userService.initialize();
-    this.props.history.push(routes.login.login);
+    window.location.href = `app.t2m://oauth_callback?code=${code}`;
   }
 
   render() {

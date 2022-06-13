@@ -1,5 +1,6 @@
 import { Button, Col, Row, Spin, Typography } from 'antd';
 import React from 'react';
+import { authService } from '../services/authService';
 import { configService } from '../services/configService';
 import { userService } from '../services/userService';
 import { routes } from './App';
@@ -43,7 +44,7 @@ export class Login extends React.Component<any, State> {
               <Title level={2}>Welcome to <b className='primary-color'>Talk2Me</b></Title>
               <p>In order to use our app you have to login via Zoom</p>
               <Row justify='center' style={{ paddingTop: 16 }}>
-                <Button style={{ width: '100%' }} type='primary' size='large' onClick={this.redirect}>Login via Zoom</Button>
+                <Button style={{ width: '100%' }} type='primary' size='large' onClick={() => this.redirect()}>Login via Zoom</Button>
               </Row>
             </>
           }
@@ -53,6 +54,19 @@ export class Login extends React.Component<any, State> {
   }
 
   redirect() {
-    window.location.href = configService.config.zoomAuthUrl;;
+
+    const history = this.props.history;
+    window.addEventListener('message', async function (event) {
+      if (event.data.match(/^oauth::/)) {
+        var data = JSON.parse(event.data.substring(7));
+
+        await authService.zoomLogin(data.code);
+        await userService.initialize();
+        history.push(routes.default);
+      }
+    });
+
+    //window.location.href = configService.config.zoomAuthUrl;;
+    window.open(configService.config.zoomAuthUrl, 'oauth:zoom', '');
   }
 }

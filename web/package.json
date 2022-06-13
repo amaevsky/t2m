@@ -1,6 +1,7 @@
 {
   "name": "lingua",
   "version": "0.1.0",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
@@ -30,6 +31,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
+    "cordova": "react-app-rewired build && cp -a ./build/. ../cordova/www/",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
